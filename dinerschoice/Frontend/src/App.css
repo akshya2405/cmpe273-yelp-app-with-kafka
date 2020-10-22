@@ -1,0 +1,209 @@
+
+.form-heading { color:#fff; font-size:23px;}
+.panel h2{ color:#444444; font-size:18px; margin:0 0 8px 0;}
+.panel p { color:#777777; font-size:14px; margin-bottom:30px; line-height:24px;}
+.login-form .form-control {
+  background: #f7f7f7 none repeat scroll 0 0;
+  border: 1px solid #d4d4d4;
+  border-radius: 4px;
+  font-size: 14px;
+  height: 50px;
+  line-height: 50px;
+}
+.main-div {
+  background: #ffffff none repeat scroll 0 0;
+  border-radius: 2px;
+  margin: 10px auto 30px;
+  max-width: 38%;
+  padding: 50px 70px 70px 71px;
+  border: 2px solid black;
+}
+
+.login-form .form-group {
+  margin-bottom:10px;
+}
+.login-form{ text-align:center;}
+.forgot a {
+  color: #777777;
+  font-size: 14px;
+  text-decoration: underline;
+}
+.login-form  .btn.btn-primary {
+  background: #f0ad4e none repeat scroll 0 0;
+  border-color: #f0ad4e;
+  color: #ffffff;
+  font-size: 1.5rem;
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  padding: 0;
+}
+.forgot {
+  text-align: left; margin-bottom:30px;
+}
+.botto-text {
+  color: #ffffff;
+  font-size: 14px;
+  margin: auto;
+}
+.back { text-align: left; margin-top:10px;}
+.back a {color: #444444; font-size: 13px;text-decoration: none;}
+.active {background-color: 'red';}
+.text-edit {
+  width: 50%;
+  resize: both;
+}
+* {font-size: 1.5rem;}
+
+.center {
+  margin: auto;
+  /* width: fit-content; */
+  border: 1.5px solid #c56c19;
+}
+
+.column1 {
+  width: 50%; 
+  float: left; 
+  background:#5dc26e; 
+  text-align: center;
+  border: 2px solid black;
+  height: 300px;
+  overflow: auto;
+}
+
+.upcoming {
+  height:auto;
+  width:100%;
+  background:#f9faac;
+  color: black;
+  border: black solid 1px;
+}
+
+.column2 {
+  width: 50%;
+  float:left;
+  background: #785dc2;
+  text-align: center;
+  border: 2px solid black;
+  height: 300px;
+  overflow: auto;
+}
+
+.div2 {
+  width: 50%;
+  float: left;
+}
+
+.div1 {
+  width: 100%;
+  text-align: left;
+}
+
+.review1 {
+  width: 30%;
+  height: 100px;
+  float: left;
+  text-align: left;
+  border: black solid 1px;
+}
+
+.review2 {
+  width: 70%;
+  height: 100px;
+  float: left;
+  text-align: left;
+  border: black solid 1px;
+}
+
+.dashcolumn1 {
+  width: 30%;
+  float: left;
+  text-align: justify-all;
+  font-family: cursive;
+  font-size: 18pt;
+  font-weight: bolder;
+  overflow: auto;
+}
+
+.dashcolumn2 {
+  width: 40%;
+  float:left;
+  height: 800px;
+  text-align: center;
+  overflow: auto;
+}
+.dashcolumn3 {
+  width: 30%;
+  float:left;
+  height: 800px;
+  text-align: center;
+  overflow: auto;
+}
+.dashwidget {
+  text-align: left;
+  font-family: cursive;
+  font-size: 16pt;
+  overflow: auto;
+  width:"800px";
+  height:"200px";
+}
+
+.menucolumn1 {
+  width: 60%;
+  float: left;
+  text-align: justify-all;
+  font-family: cursive;
+  height: 800px;
+  font-size: 18pt;
+  font-weight: bolder;
+  overflow: auto;
+}
+
+.menucolumn2 {
+  width: 40%;
+  float:left;
+  height: 800px;
+  text-align: center;
+  overflow: auto;
+}
+
+.ordercolumn1 {
+  width: 30%;
+  float: left;
+  text-align: left;
+  vertical-align: middle;
+  font-family: cursive;
+  overflow: auto;
+}
+
+.ordercolumn2 {
+  width: 30%;
+  float:left;
+  text-align: center;
+  vertical-align: middle;
+  overflow: auto;
+}
+.ordercolumn3 {
+  width: 30%;
+  float:left;
+  text-align: right;
+  vertical-align: middle;
+  overflow: auto;
+}
+
+.custordercolumn1 {
+  width: 40%;
+  float: left;
+  text-align: left;
+  vertical-align: middle;
+  font-family: cursive;
+  overflow: auto;
+}
+
+.custordercolumn2 {
+  width: 60%;
+  float:left;
+  text-align: justify-all;
+  vertical-align: middle;
+  overflow: auto;
+}
