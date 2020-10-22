@@ -132,6 +132,7 @@ class Signup extends Component {
 
   // email change handler to update state variable with the text entered by the user
   emailChangeHandler(e) {
+    console.log(e.target.value);
     this.setState({
       email: e.target.value,
     });
@@ -167,11 +168,11 @@ class Signup extends Component {
   }
 
   restNameChangeHandler(e) {
-    // console.log(e.target.value);
+    console.log(e.target.value);
     this.setState({
       restName: e.target.value,
     });
-    // console.log(this.state.restName);
+    console.log(this.state.restName);
   }
 
   addressChangeHandler(e) {
@@ -243,6 +244,8 @@ class Signup extends Component {
       isCust: this.state.isCust,
     };
 
+    console.log('Data: ', data);
+
     this.setState({
       success: false,
     });
@@ -252,7 +255,7 @@ class Signup extends Component {
     const { dispatch, history } = this.props;
 
     if (this.checkBtn.context._errors.length === 0) {
-      // console.log(this.state);
+      console.log(this.state);
       dispatch(
         signup(data),
       )
@@ -290,7 +293,7 @@ class Signup extends Component {
                   <div className="panel">
                     <h2>User Signup</h2>
                     <p>Who do you want to signup as?</p>
-                    <Select className="form-control" name="category" onChange={this.categoryChangeHandler} validations={[required]} defaultValue="Default">
+                    <Select className="form-control" name="category" onChange={this.categoryChangeHandler} validations={[required]}>
                       <option value="Default" name="category">Select a role</option>
                       <option value="Customer" name="category">Customer</option>
                       <option value="Restaurant" name="category">Restaurant</option>
@@ -445,16 +448,17 @@ class Signup extends Component {
                         />
                       </div>
                       <div className="form-group">
-                        <button
+                        <input
                           type="submit"
                           className="btn btn-primary btn-block"
                           disabled={this.state.loading}
+                          onClick={this.submitSignUp}
                         >
                           {this.state.loading && (
                           <span className="spinner-border spinner-border-sm" />
                           )}
                           <span>Sign Up</span>
-                        </button>
+                        </input>
                       </div>
                     </div>
                     )}

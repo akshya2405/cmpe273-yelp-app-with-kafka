@@ -3,7 +3,7 @@ import {
   SIGN_UP, SIGN_UP_ERROR, LOGIN, LOGIN_ERROR, LOGOUT,
 } from '../constants/action-types';
 
-const user = JSON.parse(localStorage.getItem('user'));
+const user = localStorage.getItem('token');
 
 const initialState = user ? { isLoggedIn: true, user } : { isLoggedIn: false, user: null };
 
@@ -23,7 +23,6 @@ export default function (state = initialState, action) {
       };
 
     case LOGIN:
-      // console.log('In reducer:', payload.user);
       return {
         ...state,
         isLoggedIn: true,

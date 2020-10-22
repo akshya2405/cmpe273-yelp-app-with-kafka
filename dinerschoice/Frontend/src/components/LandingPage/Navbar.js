@@ -60,7 +60,7 @@ class Navbar extends Component {
     this.handleLogout = this.handleLogout.bind(this);
     this.state = {
       currentUser: undefined,
-      lookupString: ''
+      lookupString: '',
     };
 
     history.listen((location) => {
@@ -72,18 +72,19 @@ class Navbar extends Component {
     const { user } = this.props;
     if (user) {
       this.setState({
-          currentUser: user,
+        currentUser: user,
       });
     } else {
-        this.setState ( {
-            currentUser: undefined,
-        });
+      this.setState({
+        currentUser: undefined,
+      });
     }
   }
 
-    handleUserInput(evt) {
-        this.state.lookupString = evt.target.value;
-    }
+  handleUserInput(evt) {
+    this.state.lookupString = evt.target.value;
+  }
+
   // handle logout to destroy the cookie
   handleLogout() {
     const { dispatch, history } = this.props;
@@ -94,23 +95,23 @@ class Navbar extends Component {
     });
   }
 
-    lookupSearchResults(e) {
-        // prevent page from refresh
-        e.preventDefault();
-        const lookupParams = {
-            searchToken: this.state.lookupString
-        };
-        this.state.lookupString = '';
-        const { dispatch, history } = this.props;
-            // console.log("XXX:", lookupParams);
-                    history.push({
-                        pathname: '/dashboard',
-                        state: {lookupParams: lookupParams}
-                    });
-                    window.location.reload();
-    }
+  lookupSearchResults(e) {
+    // prevent page from refresh
+    e.preventDefault();
+    const lookupParams = {
+      searchToken: this.state.lookupString,
+    };
+    this.state.lookupString = '';
+    const { dispatch, history } = this.props;
+    // console.log("XXX:", lookupParams);
+    history.push({
+      pathname: '/dashboard',
+      state: { lookupParams },
+    });
+    window.location.reload();
+  }
 
-    render() {
+  render() {
     const { currentUser } = this.state;
     let navLogin = null;
     { currentUser ? (
@@ -145,23 +146,33 @@ class Navbar extends Component {
     return (
       <div>
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-          <div className="container-fluid"><table className="table table-borderless table-condensed table-hover">
-            <tr><td><div className="navbar-header">
-              <a className="navbar-brand" href="/dashboard">Diner's Choice</a>
-            </div>
-            {display(currentUser)}
-            {navLogin}
-          </td></tr>
-              <tr> <td align="center">
-                  <Form onSubmit={this.lookupSearchResults.bind(this)}>
-                      <input type="text" style={{width:"700px", height:"40px"}} onChange={this.handleUserInput.bind(this)}/><button className="btn btn-outline-secondary" type="submit"  style={{width:"100px", height:"40px"}}>Search</button>
-                  </Form></td></tr>
+          <div className="container-fluid">
+            <table className="table table-borderless table-condensed table-hover">
+              <tbody>
+                <tr>
+                  <td>
+                    <div className="navbar-header">
+                      <a className="navbar-brand" href="/dashboard">Diner's Choice</a>
+                    </div>
+                    {display(currentUser)}
+                    {navLogin}
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center">
+                    <Form onSubmit={this.lookupSearchResults.bind(this)}>
+                      <input type="text" style={{ width: '700px', height: '40px' }} onChange={this.handleUserInput.bind(this)} />
+                      <button className="btn btn-outline-secondary" type="submit" style={{ width: '100px', height: '40px' }}>Search</button>
+                    </Form>
+                  </td>
+                </tr>
+              </tbody>
             </table>
-            </div>
-        </nav>{/*
-          <Redirect to="/dashboard" />*/}
+          </div>
+        </nav>
+        {/*
+          <Redirect to="/dashboard" /> */}
       </div>
-
 
     );
   }
@@ -169,6 +180,7 @@ class Navbar extends Component {
 
 function mapStateToProps(state) {
   const { user } = state.auth;
+  console.log(state);
   return {
     user,
   };

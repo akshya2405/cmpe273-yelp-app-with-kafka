@@ -101,7 +101,7 @@ class Login extends Component {
     if (this.checkBtn.context._errors.length === 0) {
       dispatch(login(this.state.category, this.state.email, this.state.password))
         .then(() => {
-          // console.log('Redirection category: ', this.state.category);
+          console.log('Redirection category: ', this.state.category);
           if (this.state.category === 'Restaurant') {
             // console.log('Redirecting to : ', this.state.category);
             history.push('/restaurantDashboard');
@@ -182,7 +182,7 @@ class Login extends Component {
               >
                 <div className="panel">
                   <h2>User Login</h2>
-                  <Select class="form-control" name="category" onChange={this.categoryChangeHandler}>
+                  <Select className="form-control" name="category" onChange={this.categoryChangeHandler}>
                     <option value="Customer" name="category">Customer</option>
                     <option value="Restaurant" name="category">Restaurant</option>
                   </Select>
@@ -244,11 +244,11 @@ class Login extends Component {
 }
 
 function mapStateToProps(state) {
-  // console.log(state);
+  console.log(state);
   const { isLoggedIn } = state.auth;
   const { message } = state.message;
-  // console.log('isloggedin : ', isLoggedIn);
-  // console.log('message', message);
+  console.log('isloggedin : ', isLoggedIn);
+  console.log('message', message);
   return {
     isLoggedIn,
     message,

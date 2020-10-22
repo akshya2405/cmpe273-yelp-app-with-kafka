@@ -1,10 +1,13 @@
 /* eslint-disable linebreak-style */
 /* eslint-disable max-len */
+
 import {
   SIGN_UP, SIGN_UP_ERROR, LOGIN, LOGIN_ERROR, LOGOUT, SET_MESSAGE,
 } from '../constants/action-types';
 
 import AuthService from '../services/auth.service';
+
+const jwt_decode = require('jwt-decode');
 
 export const signup = (user) => (dispatch) => AuthService.signup(user)
   .then((response) => {
@@ -32,12 +35,12 @@ export const signup = (user) => (dispatch) => AuthService.signup(user)
 
 export const login = (category, email, password) => (dispatch) => AuthService.login(category, email, password).then(
   (data) => {
-    // console.log('Dispatching login');
+    console.log('Dispatching login', data);
     dispatch({
       type: LOGIN,
       payload: { user: data.data },
     });
-    // console.log('Returning to actions', data.data);
+    console.log('Returning to actions', data.data);
     return Promise.resolve();
   },
   (error) => {

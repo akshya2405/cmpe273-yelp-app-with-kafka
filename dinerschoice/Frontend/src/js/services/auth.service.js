@@ -1,28 +1,37 @@
 /* eslint-disable linebreak-style */
 /* eslint-disable class-methods-use-this */
 import axios from 'axios';
-
-const API_URL = 'http://54.219.100.35:3001/';
+import jwt_decode from 'jwt-decode';
+import { API_URL } from '../config/config';
 
 class AuthService {
   login(category, email, password) {
     return axios
-      .post(`${API_URL}login`, { category, email, password })
+      .post(`${API_URL}user/login`, { category, email, password })
       .then((response) => {
-        // console.log('In service :', response.data);
+        console.log('In service :', response.data);
         if (response) {
-          localStorage.setItem('user', JSON.stringify(response.data));
+          localStorage.setItem('token', response.data);
+          const decoded = jwt_decode(response.data.split(' ')[1]);
+          console.log('split: ', response.data.split(' ')[1]);
+          localStorage.setItem('category', decoded.category);
+          localStorage.setItem('email', decoded.email);
         }
+        console.log('if skipped');
         return response;
       });
   }
 
   logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('category');
+    localStorage.removeItem('email');
     localStorage.removeItem('user');
   }
 
   signup(user) {
-    return axios.post(`${API_URL}signup`, {
+    console.log('in service: ', user);
+    return axios.post(`${API_URL}user/signup`, {
       user,
     });
   }
