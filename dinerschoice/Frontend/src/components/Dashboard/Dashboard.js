@@ -1,5 +1,6 @@
 /* eslint-disable linebreak-style */
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import '../../App.css';
 import LookupService from '../../js/services/lookup.service';
 import DashWidget from "../../js/helpers/DashWidget";
@@ -191,5 +192,14 @@ class Dashboard extends Component {
   }
 
 }
+
+function mapStateToProps(state) {
+  console.log(state);
+  const { user } = state.auth;
+  return {
+    user,
+  };
+}
+
 // export Home Component
-export default Dashboard;
+export default connect(mapStateToProps)(Dashboard);

@@ -20,7 +20,7 @@ class CustProfileView extends Component {
 
   componentDidMount() {
     // console.log('In customer profile did mount');
-    axios.get('http://54.219.100.35:3001/custProfileView', { custID: this.state.custID })
+    axios.get('http://localhost:3001/custProfileView', { custID: this.state.custID })
       .then((response) => {
         // update the state with the response data
         // console.log(response.data);

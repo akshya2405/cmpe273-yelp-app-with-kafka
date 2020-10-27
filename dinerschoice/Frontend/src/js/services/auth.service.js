@@ -1,7 +1,6 @@
-/* eslint-disable linebreak-style */
 /* eslint-disable class-methods-use-this */
 import axios from 'axios';
-import jwt_decode from 'jwt-decode';
+import jwtDecode from 'jwt-decode';
 import { API_URL } from '../config/config';
 
 class AuthService {
@@ -12,12 +11,11 @@ class AuthService {
         console.log('In service :', response.data);
         if (response) {
           localStorage.setItem('token', response.data);
-          const decoded = jwt_decode(response.data.split(' ')[1]);
+          const decoded = jwtDecode(response.data.split(' ')[1]);
           console.log('split: ', response.data.split(' ')[1]);
           localStorage.setItem('category', decoded.category);
           localStorage.setItem('email', decoded.email);
         }
-        console.log('if skipped');
         return response;
       });
   }
@@ -27,6 +25,7 @@ class AuthService {
     localStorage.removeItem('category');
     localStorage.removeItem('email');
     localStorage.removeItem('user');
+    return Promise.resolve();
   }
 
   signup(user) {

@@ -1,5 +1,4 @@
 /* eslint-disable import/no-named-as-default-member */
-/* eslint-disable linebreak-style */
 /* eslint-disable react/jsx-filename-extension */
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -9,7 +8,12 @@ import configureStore from './js/store/index';
 import App from './App';
 // import serviceWorker from './serviceWorker';
 
-const initialState = { category: '', email: '' };
+// const user = {
+//   token: localStorage.getItem('token'),
+//   category: localStorage.getItem('category'),
+//   email: localStorage.getItem('email'),
+// };
+const initialState = {};
 const store = configureStore(initialState);
 // render App component on the root element
 ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));

@@ -3,8 +3,7 @@
 
 import React, { Component } from 'react';
 import '../../App.css';
-// import axios from 'axios';
-// import cookie from 'react-cookies';
+import PropTypes from 'prop-types';
 import Form from 'react-validation/build/form';
 import Select from 'react-validation/build/select';
 import Input from 'react-validation/build/input';
@@ -132,7 +131,7 @@ class Signup extends Component {
 
   // email change handler to update state variable with the text entered by the user
   emailChangeHandler(e) {
-    console.log(e.target.value);
+    // console.log(e.target.value);
     this.setState({
       email: e.target.value,
     });
@@ -147,6 +146,7 @@ class Signup extends Component {
 
   // category change handler to update state variable based on the option selected by the user
   categoryChangeHandler(e) {
+    console.log(e.target.value);
     if (e.target.value === 'Customer') {
       this.setState({
         isCust: true,
@@ -168,7 +168,7 @@ class Signup extends Component {
   }
 
   restNameChangeHandler(e) {
-    console.log(e.target.value);
+    // console.log(e.target.value);
     this.setState({
       restName: e.target.value,
     });
@@ -448,17 +448,16 @@ class Signup extends Component {
                         />
                       </div>
                       <div className="form-group">
-                        <input
+                        <button
                           type="submit"
                           className="btn btn-primary btn-block"
                           disabled={this.state.loading}
-                          onClick={this.submitSignUp}
                         >
                           {this.state.loading && (
                           <span className="spinner-border spinner-border-sm" />
                           )}
                           <span>Sign Up</span>
-                        </input>
+                        </button>
                       </div>
                     </div>
                     )}

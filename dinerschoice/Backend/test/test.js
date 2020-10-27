@@ -3,7 +3,7 @@ const chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);
 
-const api_url = 'http://54.219.100.35:3001';
+const api_url = 'http://localhost:3001';
 
 const { expect } = chai;
 

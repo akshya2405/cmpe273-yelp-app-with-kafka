@@ -57,6 +57,7 @@ const display = (currentUser) => {
 class Navbar extends Component {
   constructor(props) {
     super(props);
+
     this.handleLogout = this.handleLogout.bind(this);
     this.state = {
       currentUser: undefined,
@@ -86,13 +87,17 @@ class Navbar extends Component {
   }
 
   // handle logout to destroy the cookie
-  handleLogout() {
-    const { dispatch, history } = this.props;
-    dispatch(logout()).then(() => {
-      this.setState({ currentUser: undefined });
-      history.push('/');
-      window.location.reload();
-    });
+  handleLogout(e) {
+    e.preventDefault();
+    const { dispatch } = this.props;
+    dispatch(
+      logout(),
+    )
+      .then(() => {
+        this.setState({ currentUser: undefined });
+        // history.push('/');
+        // window.location.reload();
+      });
   }
 
   lookupSearchResults(e) {
@@ -102,7 +107,6 @@ class Navbar extends Component {
       searchToken: this.state.lookupString,
     };
     this.state.lookupString = '';
-    const { dispatch, history } = this.props;
     // console.log("XXX:", lookupParams);
     history.push({
       pathname: '/dashboard',
@@ -179,8 +183,8 @@ class Navbar extends Component {
 }
 
 function mapStateToProps(state) {
-  const { user } = state.auth;
   console.log(state);
+  const { user } = state.auth;
   return {
     user,
   };

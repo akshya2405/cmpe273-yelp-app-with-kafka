@@ -2,7 +2,7 @@
 /* eslint-disable class-methods-use-this */
 import axios from 'axios';
 
-const API_URL = 'http://54.219.100.35:3001/';
+const API_URL = 'http://localhost:3001/';
 
 class LookupService {
 
