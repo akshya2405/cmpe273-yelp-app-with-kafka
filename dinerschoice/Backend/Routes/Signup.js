@@ -29,12 +29,34 @@ router.post('/signup', (req, res) => {
       // });
       // res.end();
     } else {
-      res.status(200).end();
+      console.log(data);
+      // res.status(200).end();
+      let profile = {};
       if (req.body.user.category === 'Restaurant') {
-        const profile = new Restaurant({
+        profile = new Restaurant({
+          name: req.body.user.restName,
+          email: req.body.user.email,
+          streetAddress: req.body.user.address,
+          city: req.body.user.city,
+          state: req.body.user.state,
+          country: req.body.user.country,
+          zipcode: req.body.user.zipcode,
+        });
+      } else {
+        profile = new Customer({
+          fname: req.body.user.custFName,
+          lname: req.body.user.custLName,
           email: req.body.user.email,
         });
       }
+      profile.save((err, dat) => {
+        if (err) {
+          res.status(500).end();
+        } else {
+          console.log(data);
+          res.status(200).end();
+        }
+      });
       // res.writeHead(200, {
       //   'Content-Type': 'text/plain',
       // });

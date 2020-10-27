@@ -581,21 +581,21 @@ app.post('/upload', (req, res) => {
 });
 
 app.post('/lookup', (req, res) => {
-//   console.log(req);
-  // lookup.lookup(req)
-  //   .then((result) => {
-  //     res.writeHead(200, {
-  //       'Content-Type': 'application/json',
-  //     });
-  //     res.end(JSON.stringify(result));
-  //   })
-  //   .catch((err) => {
-  //     // console.log(err);
-  //     res.writeHead(400, '*** Something went wrong. Please try again later ****', {
-  //       'Content-Type': 'text/plain',
-  //     });
-  //     res.end();
-  //   });
+  console.log(req);
+  lookup.lookup(req)
+    .then((result) => {
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+      });
+      res.end(JSON.stringify(result));
+    })
+    .catch((err) => {
+      // console.log(err);
+      res.writeHead(400, '*** Something went wrong. Please try again later ****', {
+        'Content-Type': 'text/plain',
+      });
+      res.end();
+    });
   res.end();
 });
 

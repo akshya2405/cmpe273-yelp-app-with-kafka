@@ -256,9 +256,7 @@ class Signup extends Component {
 
     if (this.checkBtn.context._errors.length === 0) {
       console.log(this.state);
-      dispatch(
-        signup(data),
-      )
+      dispatch(signup(data))
         .then(() => {
           this.setState({
             success: true,
