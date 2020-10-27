@@ -3,7 +3,11 @@ import {
   SIGN_UP, SIGN_UP_ERROR, LOGIN, LOGIN_ERROR, LOGOUT,
 } from '../constants/action-types';
 
-const user = localStorage.getItem('token');
+const user = {
+  token: localStorage.getItem('token'),
+  category: localStorage.getItem('category'),
+  email: localStorage.getItem('email'),
+};
 
 const initialState = user ? { isLoggedIn: true, user } : { isLoggedIn: false, user: null };
 

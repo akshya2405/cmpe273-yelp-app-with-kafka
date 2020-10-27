@@ -3,6 +3,8 @@ const bcrypt = require('bcryptjs');
 
 const router = express.Router();
 const Users = require('../Models/UserModel');
+const Customer = require('../Models/CustomerProfileModel');
+const Restaurant = require('../Models/RestaurantProfileModel');
 
 router.get('/signup', (req, res) => {
   // console.log('Signup GET');
@@ -21,15 +23,22 @@ router.post('/signup', (req, res) => {
 
   newUser.save((error, data) => {
     if (error) {
-      res.writeHead(500, {
-        'Content-Type': 'text/plain',
-      });
-      res.end();
+      res.status(500).end();
+      // res.writeHead(500, {
+      //   'Content-Type': 'text/plain',
+      // });
+      // res.end();
     } else {
-      res.writeHead(200, {
-        'Content-Type': 'text/plain',
-      });
-      res.end();
+      res.status(200).end();
+      if (req.body.user.category === 'Restaurant') {
+        const profile = new Restaurant({
+          email: req.body.user.email,
+        });
+      }
+      // res.writeHead(200, {
+      //   'Content-Type': 'text/plain',
+      // });
+      // res.end();
     }
   });
 
