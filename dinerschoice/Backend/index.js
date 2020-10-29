@@ -5,18 +5,12 @@
 const express = require('express');
 
 const app = express();
-const moment = require('moment');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-const cookieParser = require('cookie-parser');
 const cors = require('cors');
-const sessionStorage = require('node-sessionstorage');
-const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 
-const jwt = require('jsonwebtoken');
 const dbConnection = require('./dbConnection');
-const config = require('./config/auth.config');
 const verifyToken = require('./middleware/authenticateToken');
 const restaurantProfile = require('./actions/restaurantProfile');
 const customerProfile = require('./actions/getCustProfile');
@@ -88,110 +82,6 @@ const Signup = require('./Routes/Signup');
 
 app.use('/user', Login);
 app.use('/user', Signup);
-
-// Route to handle Post Request Call
-// app.post('/login', (req, res) => {
-//   // get the password from database for the given email
-//   const query = `SELECT * FROM user where email = '${req.body.email}';`;
-//   // console.log(query);
-//   dbConnection.dbConn(query)
-//     .then((result) => {
-//       // console.log(result);
-//       if (result.length !== 0) {
-//         // console.log(bcrypt.hashSync(req.body.password, 10));
-//         if (bcrypt.compareSync(req.body.password, result[0].password) && result[0].category === req.body.category) {
-//           // console.log('Match!');
-//           const token = jwt.sign({ id: result[0].email }, config.secret, { expiresIn: 86400 });
-//           const user = { category: req.body.category, userid: result[0].email, accessToken: token };
-//           res.writeHead(200, '*** Login successful ****', {
-//             'Content-Type': 'application/json',
-//           });
-//           res.end(JSON.stringify(user));
-//         } else {
-//           // console.log('Mismatch');
-//           res.writeHead(400, '*** Invalid usertype/password. Please verify if you are logging in as the right user ****', {
-//             'Content-Type': 'text/plain',
-//           });
-//           res.end();
-//         }
-//       } else {
-//         res.writeHead(400, '*** Invalid emailID ****', {
-//           'Content-Type': 'text/plain',
-//         });
-//         res.end();
-//       }
-//     })
-//     .catch((err) => {
-//       // console.log(err);
-//       res.writeHead(400, '*** Something went wrong. Please try again later ****', {
-//         'Content-Type': 'text/plain',
-//       });
-//       res.end();
-//     });
-// });
-
-// app.get('/signup', (req, res) => {
-//   // console.log('Signup GET');
-//   res.end();
-// });
-
-// app.post('/signup', (req, res) => {
-//   // console.log('Inside Sign Up POST request');
-//   // console.log('Req Body : ', req.body);
-//   const hashedPassword = bcrypt.hashSync(req.body.user.password, 10);
-//   let query = `INSERT INTO user VALUES ('${req.body.user.category}', '${req.body.user.email}', '${hashedPassword}');`;
-//   // console.log(query);
-//   dbConnection.dbConn(query)
-//     .then((result) => {
-//       // console.log(result);
-//       if (req.body.user.category === 'Customer') {
-//         const choosingSince = moment(Date.now()).format('YYYY-MM-DD');
-//         // console.log(choosingSince);
-//         query = `INSERT INTO customerprofile (fname, lname, email, choosingSince) VALUES ('${req.body.user.custFName}', '${req.body.user.custLName}', '${req.body.user.email}', '${choosingSince}');`;
-//         // console.log(query);
-//         (dbConnection.dbConn(query)
-//           .then((output) => {
-//             // console.log(output);
-//             sessionStorage.setItem('userid', output.insertId);
-//             res.writeHead(200, '*** Signed up successfully ****', {
-//               'Content-Type': 'text/plain',
-//             });
-//             res.end();
-//           })
-//           .catch((err) => {
-//             // console.log(err);
-//             res.status(400).json({ message: '*** Could not sign up. Please retry ***' });
-//             res.end();
-//           }));
-//       } else {
-//         query = `INSERT INTO restaurantprofile (name, email, streetAddress, city, state, country, zipcode) VALUES ('${req.body.user.restName}', '${req.body.user.email}', '${req.body.user.address}', '${req.body.user.city}', '${req.body.user.state}', '${req.body.user.country}', '${req.body.user.zipcode}');`;
-//         // console.log(query);
-//         (dbConnection.dbConn(query)
-//           .then((output) => {
-//             // console.log(output);
-//             sessionStorage.setItem('userid', output.insertId);
-//             res.writeHead(200, '*** Signed up successfully ****', {
-//               'Content-Type': 'text/plain',
-//             });
-//             res.end();
-//           })
-//           .catch((err) => {
-//             // console.log(err);
-//             res.writeHead(400, '*** Could not sign up. Please retry ****', {
-//               'Content-Type': 'text/plain',
-//             });
-//             res.end();
-//           }));
-//       }
-//     })
-//     .catch((err) => {
-//       // console.log(err);
-//       res.writeHead(400, '*** Something went wrong. Please try again later ****', {
-//         'Content-Type': 'text/plain',
-//       });
-//       res.end();
-//     });
-// });
 
 app.get('/restaurantDashboard', (req, res) => {
   // console.log('Inside Restaurant Dashboard');

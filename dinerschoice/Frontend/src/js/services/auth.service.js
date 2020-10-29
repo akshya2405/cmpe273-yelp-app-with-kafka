@@ -8,11 +8,11 @@ class AuthService {
     return axios
       .post(`${API_URL}user/login`, { category, email, password })
       .then((response) => {
-        console.log('In service :', response.data);
+        console.log('In service :', response.data.data);
         if (response) {
-          localStorage.setItem('token', response.data);
-          const decoded = jwtDecode(response.data.split(' ')[1]);
-          console.log('split: ', response.data.split(' ')[1]);
+          localStorage.setItem('token', response.data.data);
+          const decoded = jwtDecode(response.data.data.split(' ')[1]);
+          console.log('split: ', response.data.data.split(' ')[1]);
           localStorage.setItem('category', decoded.category);
           localStorage.setItem('email', decoded.email);
         }
