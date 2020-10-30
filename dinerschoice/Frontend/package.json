@@ -28,6 +28,7 @@
     "react-google-maps": "^9.4.5",
     "react-multi-carousel": "^2.5.5",
     "react-native": "^0.63.3",
+    "react-paginate": "^6.5.0",
     "react-redux": "7.2.1",
     "react-responsive-carousel": "^3.2.10",
     "react-responsive-select": "^6.0.3",

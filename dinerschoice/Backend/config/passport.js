@@ -1,5 +1,5 @@
 const JwtStrategy = require('passport-jwt').Strategy;
-const { ExtractJwt } = require('passport-jwt').ExtractJwt;
+const { ExtractJwt } = require('passport-jwt');
 const passport = require('passport');
 const Users = require('../../kafka-backend/services/Models/UserModel');
 const { secret } = require('./auth.config');
@@ -13,6 +13,7 @@ function auth() {
   passport.use(
     new JwtStrategy(opts, (jwt_payload, callback) => {
       const { email } = jwt_payload;
+      console.log(email);
       Users.find(email, (err, results) => {
         if (err) {
           return callback(err, false);
@@ -28,4 +29,4 @@ function auth() {
 }
 
 exports.auth = auth;
-exports.checkAuth = passport.authenticate(`jwt`, { session: false });
+exports.checkAuth = passport.authenticate('jwt', { session: false });

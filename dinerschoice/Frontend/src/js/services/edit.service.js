@@ -30,9 +30,10 @@ class EditService {
           // console.log(response.data);
           // {...obj, response.data}
           updateDetails.uploadedImageUrl = response.data.fileName;
-          // alert(JSON.stringify(updateDetails));
+          console.log(JSON.stringify(updateDetails));
+          console.log(`calling url: ${API_URL}editProfile`);
           return axios
-            .post(`${API_URL}editRestaurantProfile`, { updateDetails }, options)
+            .post(`${API_URL}editProfile`, { updateDetails }, options)
             .then((response) => response);
         }, (error) => {
           // console.log(error);
@@ -40,7 +41,7 @@ class EditService {
     }
 
     return axios
-      .post(`${API_URL}editRestaurantProfile`, { updateDetails }, options)
+      .post(`${API_URL}editProfile`, { updateDetails }, options)
       .then((response) => response);
   }
 

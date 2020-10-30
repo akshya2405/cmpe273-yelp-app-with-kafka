@@ -15,6 +15,7 @@ class AuthService {
           console.log('split: ', response.data.data.split(' ')[1]);
           localStorage.setItem('category', decoded.category);
           localStorage.setItem('email', decoded.email);
+          localStorage.setItem('id', decoded.id);
         }
         return response;
       });

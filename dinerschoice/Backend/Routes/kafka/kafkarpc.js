@@ -15,7 +15,7 @@ function KafkaRPC() {
 }
 
 KafkaRPC.prototype.makeRequest = function (request_queue, response_queue, content, callback) {
-  console.log(`This is content ------- ${content}`);
+  console.log(`This is content ------- ${JSON.stringify(content)}`);
   self = this;
 
   const correlationId = crypto.randomBytes(16).toString('hex');
@@ -44,9 +44,9 @@ KafkaRPC.prototype.makeRequest = function (request_queue, response_queue, conten
         partition: 0,
       },
     ];
-
+    console.log(JSON.stringify(payloads));
     self.producer.send(payloads, (err, data) => {
-      console.log(`In kafkarpc.js - producer.send : ${data}`);
+      console.log(`In kafkarpc.js - producer.send : ${JSON.stringify(data)}`);
       console.log(data);
 
       if (err) console.log(err);

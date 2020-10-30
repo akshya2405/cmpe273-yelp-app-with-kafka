@@ -19,17 +19,19 @@ function handle_signup(msg, callback) {
     } else {
       console.log('Connected to db');
       const users = db.collection('users');
-      users.insert(newUser, function (error, data) {
+      users.insertOne(newUser, function (error, data) {
         if (error) {
           console.log(error);
           res.status = 500;
           callback(null, res);
         } else {
           console.log(data);
+          const insertId = new mongo.ObjectID(data["ops"][0]["_id"]);
           let profile = {};
           let collection = '';
           if (msg.category === 'Restaurant') {
             profile = {
+              id: insertId,
               name: msg.name,
               email: msg.email,
               streetAddress: msg.streetAddress,

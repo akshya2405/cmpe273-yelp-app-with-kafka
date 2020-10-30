@@ -11,13 +11,16 @@ class UserService {
   }
 
   getCustomerProfile(custID) {
-    // console.log('Header: ', authHeader());
-    return axios.get(`${API_URL}customerprofile`, { params: { custID: custID }, headers: authHeader() }, { withCredentials: true });
+    axios.defaults.headers.common.authorization = localStorage.getItem('token');
+    return axios.get(`${API_URL}customerprofile`, { params: { custID: custID } }, { withCredentials: true });
   }
 
   getRestaurantProfile(restID) {
-    // console.log(authHeader());
-    return axios.get(`${API_URL}restaurantDashboard`, { params: { restID: restID }, headers: authHeader() }, { withCredentials: true });
+    axios.defaults.headers.common.authorization = localStorage.getItem('token');
+    console.log(restID);
+    return axios
+      .get(`${API_URL}restaurantDashboard`, { params: { restID: restID } }, { withCredentials: true })
+      .then((response) => response);
   }
 
   getMenu(restID) {

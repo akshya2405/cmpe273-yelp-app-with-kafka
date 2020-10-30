@@ -4,9 +4,6 @@ var mongo = require('mongodb');
 const { secret } = require('../../Backend/config/auth.config');
 const { auth } = require('../../Backend/config/passport');
 const { mongoDB } = require('../../Backend/config/auth.config');
-const Users = require('./Models/UserModel');
-
-auth();
 
 function handle_login(msg, callback) {
     var res ={};
@@ -18,7 +15,7 @@ function handle_login(msg, callback) {
       } else {
           console.log('connected to db');
           const users = db.collection('users');
-          Users.findOne({ category: msg.category, email: msg.email }, function (error, user) {
+          users.findOne({ category: msg.category, email: msg.email }, function (error, user) {
               if (error) {
                   console.log(error);
                   res.status = 500
@@ -31,7 +28,7 @@ function handle_login(msg, callback) {
                   console.log(bcrypt.compareSync(msg.password, user.password));
                   if (bcrypt.compareSync(msg.password, user.password)) {
                       console.log('matched!!');
-                      const payload = { category: user.category, email: user.email };
+                      const payload = { category: user.category, email: user.email, id: user._id };
                       const token = jwt.sign(payload, secret, { expiresIn: 86400 });
                       res.status = 200;
                       res.data = `JWT ${token}`;
@@ -45,7 +42,7 @@ function handle_login(msg, callback) {
               } else {
                   console.log('in else');
                   res.status = 401;
-                  res.data.message = 'Invalid credentials';
+                  res.message = 'Invalid credentials';
                   callback(null, res);
               }
           });

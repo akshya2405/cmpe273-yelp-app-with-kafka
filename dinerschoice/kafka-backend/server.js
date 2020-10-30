@@ -1,7 +1,8 @@
-var connection = require('./kafka/Connection');
-var login = require('./services/login');
-var signup = require('./services/signup');
-// var getFiles = require('./services/getFiles');
+const connection = require('./kafka/Connection');
+const login = require('./services/login');
+const signup = require('./services/signup');
+const restaurantProfile = require('./services/restaurantProfile');
+const editProfile = require('./services/editProfile');
 // var deleteFile = require('./services/deleteFile');
 // var uploadFile = require('./services/uploadFile');
 // var shareFile = require('./services/shareFile');
@@ -47,6 +48,48 @@ consumer.on('message', function (message) {
         case "signup_request":
             console.log("In server.js - signup_request case");
             signup.handle_signup(data.data, function (err, res) {
+                var payloads = [
+                    {
+                        topic: data.replyTo,
+                        messages: JSON.stringify({
+                            correlationId: data.correlationId,
+                            data: res
+                        }),
+                        partition: 0
+                    }
+                ];
+                producer.send(payloads, function (err, data) {
+                    if (err)
+                        console.log(err);
+                });
+                return;
+            });
+            break;
+
+        case "rest_profile_request":
+            console.log("In server.js - rest_profile_request case");
+            restaurantProfile.handle_profile(data.data, function (err, res) {
+                var payloads = [
+                    {
+                        topic: data.replyTo,
+                        messages: JSON.stringify({
+                            correlationId: data.correlationId,
+                            data: res
+                        }),
+                        partition: 0
+                    }
+                ];
+                producer.send(payloads, function (err, data) {
+                    if (err)
+                        console.log(err);
+                });
+                return;
+            });
+            break;
+
+        case "edit_profile_request":
+            console.log("In server.js - edit_profile_request case");
+            editProfile.handle_edit_profile(data.data, function (err, res) {
                 var payloads = [
                     {
                         topic: data.replyTo,

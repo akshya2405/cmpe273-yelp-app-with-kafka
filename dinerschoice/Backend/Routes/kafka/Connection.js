@@ -3,7 +3,8 @@ const kafka = require('kafka-node');
 const topics = [
   { topic: 'login_response', partition: 0 },
   { topic: 'signup_response', partition: 0 },
-  // {topic: 'getfiles_response', partition: 0},
+  { topic: 'rest_profile_response', partition: 0 },
+  { topic: 'edit_profile_response', partition: 0 },
   // {topic: 'delete_response', partition: 0},
   // {topic: 'upload_response', partition: 0},
   // {topic: 'fileShare_response', partition: 0},

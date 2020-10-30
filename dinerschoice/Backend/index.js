@@ -79,157 +79,143 @@ mongoose.connect(mongoDB, options, (err, res) => {
 
 const Login = require('./Routes/Login');
 const Signup = require('./Routes/Signup');
+const RestProfile = require('./Routes/RestProfile');
+const EditProfile = require('./Routes/EditProfile');
 
 app.use('/user', Login);
 app.use('/user', Signup);
+app.use('/', RestProfile);
+app.use('/', EditProfile);
 
-app.get('/restaurantDashboard', (req, res) => {
-  // console.log('Inside Restaurant Dashboard');
-  // console.log('Req : ', req.headers['x-access-token']);
-  restaurantProfile.restaurantProfile(req)
-    .then((output) => {
-      res.writeHead(200, {
-        'Content-Type': 'application/json',
-      });
-      res.end(JSON.stringify(output));
-    })
-    .catch((err) => {
-      // console.log(err);
-      res.writeHead(400, '*** Something went wrong. Please try again later ****', {
-        'Content-Type': 'text/plain',
-      });
-      res.end();
-    });
-});
+// app.get('/restaurantDashboard', (req, res) => {
+//   // console.log('Inside Restaurant Dashboard');
+//   // console.log('Req : ', req.headers['x-access-token']);
+//   restaurantProfile.restaurantProfile(req)
+//     .then((output) => {
+//       res.writeHead(200, {
+//         'Content-Type': 'application/json',
+//       });
+//       res.end(JSON.stringify(output));
+//     })
+//     .catch((err) => {
+//       // console.log(err);
+//       res.writeHead(400, '*** Something went wrong. Please try again later ****', {
+//         'Content-Type': 'text/plain',
+//       });
+//       res.end();
+//     });
+// });
 
-app.get('/editRestaurantProfile', (req, res) => {
-  // console.log('Inside Restaurant Dashboard');
-  // console.log('Req : ', req.headers['x-access-token']);
-  verifyToken.verifyToken(req.headers['x-access-token'])
-    .then((token) => {
-      const query = `SELECT * FROM restaurantprofile where email = '${token}';`;
-      // console.log(query);
-      dbConnection.dbConn(query)
-        .then((output) => {
-          // console.log(output);
-          res.writeHead(200, {
-            'Content-Type': 'application/json',
-          });
-          res.end(JSON.stringify(output[0]));
-        });
-    });
-});
+// const updateHours = (restID, hoursObj) => {
+//   const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+//   const hours = new Map(Object.entries(hoursObj));
+//   // console.log('hours map:', hours);
+//   daysOfWeek.map((day) => {
+//     if (hours.has(day)) {
+//       const lookupMap = new Map(Object.entries(hours.get(day)));
+//       // console.log('lookup map:', lookupMap);
+//       const opentime = lookupMap.get('opentime');
+//       const closetime = lookupMap.get('closetime');
+//       const openclose = lookupMap.get('openclose');
+//       const query = `INSERT INTO hours (restaurantID, dayOfWeek, openTime, closeTime, openClose) VALUES(${restID}, '${day}', '${opentime}', '${closetime}', '${openclose}') ON DUPLICATE KEY UPDATE    
+//       openTime='${opentime}', closeTime='${closetime}', openClose='${openclose}'`;
+//       // console.log(query);
+//       dbConnection.dbConn(query);
+//     }
+//     return true;
+//   });
+// };
 
-const updateHours = (restID, hoursObj) => {
-  const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-  const hours = new Map(Object.entries(hoursObj));
-  // console.log('hours map:', hours);
-  daysOfWeek.map((day) => {
-    if (hours.has(day)) {
-      const lookupMap = new Map(Object.entries(hours.get(day)));
-      // console.log('lookup map:', lookupMap);
-      const opentime = lookupMap.get('opentime');
-      const closetime = lookupMap.get('closetime');
-      const openclose = lookupMap.get('openclose');
-      const query = `INSERT INTO hours (restaurantID, dayOfWeek, openTime, closeTime, openClose) VALUES(${restID}, '${day}', '${opentime}', '${closetime}', '${openclose}') ON DUPLICATE KEY UPDATE    
-      openTime='${opentime}', closeTime='${closetime}', openClose='${openclose}'`;
-      // console.log(query);
-      dbConnection.dbConn(query);
-    }
-    return true;
-  });
-};
+// app.post('/editRestaurantProfile', (req, res) => {
+//   // console.log('Inside Restaurant edit profile post');
+//   // console.log('Req. Body :', req.body);
+//   verifyToken.verifyToken(req.headers['x-access-token'])
+//     .then((token) => {
+//       let isopen = -1;
+//       if (req.body.updateDetails.status === 'Open') {
+//         isopen = 1;
+//       } else { isopen = 0; }
 
-app.post('/editRestaurantProfile', (req, res) => {
-  // console.log('Inside Restaurant edit profile post');
-  // console.log('Req. Body :', req.body);
-  verifyToken.verifyToken(req.headers['x-access-token'])
-    .then((token) => {
-      let isopen = -1;
-      if (req.body.updateDetails.status === 'Open') {
-        isopen = 1;
-      } else { isopen = 0; }
+//       const query = `UPDATE restaurantprofile 
+//                       SET name = '${req.body.updateDetails.restaurantName}', 
+//                       streetAddress = '${req.body.updateDetails.address}', 
+//                       city = '${req.body.updateDetails.city}', 
+//                       state = '${req.body.updateDetails.state}', 
+//                       zipcode = '${req.body.updateDetails.zipcode}',
+//                       description = '${req.body.updateDetails.description}', 
+//                       contactinfo = '${req.body.updateDetails.contactinfo}',
+//                       cuisine = '${req.body.updateDetails.cuisine}',
+//                       status = '${req.body.updateDetails.status}',
+//                       mode = '${req.body.updateDetails.modes}',
+//                       isopen = '${isopen}'
+//                       where email = '${token}';`;
+//       // console.log(query);
+//       dbConnection.dbConn(query)
+//         .then((output) => {
+//           // console.log(output);
+//           if (req.body.updateDetails.hours.size !== 0) {
+//             updateHours(req.body.updateDetails.restaurantID, req.body.updateDetails.hours);
+//           }
+//           if (req.body.updateDetails.uploadedImageUrl) {
+//             const imageUrl = `images/uploads/${req.body.updateDetails.uploadedImageUrl}`;
+//             const imgquery = `INSERT INTO restaurantimages (restaurantID, image, tag) VALUES (${req.body.updateDetails.restaurantID}, '${imageUrl}', 'dish')`;
+//             // console.log(imgquery);
+//             dbConnection.dbConn(imgquery);
+//           }
+//           res.writeHead(200, '*** Updated successfully ****', {
+//             'Content-Type': 'text/plain',
+//           });
+//           res.end();
+//         })
+//         .catch((err) => {
+//           // console.log(err);
+//           res.writeHead(400, '*** Something went wrong. Please try again later ****', {
+//             'Content-Type': 'text/plain',
+//           });
+//           res.end();
+//         });
+//     });
+// });
 
-      const query = `UPDATE restaurantprofile 
-                      SET name = '${req.body.updateDetails.restaurantName}', 
-                      streetAddress = '${req.body.updateDetails.address}', 
-                      city = '${req.body.updateDetails.city}', 
-                      state = '${req.body.updateDetails.state}', 
-                      zipcode = '${req.body.updateDetails.zipcode}',
-                      description = '${req.body.updateDetails.description}', 
-                      contactinfo = '${req.body.updateDetails.contactinfo}',
-                      cuisine = '${req.body.updateDetails.cuisine}',
-                      status = '${req.body.updateDetails.status}',
-                      mode = '${req.body.updateDetails.modes}',
-                      isopen = '${isopen}'
-                      where email = '${token}';`;
-      // console.log(query);
-      dbConnection.dbConn(query)
-        .then((output) => {
-          // console.log(output);
-          if (req.body.updateDetails.hours.size !== 0) {
-            updateHours(req.body.updateDetails.restaurantID, req.body.updateDetails.hours);
-          }
-          if (req.body.updateDetails.uploadedImageUrl) {
-            const imageUrl = `images/uploads/${req.body.updateDetails.uploadedImageUrl}`;
-            const imgquery = `INSERT INTO restaurantimages (restaurantID, image, tag) VALUES (${req.body.updateDetails.restaurantID}, '${imageUrl}', 'dish')`;
-            // console.log(imgquery);
-            dbConnection.dbConn(imgquery);
-          }
-          res.writeHead(200, '*** Updated successfully ****', {
-            'Content-Type': 'text/plain',
-          });
-          res.end();
-        })
-        .catch((err) => {
-          // console.log(err);
-          res.writeHead(400, '*** Something went wrong. Please try again later ****', {
-            'Content-Type': 'text/plain',
-          });
-          res.end();
-        });
-    });
-});
+// app.get('/customerProfile', (req, res) => {
+//   // console.log('Inside Customer Profile');
+//   // console.log('req: ', req.query.custID);
+//   // console.log('req: ', req.headers['x-access-token']);
+//   customerProfile.customerProfile(req)
+//     .then((output) => {
+//       res.writeHead(200, {
+//         'Content-Type': 'application/json',
+//       });
+//       res.end(JSON.stringify(output));
+//     })
+//     .catch((err) => {
+//       // console.log(err);
+//       res.writeHead(400, '*** Something went wrong. Please try again later ****', {
+//         'Content-Type': 'text/plain',
+//       });
+//       res.end();
+//     });
+// });
 
-app.get('/customerProfile', (req, res) => {
-  // console.log('Inside Customer Profile');
-  // console.log('req: ', req.query.custID);
-  // console.log('req: ', req.headers['x-access-token']);
-  customerProfile.customerProfile(req)
-    .then((output) => {
-      res.writeHead(200, {
-        'Content-Type': 'application/json',
-      });
-      res.end(JSON.stringify(output));
-    })
-    .catch((err) => {
-      // console.log(err);
-      res.writeHead(400, '*** Something went wrong. Please try again later ****', {
-        'Content-Type': 'text/plain',
-      });
-      res.end();
-    });
-});
-
-app.post('/editProfile', (req, res) => {
-  // console.log('Inside Customer Profile Edit');
-  // console.log('req: ', req.headers['x-access-token']);
-  customerProfileUpdate.customerProfileUpdate(req)
-    .then((output) => {
-      // console.log(output);
-      res.writeHead(200, {
-        'Content-Type': 'application/json',
-      });
-      res.end(JSON.stringify(output));
-    })
-    .catch((err) => {
-      // console.log(err);
-      res.writeHead(400, '*** Something went wrong. Please try again later ****', {
-        'Content-Type': 'text/plain',
-      });
-      res.end();
-    });
-});
+// app.post('/editProfile', (req, res) => {
+//   // console.log('Inside Customer Profile Edit');
+//   // console.log('req: ', req.headers['x-access-token']);
+//   customerProfileUpdate.customerProfileUpdate(req)
+//     .then((output) => {
+//       // console.log(output);
+//       res.writeHead(200, {
+//         'Content-Type': 'application/json',
+//       });
+//       res.end(JSON.stringify(output));
+//     })
+//     .catch((err) => {
+//       // console.log(err);
+//       res.writeHead(400, '*** Something went wrong. Please try again later ****', {
+//         'Content-Type': 'text/plain',
+//       });
+//       res.end();
+//     });
+// });
 
 app.get('/menu', (req, res) => {
   // console.log('Inside get menu');

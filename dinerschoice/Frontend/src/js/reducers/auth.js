@@ -7,6 +7,7 @@ const user = {
   token: localStorage.getItem('token'),
   category: localStorage.getItem('category'),
   email: localStorage.getItem('email'),
+  id: localStorage.getItem('id'),
 };
 
 const initialState = user ? { isLoggedIn: true, user } : { isLoggedIn: false, user: null };
