@@ -23,11 +23,6 @@ class UserService {
       .then((response) => response);
   }
 
-  getMenu(restID) {
-    // console.log('in service: ', restID);
-    return axios.get(`${API_URL}menu`, { params: { restID: restID }, headers: authHeader() }, { withCredentials: true });
-  }
-
   getEvents() {
     return axios.get(`${API_URL}events`, { headers: authHeader() }, { withCredentials: true });
   }

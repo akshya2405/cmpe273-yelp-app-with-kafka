@@ -89,15 +89,16 @@ class Navbar extends Component {
   // handle logout to destroy the cookie
   handleLogout(e) {
     e.preventDefault();
-    const { dispatch } = this.props;
-    dispatch(
-      logout(),
-    )
-      .then(() => {
-        this.setState({ currentUser: undefined });
-        // history.push('/');
-        // window.location.reload();
-      });
+    this.props.logout();
+    // const { dispatch } = this.props;
+    // dispatch(
+    //   logout(),
+    // )
+    //   .then(() => {
+    //     this.setState({ currentUser: undefined });
+    //     // history.push('/');
+    //     // window.location.reload();
+    //   });
   }
 
   lookupSearchResults(e) {
@@ -116,9 +117,9 @@ class Navbar extends Component {
   }
 
   render() {
-    const { currentUser } = this.state;
+    const { auth } = this.props;
     let navLogin = null;
-    { currentUser ? (
+    { auth.isLoggedIn ? (
       navLogin = (
         <ul className="nav navbar-nav navbar-right">
           <li>
@@ -158,7 +159,7 @@ class Navbar extends Component {
                     <div className="navbar-header">
                       <a className="navbar-brand" href="/dashboard">Diner's Choice</a>
                     </div>
-                    {display(currentUser)}
+                    {display(auth.user)}
                     {navLogin}
                   </td>
                 </tr>
@@ -182,12 +183,12 @@ class Navbar extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  console.log(state);
-  const { user } = state.auth;
-  return {
-    user,
-  };
-}
+const mapStateToProps = (state) => ({
+  // console.log('In mapstate to props');
+  auth: state.auth,
+  edit: state.edit,
+  message: state.message,
+});
 
-export default connect(mapStateToProps)(Navbar);
+
+export default connect(mapStateToProps, { logout })(Navbar);

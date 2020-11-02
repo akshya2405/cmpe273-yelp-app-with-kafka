@@ -128,16 +128,23 @@ class EditRestaurantProfile extends Component {
     this.setState({
       profile: this.props.location.state.profile,
     });
+    // console.log("calling populate services");
+    this.populateServicesOffered();
+    this.populateOpenHours();
   }
 
   componentWillUnmount() {
-    this.props.clearMessage();
+    this.props.dispatch(clearMessage());
   }
 
   populateServicesOffered() {
-    if (this.state.profile && this.state.profile.mode) {
-      this.state.modes = this.state.profile.mode.split(',');
-      const modeList = this.state.profile.mode.split(',');
+    console.log(this.props.location.state.profile && this.props.location.state.profile.mode);
+    if (this.props.location.state.profile && this.props.location.state.profile.mode) {
+      console.log('populating services');
+      this.setState({
+        modes: this.props.location.state.profile.mode.split(','),
+      });
+      const modeList = this.props.location.state.profile.mode.split(',');
 
       if (modeList.includes('Dine-in')) this.setState({ dineInOffered: true });
       if (modeList.includes('Curbside pickup')) this.setState({ curbsideOffered: true });
@@ -215,8 +222,8 @@ class EditRestaurantProfile extends Component {
   }
 
   imageUploadChangeHandler(e) {
-    this.state.uploadedImage = e.target.files[0];
-    // console.log(`file:${this.state.uploadedImage}`);
+    this.setState({ uploadedImage: e.target.files[0] });
+    // alert(`file:${this.state.uploadedImage}`);
   }
 
   updateServicesState(service, status) {
@@ -278,7 +285,7 @@ class EditRestaurantProfile extends Component {
       status: this.state.status,
       mode: this.state.modes.toString(),
       hours: this.state.hours,
-      profileImage: this.state.uploadedImage,
+      profileImage: this.state.profile.profileImage,
     };
     if (data.name === '') data.name = this.state.profile.name.replace(/'/g, "\\'");
     if (data.description === '' && this.state.profile.description) data.description = this.state.profile.description.replace(/'/g, "\\'");
@@ -290,34 +297,36 @@ class EditRestaurantProfile extends Component {
     if (data.contactInfo === '' && this.state.profile.contactInfo) data.contactInfo = this.state.profile.contactInfo;
     if (data.cuisine === '' && this.state.profile.cuisine) data.cuisine = this.state.profile.cuisine.replace(/'/g, "\\'");
     if (data.status === '' && this.state.profile.status) data.status = this.state.profile.status;
-    if (data.modes === '' && this.state.profile.modes) data.modes = this.state.profile.mode;
-    // console.log('Data to node:', data);
-
+    // if (data.mode === '' && this.state.profile.mode) data.mode = this.state.profile.mode;
+    const image = {
+      image: this.state.uploadedImage,
+    };
     this.setState({
       success: false,
     });
 
     this.form.validateAll();
 
+    const { dispatch, history } = this.props;
+
     if (this.checkBtn.context._errors.length === 0) {
-      this.props.editRestaurantProfile(data);
-      // console.log(this.state);
-      // dispatch(
-      //   editRestaurantProfile(data),
-      // )
-      //   .then(() => {
-      //     this.setState({
-      //       success: true,
-      //     });
-      //     // console.log('success');
-      //     history.push('/restaurantDashboard');
-      //     window.location.reload();
-      //   })
-      //   .catch(() => {
-      //     this.setState({
-      //       success: false,
-      //     });
-      //   });
+      alert(JSON.stringify(image));
+      dispatch(
+        editRestaurantProfile(data, image),
+      )
+        .then(() => {
+          this.setState({
+            success: true,
+          });
+          // console.log('success');
+          history.push('/restaurantDashboard');
+          window.location.reload();
+        })
+        .catch(() => {
+          this.setState({
+            success: false,
+          });
+        });
     }
   }
 
@@ -609,4 +618,4 @@ const mapStateToProps = (state) => ({
   message: state.message,
 });
 
-export default connect(mapStateToProps, { editRestaurantProfile, clearMessage })(EditRestaurantProfile);
+export default connect(mapStateToProps, null)(EditRestaurantProfile);

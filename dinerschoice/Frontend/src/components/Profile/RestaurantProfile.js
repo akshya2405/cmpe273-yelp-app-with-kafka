@@ -303,7 +303,7 @@ class RestaurantProfile extends Component {
                   <hr size="30px" />
                   <div className="centre">
                     <Carousel containerClass="carousel-container" infinite responsive={responsive} centerMode>
-                      {!(edit.profile && edit.profile.profile.images) ? ('Your images will be displayed here') : (edit.profile.profile.images.map((image) => (
+                      {!(edit.profile && edit.profile.profile.profileImage) ? ('Your images will be displayed here') : (edit.profile.profile.profileImage.map((image) => (
                         <div>
                           <img id={image} src={image} alt="Restaurant Profile" width="350px" height="350px" />
                         </div>

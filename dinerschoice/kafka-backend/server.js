@@ -1,8 +1,13 @@
+const MongoClient = require('mongodb').MongoClient;
+
+const { mongoDB } = require('../Backend/config/auth.config');
 const connection = require('./kafka/Connection');
 const login = require('./services/login');
 const signup = require('./services/signup');
 const restaurantProfile = require('./services/restaurantProfile');
 const editProfile = require('./services/editProfile');
+const editMenu = require('./services/editMenu');
+
 // var deleteFile = require('./services/deleteFile');
 // var uploadFile = require('./services/uploadFile');
 // var shareFile = require('./services/shareFile');
@@ -90,6 +95,27 @@ consumer.on('message', function (message) {
         case "edit_profile_request":
             console.log("In server.js - edit_profile_request case");
             editProfile.handle_edit_profile(data.data, function (err, res) {
+                var payloads = [
+                    {
+                        topic: data.replyTo,
+                        messages: JSON.stringify({
+                            correlationId: data.correlationId,
+                            data: res
+                        }),
+                        partition: 0
+                    }
+                ];
+                producer.send(payloads, function (err, data) {
+                    if (err)
+                        console.log(err);
+                });
+                return;
+            });
+            break;
+
+        case "edit_menu_request":
+            console.log("In server.js - edit_profile_request case");
+            editMenu.handle_edit_menu(data.data, function (err, res) {
                 var payloads = [
                     {
                         topic: data.replyTo,

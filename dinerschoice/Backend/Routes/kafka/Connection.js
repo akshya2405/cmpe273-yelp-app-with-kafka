@@ -5,7 +5,7 @@ const topics = [
   { topic: 'signup_response', partition: 0 },
   { topic: 'rest_profile_response', partition: 0 },
   { topic: 'edit_profile_response', partition: 0 },
-  // {topic: 'delete_response', partition: 0},
+  { topic: 'edit_menu_response', partition: 0 },
   // {topic: 'upload_response', partition: 0},
   // {topic: 'fileShare_response', partition: 0},
   // {topic: 'about_response', partition: 0},
