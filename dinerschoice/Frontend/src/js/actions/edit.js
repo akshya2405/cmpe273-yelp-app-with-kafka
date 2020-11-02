@@ -6,15 +6,16 @@ import {
 
 import EditService from '../services/edit.service';
 
-export const editRestaurantProfile = (updateDetails) => (dispatch) => EditService.editRestaurantProfile(updateDetails)
+export const editRestaurantProfile = (updateDetails, uploadedImage) => (dispatch) => EditService.editRestaurantProfile(updateDetails, uploadedImage)
   .then(
     (response) => {
+      console.log(response);
       dispatch({
         type: RESTAURANT_PROFILE_EDIT,
       });
       dispatch({
         type: SET_MESSAGE,
-        payload: response.data.message,
+        payload: response,
       });
       return Promise.resolve();
     },

@@ -18,10 +18,10 @@ class AddService {
       .then((response) => response);
   }
 
-  menuUpdate(updateList, deleteIds) {
+  menuUpdate(restID, updateList, deleteIds) {
     // alert('in menu update: ' + JSON.stringify(updateList) + JSON.stringify(deleteIds));
     const promises = updateList.map((update) => {
-      if(update.uploadedImage) {
+      if (update.uploadedImage) {
         const multipartOptions = {
           headers: authHeaderMultipart(),
           withCredentials: true,
@@ -34,17 +34,17 @@ class AddService {
             .then((response) => {
               // console.log(response.data);
               // {...obj, response.data}
-              update.imageurl = './images/uploads/' + response.data.fileName;
-            })
-      }})
+              update.imageurl = response.data.fileName;
+            });
+      }
+    });
 
     return Promise.all(promises).then((results) => {
-      // alert('all promises resolved: ' + JSON.stringify(updateList) + JSON.stringify(deleteIds));
+      alert('all promises resolved: ' + JSON.stringify(updateList) + JSON.stringify(deleteIds));
       return axios
-          .post(`${API_URL}menuUpdate`, { updateList:updateList, deleteIds }, options)
+          .post(`${API_URL}menuUpdate`, { restID, updateList:updateList, deleteIds }, options)
           .then((response) => response);
-    })
-
+    });
   }
 
   eventsUpdate(updateList, deleteIds) {

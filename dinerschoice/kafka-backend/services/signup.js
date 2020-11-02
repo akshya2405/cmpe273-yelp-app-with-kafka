@@ -53,11 +53,13 @@ function handle_signup(msg, callback) {
           collection.insert(profile, function (err, dat) {
             if (err) {
               res.status = 500;
+              db.close();
               callback(null, res);
             } else {
               console.log(dat);
               res.status = 200;
-                callback(null, res);
+              db.close();
+              callback(null, res);
             }
           });
         }

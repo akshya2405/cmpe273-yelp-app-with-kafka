@@ -1,8 +1,12 @@
+const MongoClient = require('mongodb').MongoClient;
+
+const { mongoDB } = require('../Backend/config/auth.config');
 const connection = require('./kafka/Connection');
 const login = require('./services/login');
 const signup = require('./services/signup');
 const restaurantProfile = require('./services/restaurantProfile');
 const editProfile = require('./services/editProfile');
+
 // var deleteFile = require('./services/deleteFile');
 // var uploadFile = require('./services/uploadFile');
 // var shareFile = require('./services/shareFile');

@@ -8,7 +8,6 @@ const app = express();
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const cors = require('cors');
-const mongoose = require('mongoose');
 
 const dbConnection = require('./dbConnection');
 const verifyToken = require('./middleware/authenticateToken');
@@ -32,7 +31,7 @@ const placeOrder = require('./actions/placeOrder');
 const getCustomerOrders = require('./actions/getCustomerOrders');
 const getRestaurantOrders = require('./actions/getRestaurantOrders');
 const updateOrderStatus = require('./actions/updateOrderStatus');
-const { frontendURL, mongoDB } = require('./config/auth.config');
+const { frontendURL } = require('./config/auth.config');
 
 app.set('view engine', 'ejs');
 
@@ -61,31 +60,17 @@ app.use((req, res, next) => {
   next();
 });
 
-const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  poolSize: 500,
-  bufferMaxEntries: 0,
-};
-
-mongoose.connect(mongoDB, options, (err, res) => {
-  if (err) {
-    console.log(err);
-    console.log('MongoDB Connection Failed');
-  } else {
-    console.log('MongoDB Connected');
-  }
-});
-
 const Login = require('./Routes/Login');
 const Signup = require('./Routes/Signup');
 const RestProfile = require('./Routes/RestProfile');
 const EditProfile = require('./Routes/EditProfile');
+const EditMenu = require('./Routes/EditMenu');
 
 app.use('/user', Login);
 app.use('/user', Signup);
 app.use('/', RestProfile);
 app.use('/', EditProfile);
+app.use('/', EditMenu);
 
 // app.get('/restaurantDashboard', (req, res) => {
 //   // console.log('Inside Restaurant Dashboard');
@@ -217,44 +202,44 @@ app.use('/', EditProfile);
 //     });
 // });
 
-app.get('/menu', (req, res) => {
-  // console.log('Inside get menu');
-  // console.log('req: ', req.headers['x-access-token']);
-  getMenu.getMenu(req)
-    .then((output) => {
-      // console.log(output);
-      res.writeHead(200, {
-        'Content-Type': 'application/json',
-      });
-      res.end(JSON.stringify(output));
-    })
-    .catch((err) => {
-      // console.log(err);
-      res.writeHead(400, '*** Something went wrong. Please try again later ****', {
-        'Content-Type': 'text/plain',
-      });
-      res.end();
-    });
-});
-
-app.post('/menuUpdate', (req, res) => {
-  // console.log('Inside add dish');
-  // console.log('req: ', req.body.updateDetails);
-  menuUpdate.menuUpdate(req)
-    .then(() => {
-      res.writeHead(200, {
-        'Content-Type': 'application/json',
-      });
-      res.end();
-    })
-    .catch((err) => {
-      // console.log(err);
-      res.writeHead(400, '*** Something went wrong. Please try again later ****', {
-        'Content-Type': 'text/plain',
-      });
-      res.end();
-    });
-});
+// app.get('/menu', (req, res) => {
+//   // console.log('Inside get menu');
+//   // console.log('req: ', req.headers['x-access-token']);
+//   getMenu.getMenu(req)
+//     .then((output) => {
+//       // console.log(output);
+//       res.writeHead(200, {
+//         'Content-Type': 'application/json',
+//       });
+//       res.end(JSON.stringify(output));
+//     })
+//     .catch((err) => {
+//       // console.log(err);
+//       res.writeHead(400, '*** Something went wrong. Please try again later ****', {
+//         'Content-Type': 'text/plain',
+//       });
+//       res.end();
+//     });
+// });
+//
+// app.post('/menuUpdate', (req, res) => {
+//   // console.log('Inside add dish');
+//   // console.log('req: ', req.body.updateDetails);
+//   menuUpdate.menuUpdate(req)
+//     .then(() => {
+//       res.writeHead(200, {
+//         'Content-Type': 'application/json',
+//       });
+//       res.end();
+//     })
+//     .catch((err) => {
+//       // console.log(err);
+//       res.writeHead(400, '*** Something went wrong. Please try again later ****', {
+//         'Content-Type': 'text/plain',
+//       });
+//       res.end();
+//     });
+// });
 
 app.get('/events', (req, res) => {
   // console.log('Inside get events');
@@ -439,7 +424,7 @@ app.get('/getCustReviews', (req, res) => {
 });
 
 app.post('/upload', (req, res) => {
-  // console.log(req);
+  console.log('in upload');
   uploadImage.uploadImage(req)
     .then((result) => {
       res.writeHead(200, {

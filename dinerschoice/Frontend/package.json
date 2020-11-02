@@ -42,6 +42,7 @@
     "redux": "4.0.5",
     "redux-thunk": "2.3.0",
     "star-based-rating": "^1.5.7",
+    "url-loader": "^3.0.0",
     "validator": "^13.1.17"
   },
   "scripts": {

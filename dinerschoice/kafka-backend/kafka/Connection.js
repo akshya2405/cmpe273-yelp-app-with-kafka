@@ -4,7 +4,7 @@ var topics = [
     {topic: 'signup_request', partition: 0},
     {topic: 'rest_profile_request', partition: 0},
     { topic: 'edit_profile_request', partition: 0 },
-    // {topic: 'delete_request', partition: 0},
+    { topic: 'edit_menu_request', partition: 0 },
     // {topic: 'upload_request', partition: 0},
     // {topic: 'fileShare_request', partition: 0},
     // {topic: 'about_request', partition: 0},

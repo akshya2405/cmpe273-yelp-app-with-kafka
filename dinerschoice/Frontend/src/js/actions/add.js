@@ -35,7 +35,7 @@ export const addDish = (updateDetails) => (dispatch) => AddService.addDish(updat
     return Promise.reject();
   });
 
-export const menuUpdate = (updateList, deleteIds) => (dispatch) => AddService.menuUpdate(updateList, deleteIds)
+export const menuUpdate = (restID, updateList, deleteIds) => (dispatch) => AddService.menuUpdate(restID, updateList, deleteIds)
   .then((response) => {
     // console.log('Adding Dish to menu');
     dispatch({
