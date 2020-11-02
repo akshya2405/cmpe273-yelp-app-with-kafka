@@ -106,7 +106,7 @@ class Menu extends Component {
     };
     // console.log('Item: ', field);
     const menu = this.state.menu.slice();
-    alert(JSON.stringify(menu) + "\n fieldid: " + field.id + field.name);
+    // alert(JSON.stringify(menu) + "\n fieldid: " + field.id + field.name);
     const newmenu = menu.map((menuItem) => {
       for (const key in menuItem) {
         if (field.name === 'myImages' && menuItem._id == field.id) {
@@ -139,7 +139,7 @@ class Menu extends Component {
     );
     console.log(`Update list: ${updateList}`);
     console.log(`Delete keys:${deleteIds}`);
-    alert('in update menu: ' + JSON.stringify(updateList) + JSON.stringify(deleteIds));
+    // alert('in update menu: ' + JSON.stringify(updateList) + JSON.stringify(deleteIds));
     dispatch(
         menuUpdate(this.props.auth.user.id, updateList, deleteIds),
     )
@@ -169,7 +169,7 @@ class Menu extends Component {
     if (!currentUser) {
       return <Redirect to="/login" />;
     }
-    alert(this.state.menu);
+    // alert(this.state.menu);
     if (this.state.menu) {
       console.log('In restaurant menu profile');
       return (
