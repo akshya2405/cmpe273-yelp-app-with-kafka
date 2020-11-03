@@ -31,7 +31,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         isLoggedIn: true,
-        user: payload.user,
+        user: user,
       };
 
     case LOGIN_ERROR:
@@ -44,7 +44,6 @@ export default function (state = initialState, action) {
     case LOGOUT:
       return {
         isLoggedIn: false,
-        user: null,
       };
 
     default:

@@ -124,9 +124,9 @@ class EditRestaurantProfile extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props.location.state.profile);
+    console.log(this.props.location.state);
     this.setState({
-      profile: this.props.location.state.profile,
+      profile: this.props.location.state,
     });
     // console.log("calling populate services");
     this.populateServicesOffered();

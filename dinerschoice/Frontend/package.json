@@ -40,6 +40,7 @@
     "react-star-ratings": "^2.3.0",
     "react-validation": "^3.0.7",
     "redux": "4.0.5",
+    "redux-persist": "^6.0.0",
     "redux-thunk": "2.3.0",
     "star-based-rating": "^1.5.7",
     "url-loader": "^3.0.0",

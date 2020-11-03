@@ -1,22 +1,12 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const MongoClient = require('mongodb').MongoClient;
-// const { mongoDB } = require('../Backend/config/auth.config');
 const { secret } = require('../../Backend/config/auth.config');
 const { auth } = require('../../Backend/config/passport');
-const { mongoDB } = require('../../Backend/config/auth.config');
-const conn = require('../dbConnection');
 
-function handle_login(msg,  callback) {
-    var res ={};
+function handle_login(msg, db, callback) {
+  let res ={};
   console.log('in post request login');
   console.log(msg.category);
-  // mongo.connect(mongoDB,function (err, db){
-  //     if (err) {
-  //         callback(null, 'Cannot connect to db');
-  //     } else {
-  //         console.log('connected to db');
-    conn.conn().then((db) => {
         const users = db.collection('users');
         users.findOne({ category: msg.category, email: msg.email }, function (error, user) {
             if (error) {
@@ -49,9 +39,6 @@ function handle_login(msg,  callback) {
                 callback(null, res);
             }
         });
-    })
-  //     }
-  // });
   console.log('finishing up find one');
 }
 

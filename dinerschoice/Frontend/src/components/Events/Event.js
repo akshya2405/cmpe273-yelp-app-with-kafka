@@ -3,13 +3,13 @@
 /* eslint-disable react/jsx-filename-extension */
 import React, { Component } from 'react';
 import { Redirect } from 'react-router';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import UserServices from '../../js/services/user.service';
+import { getRestaurantEvents } from '../../js/actions/getCalls';
 import EventTable from '../../js/helpers/EventTable';
 import SearchBar from '../../js/helpers/SearchBar';
-import { eventsUpdate } from '../../js/actions/add'; // change to eventUpdate
+import { eventsUpdate } from '../../js/actions/add';
+import edit from "../../js/reducers/edit"; // change to eventUpdate
 
 class Events extends Component {
   constructor(props) {
@@ -24,32 +24,39 @@ class Events extends Component {
   }
 
   componentDidMount() {
-    // console.log('In restaurant event did mount');
-    UserServices.getEvents().then(// change to getEvents
-      (response) => {
-        // console.log('response: ', response.data);
-        if (!response.data) {
-          this.setState({
-            events: [],
-            hasMenu: false,
-          });
-        } else {
-          this.setState({
-            events: response.data,
-          });
-        }
-      },
-      (error) => {
-        this.setState({
-          events:
-          (error.response
-            && error.response.data
-            && error.response.data.message)
-            || error.message
-            || error.toString(),
-        });
-      },
-    );
+    console.log('In restaurant event did mount');
+    this.props.getRestaurantEvents();
+    if (edit.events) {
+      alert('events available');
+      this.setState({
+        events: edit.events,
+      });
+    }
+    // UserServices.getEvents().then(// change to getEvents
+    //   (response) => {
+    //     // console.log('response: ', response.data);
+    //     if (!response.data) {
+    //       this.setState({
+    //         events: [],
+    //         hasMenu: false,
+    //       });
+    //     } else {
+    //       this.setState({
+    //         events: response.data,
+    //       });
+    //     }
+    //   },
+    //   (error) => {
+    //     this.setState({
+    //       events:
+    //       (error.response
+    //         && error.response.data
+    //         && error.response.data.message)
+    //         || error.message
+    //         || error.toString(),
+    //     });
+    //   },
+    // );
   }
 
   handleUserInput(filterText) {
@@ -65,9 +72,9 @@ class Events extends Component {
     // TODO : check if the initial list has this id, if so add to deleteEntriesList.
     // TODO : check if the id is in the updateEntriesMap if so remove it from the map.
 
-    if (eventItem.fromDB) {
+    // if (eventItem.fromDB) {
       this.state.deleteEntriesMap.set(eventItem.eventID, eventItem);
-    }
+    // }
     // console.log('check: ', this.state.updateEntriesMap.has(eventItem.eventID.toString()), typeof eventItem.eventID);
     if (this.state.updateEntriesMap.has(eventItem.eventID.toString())) {
       // console.log('Check in update map: ', eventItem.eventID);
@@ -144,8 +151,8 @@ class Events extends Component {
           success: true,
         });
         // console.log('success');
-        history.push('/events');
-        window.location.reload();
+        // history.push('/events');
+        // window.location.reload();
       })
       .catch(() => {
         this.setState({
@@ -155,12 +162,12 @@ class Events extends Component {
   }
 
   render() {
-    const { user: currentUser } = this.props;
+    const { user: currentUser } = this.props.auth;
     if (!currentUser) {
       return <Redirect to="/login" />;
     }
     if (this.state.events) {
-      // console.log('In restaurant events');
+      console.log('In restaurant events');
       return (
         <div>
           <h2>
@@ -175,14 +182,14 @@ class Events extends Component {
         </div>
       );
     }
+    // return <div />;
   }
 }
 
-function mapStateToProps(state) {
-  const { user } = state.auth;
-  return {
-    user,
-  };
-}
+const mapStateToProps = (state) => ({
+  // console.log('in state to props - state : ', state);
+  auth: state.auth,
+  edit: state.edit,
+});
 
-export default connect(mapStateToProps, null)(Events);
+export default connect(mapStateToProps, { getRestaurantEvents })(Events);

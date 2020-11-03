@@ -1,7 +1,15 @@
 /* eslint-disable linebreak-style */
 import {
-  RESTAURANT_PROFILE_EDIT, RESTAURANT_PROFILE_EDIT_ERROR, GET_RESTAURANT_PROFILE,
-  GET_CUSTOMER_PROFILE, CUSTOMER_PROFILE_EDIT, CUSTOMER_PROFILE_EDIT_ERROR, LOOKUP_RESTAURANTS, GET_RESTAURANT_PROFILE_ERROR,
+  RESTAURANT_PROFILE_EDIT,
+  RESTAURANT_PROFILE_EDIT_ERROR,
+  GET_RESTAURANT_PROFILE,
+  GET_CUSTOMER_PROFILE,
+  CUSTOMER_PROFILE_EDIT,
+  CUSTOMER_PROFILE_EDIT_ERROR,
+  LOOKUP_RESTAURANTS,
+  GET_RESTAURANT_PROFILE_ERROR,
+  GET_REST_ORDER,
+  GET_REST_ORDER_ERROR, GET_REST_EVENTS, GET_REST_EVENTS_ERROR,
 } from '../constants/action-types';
 
 const user = {
@@ -11,15 +19,16 @@ const user = {
   id: localStorage.getItem('id'),
 };
 
-const initialState = user ? { isEdited: false, user } : { isEdited: false, user: null, profile: null };
+const initialState = user ? { isEdited: false } : { isEdited: false, user: null, profile: null };
 
 export default function (state = initialState, action) {
   const { type, payload } = action;
   switch (type) {
     case GET_RESTAURANT_PROFILE:
       return {
-        ...state,
-        profile: payload,
+        profile: payload.profile,
+        dishes: payload.dishes,
+        reviews: payload.reviews,
         loading: false,
         isEdited: false,
       };
@@ -30,10 +39,37 @@ export default function (state = initialState, action) {
         isLoggedIn: true,
       };
 
+    case GET_REST_ORDER:
+      return {
+        ...state,
+        orders: payload,
+        loading: false,
+        isEdited: false,
+      };
+
+    case GET_REST_ORDER_ERROR:
+      return {
+        ...state,
+        isLoggedIn: true,
+      };
+
+    case GET_REST_EVENTS:
+      return {
+        ...state,
+        events: payload.events,
+        loading: false,
+        isEdited: false,
+      };
+
+    case GET_REST_EVENTS_ERROR:
+      return {
+        ...state,
+        isLoggedIn: true,
+      };
+
     case RESTAURANT_PROFILE_EDIT:
       console.log('in reducer', JSON.stringify(payload));
       return {
-        ...state,
         isLoggedIn: true,
         isEdited: true,
         profile: payload,
@@ -41,7 +77,6 @@ export default function (state = initialState, action) {
 
     case RESTAURANT_PROFILE_EDIT_ERROR:
       return {
-        ...state,
         isLoggedIn: false,
       };
 

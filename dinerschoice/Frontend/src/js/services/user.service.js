@@ -2,8 +2,7 @@
 /* eslint-disable class-methods-use-this */
 import axios from 'axios';
 import authHeader from './authHeader';
-
-const API_URL = 'http://localhost:3001/';
+import { API_URL } from '../config/config';
 
 class UserService {
   getPublicContent() {
@@ -24,7 +23,7 @@ class UserService {
   }
 
   getEvents() {
-    return axios.get(`${API_URL}events`, { headers: authHeader() }, { withCredentials: true });
+    return axios.get(`${API_URL}events`, { params: { restID: localStorage.getItem('id') } }, { withCredentials: true });
   }
 
   getRegistrationList(eventid) {
@@ -54,7 +53,8 @@ class UserService {
   }
 
   getRestaurantOrders() {
-    return axios.get(`${API_URL}getrestaurantOrders`, { headers: authHeader() }, { withCredentials: true });
+    axios.defaults.headers.common.authorization = localStorage.getItem('token');
+    return axios.get(`${API_URL}getrestaurantOrders`, { params: { restID: localStorage.getItem('id') } }, { withCredentials: true });
   }
 }
 

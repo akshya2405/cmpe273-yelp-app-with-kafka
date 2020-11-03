@@ -3,8 +3,9 @@ const Customer = require('./Models/CustomerProfileModel');
 const Restaurant = require('./Models/RestaurantProfileModel');
 const mongo = require('mongodb');
 const { mongoDB } = require('../../Backend/config/auth.config');
+const conn = require('../dbConnection');
 
-function handle_signup(msg, callback) {
+function handle_signup(msg, db, callback) {
   let res = {};
   const newUser = {
     category: msg.category,
@@ -13,10 +14,7 @@ function handle_signup(msg, callback) {
   };
 
   console.log('in signup backend : ', newUser);
-  mongo.connect(mongoDB, function(err, db) {
-    if (err) {
-      callback(null, 'cannot connect to db');
-    } else {
+  // conn.conn().then((db) => {
       console.log('Connected to db');
       const users = db.collection('users');
       users.insertOne(newUser, function (error, data) {
@@ -53,19 +51,16 @@ function handle_signup(msg, callback) {
           collection.insert(profile, function (err, dat) {
             if (err) {
               res.status = 500;
-              db.close();
               callback(null, res);
             } else {
               console.log(dat);
               res.status = 200;
-              db.close();
               callback(null, res);
             }
           });
         }
     });
-    }
-  })
+  // });
 }
 
 exports.handle_signup = handle_signup;

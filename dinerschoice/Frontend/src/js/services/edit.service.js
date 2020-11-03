@@ -3,8 +3,7 @@
 import axios from 'axios';
 import authHeader from './authHeader';
 import authHeaderMultipart from './authHeaderMultipart';
-
-const API_URL = 'http://localhost:3001/';
+import { API_URL } from '../config/config';
 
 const options = {
   headers: authHeader(),

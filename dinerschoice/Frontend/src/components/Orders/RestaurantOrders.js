@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Select, CaretIcon, ModalCloseButton } from 'react-responsive-select';
 
-import UserServices from '../../js/services/user.service';
+import { getRestaurantOrders } from '../../js/actions/getCalls';
 import 'react-responsive-select/dist/react-responsive-select.css';
 import { updateOrderStatus } from '../../js/actions/add';
 
@@ -51,27 +51,36 @@ class RestaurantOrders extends Component {
   }
 
   componentDidMount() {
-    UserServices.getRestaurantOrders().then(
-      (response) => {
-        // console.log('response: ', response.data);
-        // console.log('orders: ', response.data.orders);
-        // console.log('orderitems: ', response.data.orderItems);
-        this.setState({
-          orders: response.data.orders,
-          orderItems: response.data.orderItems,
-        });
-        const result = this.mapOrderItems();
-        this.setState({
-          ordersAndItemsArray: result,
-          filteredResults: result,
-        });
-      },
-      (error) => {
-        this.setState({
-          filteredResults: [],
-        });
-      },
-    );
+    this.props.getRestaurantOrders();
+    if (this.props.edit.orders) {
+      this.setState({
+        ordersAndItemsArray: this.props.edit.orders,
+        filteredResults: this.props.edit.orders,
+      });
+    }
+    console.log('filtered results: ', this.state.filteredResults);
+    // if (this.props.edit.profile) { this.paginateReviews(this.props.edit.reviews); }
+    // UserServices.getRestaurantOrders().then(
+    //   (response) => {
+    //     // console.log('response: ', response.data);
+    //     // console.log('orders: ', response.data.orders);
+    //     // console.log('orderitems: ', response.data.orderItems);
+    //     this.setState({
+    //       orders: response.data.orders,
+    //       orderItems: response.data.orderItems,
+    //     });
+    //     const result = this.mapOrderItems();
+    //     this.setState({
+    //       ordersAndItemsArray: result,
+    //       filteredResults: result,
+    //     });
+    //   },
+    //   (error) => {
+    //     this.setState({
+    //       filteredResults: [],
+    //     });
+    //   },
+    // );
   }
 
   mapOrderItems() {
@@ -155,7 +164,7 @@ class RestaurantOrders extends Component {
       deliveryStatus: this.state.orders[index].deliveryStatus,
     };
     if (data.orderStatus === 'Cancelled Order') {
-      data.deliveryStatus === 'Cancelled';
+      data.deliveryStatus = 'Cancelled';
     } else if (data.deliveryStatus === 'Picked up' || data.deliveryStatus === 'Delivered') {
       data.orderStatus = 'Delivered Order';
     }
@@ -181,7 +190,7 @@ class RestaurantOrders extends Component {
   }
 
   render() {
-    const { user: currentUser } = this.props;
+    const currentUser = this.props.auth.user;
     if (!currentUser) {
       return <Redirect to="/login" />;
     }
@@ -319,12 +328,9 @@ class RestaurantOrders extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  const { user } = state.auth;
-  // console.log('user: ', user);
-  return {
-    user,
-  };
-}
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+  edit: state.edit,
+});
 
-export default connect(mapStateToProps)(RestaurantOrders);
+export default connect(mapStateToProps, { getRestaurantOrders })(RestaurantOrders);

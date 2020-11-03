@@ -18,7 +18,7 @@ export default function (state = initialState, action) {
     case ADD_DISH:
       return {
         ...state,
-        users: action.payload,
+        users: payload,
         isAdded: true,
         loading: true,
       };
@@ -33,7 +33,7 @@ export default function (state = initialState, action) {
     case MENU_UPDATE:
       return {
         ...state,
-        users: action.payload,
+        dishes: payload,
         isAdded: true,
         loading: true,
       };

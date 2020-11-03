@@ -5,17 +5,8 @@ var topics = [
     {topic: 'rest_profile_request', partition: 0},
     { topic: 'edit_profile_request', partition: 0 },
     { topic: 'edit_menu_request', partition: 0 },
-    // {topic: 'upload_request', partition: 0},
-    // {topic: 'fileShare_request', partition: 0},
-    // {topic: 'about_request', partition: 0},
-    // {topic: 'star_request', partition: 0},
-    // {topic: 'getdetails_request', partition: 0},
-    // {topic: 'createGroup_request', partition: 0},
-    // {topic: 'getGroups_request', partition: 0},
-    // {topic: 'updateUsernames_request', partition: 0},
-    // {topic: 'groupShare_request', partition: 0},
-    // {topic: 'deleteGroup_request', partition: 0}
-
+    { topic: 'view_order_request', partition: 0 },
+    { topic: 'view_rest_events_request', partition: 0 },
 ];
 
 function ConnectionProvider() {
