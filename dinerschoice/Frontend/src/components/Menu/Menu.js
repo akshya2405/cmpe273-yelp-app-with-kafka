@@ -134,6 +134,7 @@ class Menu extends Component {
         this.setState({
           success: false,
         });
+      });
   }
 
   render() {

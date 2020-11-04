@@ -16,7 +16,6 @@ function handle_profile(msg, db, callback) {
                   console.log(error);
                   res.status = 500
                   res.message = 'Error occurred';
-                  db.close();
                   callback(null, res);
               }
               if (result) {
@@ -46,7 +45,6 @@ function handle_profile(msg, db, callback) {
                         console.log(error);
                         res.status = 500
                         res.message = 'Error occurred';
-                        db.close();
                         callback(null, res);
                     }
                     if (reviews) {
@@ -54,7 +52,6 @@ function handle_profile(msg, db, callback) {
                         reviews = reviews;
                         Object.assign(profile, {reviews: reviews});
                         console.log(JSON.stringify(profile));
-                        db.close();
                         callback(null, profile);
                     } else {
                         callback(null, profile);
@@ -64,7 +61,6 @@ function handle_profile(msg, db, callback) {
                   console.log('in else');
                   res.status = 401;
                   res.message = 'Record not found';
-                  db.close();
                   callback(null, res);
               }
           });
