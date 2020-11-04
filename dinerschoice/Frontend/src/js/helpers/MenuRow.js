@@ -59,9 +59,8 @@ class MenuRow extends Component {
         />
         <td>
           {
-                  this.props.menu.imageurl
-                    ? (<img width="100" height="100" src={this.props.menu.imageurl} />) : (<div />)
-              }
+            this.props.menu.imageurl ? (<img width="100" height="100" src={this.props.menu.imageurl} />) : (<div />)
+          }
           <ReactUploadImageSingle onImageUpload={this.props.onMenuTableUpdate} id={this.props.menu._id} />
         </td>
         <td className="del-cell">

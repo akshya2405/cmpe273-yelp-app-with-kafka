@@ -5,7 +5,7 @@ import storage from 'redux-persist/lib/storage';
 import auth from './auth';
 import message from './message';
 import edit from './edit';
-import {LOGOUT} from "../constants/action-types";
+import { LOGOUT } from "../constants/action-types";
 
 const combinedReducer = combineReducers({
   auth,

@@ -45,6 +45,22 @@ export default function (state = initialState, action) {
         payload: user,
       };
 
+    case EVENTS_UPDATE:
+      console.log(payload);
+      return {
+        ...state,
+        events: payload.events,
+        isAdded: true,
+        loading: true,
+      };
+
+    case EVENTS_UPDATE_ERROR:
+      return {
+        ...state,
+        isAdded: false,
+        payload: user,
+      };
+
     case REGISTER_FOR_EVENT:
       return {
         ...state,

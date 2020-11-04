@@ -16,7 +16,6 @@ class RestaurantRegistrationList extends Component {
     super(props);
     this.state = {
       eventDetail: '',
-      registrationList: [],
     };
   }
 
@@ -25,30 +24,30 @@ class RestaurantRegistrationList extends Component {
     this.setState({
       eventDetail: this.props.location.state,
     });
-    UserServices.getRegistrationList(this.props.location.state.eventID).then(
-      (response) => {
-        this.setState({
-          registrationList: response.data,
-        });
-        // console.log(this.state.registrationList);
-      },
-      (error) => {
-        this.setState({
-          eventDetail:
-          (error.response
-            && error.response.data
-            && error.response.data.message)
-            || error.message
-            || error.toString(),
-          registrationList:
-            (error.response
-                && error.response.data
-                && error.response.data.message)
-                || error.message
-                || error.toString(),
-        });
-      },
-    );
+    // UserServices.getRegistrationList(this.props.location.state.eventID).then(
+    //   (response) => {
+    //     this.setState({
+    //       registrationList: response.data,
+    //     });
+    //     // console.log(this.state.registrationList);
+    //   },
+    //   (error) => {
+    //     this.setState({
+    //       eventDetail:
+    //       (error.response
+    //         && error.response.data
+    //         && error.response.data.message)
+    //         || error.message
+    //         || error.toString(),
+    //       registrationList:
+    //         (error.response
+    //             && error.response.data
+    //             && error.response.data.message)
+    //             || error.message
+    //             || error.toString(),
+    //     });
+    //   },
+    // );
   }
 
   render() {
@@ -93,18 +92,16 @@ class RestaurantRegistrationList extends Component {
                 <td>Registered Customers : </td>
                 <td>
                   {
-            this.state.registrationList.length !== 0 ? (
-              this.state.registrationList.map((cust) => (
-                <Link to={{ pathname: '/profile', state: cust.customerID }}>
-                  {cust.fname}
-                  {' '}
-                  {cust.lname}
-                </Link>
-              ))
-            ) : (
-              <p>No one has registered yet</p>
-            )
-          }
+                    (!this.state.eventDetail.registrationList || this.state.eventDetail.registrationList.length === 0) ? (
+                      <p>No one has registered yet</p>
+                    ) : this.state.eventDetail.registrationList.map((cust) => (
+                        <Link to={{ pathname: '/profile', state: cust.customerID }}>
+                          {cust.fname}
+                          {' '}
+                          {cust.lname}
+                        </Link>
+                    ))
+                  }
                 </td>
               </tr>
             </tbody>

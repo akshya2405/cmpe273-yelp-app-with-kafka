@@ -69,22 +69,6 @@ export default function (state = initialState, action) {
         isLoggedIn: true,
       };
 
-    case EVENTS_UPDATE:
-      console.log(payload);
-      return {
-        ...state,
-        events: payload.events,
-        isAdded: true,
-        loading: true,
-      };
-
-    case EVENTS_UPDATE_ERROR:
-      return {
-        ...state,
-        isAdded: false,
-        payload: user,
-      };
-
     case RESTAURANT_PROFILE_EDIT:
       console.log('in reducer', JSON.stringify(payload));
       return {

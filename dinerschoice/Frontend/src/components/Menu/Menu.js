@@ -8,6 +8,8 @@ import UserServices from '../../js/services/user.service';
 import MenuTable from '../../js/helpers/MenuTable';
 import SearchBar from '../../js/helpers/SearchBar';
 import { menuUpdate } from '../../js/actions/add';
+import StarBasedRating from "star-based-rating";
+import ReactPaginate from "react-paginate";
 
 class Menu extends Component {
   constructor(props) {
@@ -18,24 +20,31 @@ class Menu extends Component {
       menu: [],
       updateEntriesMap: new Map(),
       deleteEntriesMap: new Map(),
+      offset: 0,
+      perPage: 5,
+      currentPage: 0,
     };
     this.updateMenu = this.updateMenu.bind(this);
+    // this.paginateMenu = this.paginateMenu.bind(this);
   }
 
   componentDidMount() {
-    const { auth, edit } = this.props;
+    const { auth, dishes } = this.props;
     console.log(JSON.stringify(auth));
-    console.log(JSON.stringify(edit));
-    if (edit.dishes) {
-      console.log(edit.dishes);
+    console.log(JSON.stringify(dishes));
+    if (dishes) {
+      console.log(dishes);
       this.setState({
-        menu: edit.dishes,
+        menu: dishes,
       });
+    // , function () { this.paginateMenu(this.state.menu); }
+      // this.paginateMenu(this.state.menu);
     } else {
       this.setState({
         menu: [],
       });
     }
+    // alert(JSON.stringify(this.state.menu));
   }
 
   handleUserInput(filterText) {
@@ -137,6 +146,25 @@ class Menu extends Component {
       });
   }
 
+  // paginateMenu(menu) {
+  //   const data = menu;
+  //   console.log(menu);
+  //   const slice = data.slice(this.state.offset, this.state.offset + this.state.perPage);
+  //   const postData = slice.map((menu) => <React.Fragment>
+  //     <MenuTable
+  //         onMenuTableUpdate={this.handleMenuTable.bind(this)}
+  //         onRowAdd={this.handleAddEvent.bind(this)}
+  //         onRowDel={this.handleRowDel.bind(this)}
+  //         menu={menu}
+  //         filterText={this.state.filterText}
+  //     />
+  //   </React.Fragment>);
+  //   this.setState({
+  //     pageCount: Math.ceil(data.length / this.state.perPage),
+  //     postData,
+  //   });
+  // }
+
   render() {
     const { user: currentUser } = this.props.auth;
     // const { edit } = this.props.edit;
@@ -145,7 +173,7 @@ class Menu extends Component {
     }
     // alert(this.state.menu);
     if (this.state.menu) {
-      console.log('In restaurant menu profile');
+      console.log('In restaurant menu');
       return (
         <div>
           <h2>
@@ -160,6 +188,21 @@ class Menu extends Component {
               menu={this.state.menu}
               filterText={this.state.filterText}
             />
+            {/*{this.state.postData ? (this.state.postData,*/}
+            {/*        <ReactPaginate*/}
+            {/*            previousLabel="prev"*/}
+            {/*            nextLabel="next"*/}
+            {/*            breakLabel="..."*/}
+            {/*            breakClassName="break-me"*/}
+            {/*            pageCount={this.state.pageCount}*/}
+            {/*            marginPagesDisplayed={2}*/}
+            {/*            pageRangeDisplayed={5}*/}
+            {/*            onPageChange={this.handlePageClick}*/}
+            {/*            containerClassName="pagination"*/}
+            {/*            subContainerClassName="pages pagination"*/}
+            {/*            activeClassName="active"*/}
+            {/*        />*/}
+            {/*) : ('No menu added')}*/}
           </div>
           <button type="button" onClick={this.updateMenu}>Update Menu</button>
         </div>
@@ -172,7 +215,7 @@ class Menu extends Component {
 const mapStateToProps = (state) => ({
   // console.log('in state to props - state : ', state);
   auth: state.auth,
-  edit: state.edit,
+  dishes: state.edit.dishes,
 });
 
 export default connect(mapStateToProps, null)(Menu);
