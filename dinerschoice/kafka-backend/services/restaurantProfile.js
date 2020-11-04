@@ -1,13 +1,11 @@
 const mongo = require('mongodb');
 const { mongoDB } = require('../../Backend/config/auth.config');
+const conn = require('../dbConnection');
 
-function handle_profile(msg, callback) {
+function handle_profile(msg, db, callback) {
   let res ={};
   console.log('in get request restaurant profile');
-  mongo.connect(mongoDB,function (err, db){
-      if (err) {
-          callback(null, 'Cannot connect to db');
-      } else {
+    // conn.conn().then((db) => {
           console.log('connected to db');
           const restaurantProfile = db.collection('restaurantProfile');
           const findId = new mongo.ObjectID(msg.id);
@@ -22,24 +20,27 @@ function handle_profile(msg, callback) {
                   callback(null, res);
               }
               if (result) {
-                  let menu = [];
+                let menu = [];
+                profile = {profile: result};
                 console.log(JSON.stringify(result));
-                const reviews = db.collection('reviews');
+                const reviewsCollection = db.collection('reviews');
                 console.log('checking reviews');
                 db.collection('menu').find( { restId: findId }).toArray(function (error, menu) {
                       if (error) {
                           console.log(error);
                           res.status = 500
                           res.message = 'Error occurred';
-                          db.close();
                           callback(null, res);
                       }
                       if (menu) {
                           menu = menu;
                           console.log(JSON.stringify(menu));
+                          Object.assign(profile, {dishes: menu});
+                          console.log(JSON.stringify(profile));
                       }
                   });
-                reviews.find( { id: findId }).toArray(function (error, reviews) {
+                let reviews = [];
+                reviewsCollection.find( { id: findId }).toArray(function (error, reviews) {
                     console.log('finding reviews');
                     if (error) {
                         console.log(error);
@@ -49,13 +50,13 @@ function handle_profile(msg, callback) {
                         callback(null, res);
                     }
                     if (reviews) {
-                        const profile = {profile: result, dishes: menu, reviews: reviews}
+
+                        reviews = reviews;
+                        Object.assign(profile, {reviews: reviews});
                         console.log(JSON.stringify(profile));
                         db.close();
                         callback(null, profile);
                     } else {
-                        const profile = {profile: result, dishes: menu};
-                        db.close();
                         callback(null, profile);
                     }
                 });
@@ -67,8 +68,7 @@ function handle_profile(msg, callback) {
                   callback(null, res);
               }
           });
-      }
-  });
+  // });
 }
 
 exports.handle_profile = handle_profile;

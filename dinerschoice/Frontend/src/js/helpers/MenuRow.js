@@ -7,7 +7,7 @@ import ReactUploadImageSingle from './SingleImageUpload';
 class MenuRow extends Component {
   constructor(props) {
     super(props);
-    this.onDelEvent = this.onDelEvent.bind(this);
+    // this.onDelEvent = this.onDelEvent.bind(this);
   }
 
   onDelEvent() {
@@ -22,7 +22,7 @@ class MenuRow extends Component {
           cellData={{
             type: 'category',
             value: this.props.menu.category,
-            id: this.props.menu.dishID,
+            id: this.props.menu._id,
           }}
         />
         <EditableMenuCell
@@ -30,7 +30,7 @@ class MenuRow extends Component {
           cellData={{
             type: 'dishName',
             value: this.props.menu.dishName,
-            id: this.props.menu.dishID,
+            id: this.props.menu._id,
           }}
         />
         <EditableMenuCell
@@ -38,7 +38,7 @@ class MenuRow extends Component {
           cellData={{
             type: 'description',
             value: this.props.menu.description,
-            id: this.props.menu.dishID,
+            id: this.props.menu._id,
           }}
         />
         <EditableMenuCell
@@ -46,7 +46,7 @@ class MenuRow extends Component {
           cellData={{
             type: 'ingredients',
             value: this.props.menu.ingredients,
-            id: this.props.menu.dishID,
+            id: this.props.menu._id,
           }}
         />
         <EditableMenuCell
@@ -54,7 +54,7 @@ class MenuRow extends Component {
           cellData={{
             type: 'price',
             value: this.props.menu.price,
-            id: this.props.menu.dishID,
+            id: this.props.menu._id,
           }}
         />
         <td>
@@ -62,10 +62,10 @@ class MenuRow extends Component {
                   this.props.menu.imageurl
                     ? (<img width="100" height="100" src={this.props.menu.imageurl} />) : (<div />)
               }
-          <ReactUploadImageSingle onImageUpload={this.props.onMenuTableUpdate} id={this.props.menu.dishID} />
+          <ReactUploadImageSingle onImageUpload={this.props.onMenuTableUpdate} id={this.props.menu._id} />
         </td>
         <td className="del-cell">
-          <button type="button" onClick={this.onDelEvent} className="btn btn-default btn-sm">
+          <button type="button" onClick={this.onDelEvent.bind(this)} className="btn btn-default btn-sm">
             <span className="glyphicon glyphicon-remove" />
           </button>
         </td>

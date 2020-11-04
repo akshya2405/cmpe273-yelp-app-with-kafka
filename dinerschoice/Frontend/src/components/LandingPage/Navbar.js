@@ -90,15 +90,6 @@ class Navbar extends Component {
   handleLogout(e) {
     e.preventDefault();
     this.props.logout();
-    // const { dispatch } = this.props;
-    // dispatch(
-    //   logout(),
-    // )
-    //   .then(() => {
-    //     this.setState({ currentUser: undefined });
-    //     // history.push('/');
-    //     // window.location.reload();
-    //   });
   }
 
   lookupSearchResults(e) {

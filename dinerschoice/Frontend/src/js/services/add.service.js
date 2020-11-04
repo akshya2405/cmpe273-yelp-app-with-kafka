@@ -3,8 +3,7 @@
 import axios from 'axios';
 import authHeader from './authHeader';
 import authHeaderMultipart from './authHeaderMultipart';
-
-const API_URL = 'http://localhost:3001/';
+import { API_URL } from '../config/config';
 
 const options = {
   headers: authHeader(),
@@ -47,9 +46,9 @@ class AddService {
     });
   }
 
-  eventsUpdate(updateList, deleteIds) {
+  eventsUpdate(restID, updateList, deleteIds) {
     return axios
-      .post(`${API_URL}eventsUpdate`, { updateList, deleteIds }, options)
+      .post(`${API_URL}eventsUpdate`, { restID, updateList, deleteIds }, options)
       .then((response) => response);
   }
 

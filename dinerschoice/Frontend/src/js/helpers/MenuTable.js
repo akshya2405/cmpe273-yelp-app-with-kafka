@@ -13,7 +13,7 @@ class MenuTable extends Component {
       if (!(menuItem !== {}) && menuItem.dishName.indexOf(filterText) === -1) {
         return;
       }
-      return (<MenuRow onMenuTableUpdate={onMenuTableUpdate} menu={menuItem} onDelEvent={rowDel.bind(this)} key={menuItem.dishID} />);
+      return (<MenuRow onMenuTableUpdate={onMenuTableUpdate} menu={menuItem} onDelEvent={rowDel.bind(this)} key={menuItem._id} />);
     });
     return (
       <div>

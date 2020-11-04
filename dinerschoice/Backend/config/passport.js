@@ -14,7 +14,7 @@ function auth() {
     new JwtStrategy(opts, (jwt_payload, callback) => {
       const { email } = jwt_payload;
       console.log(email);
-      Users.find(email, (err, results) => {
+      Users.findOne({ email: email }, (err, results) => {
         if (err) {
           return callback(err, false);
         }

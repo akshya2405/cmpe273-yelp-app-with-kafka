@@ -19,42 +19,23 @@ class Menu extends Component {
       updateEntriesMap: new Map(),
       deleteEntriesMap: new Map(),
     };
-
-    this.addDish = this.addDish.bind(this);
     this.updateMenu = this.updateMenu.bind(this);
   }
 
   componentDidMount() {
-    let { auth, edit } = this.props;
+    const { auth, edit } = this.props;
     console.log(JSON.stringify(auth));
     console.log(JSON.stringify(edit));
-    if (edit.profile.dishes) {
-      console.log(edit.profile.dishes);
+    if (edit.dishes) {
+      console.log(edit.dishes);
       this.setState({
-        menu: edit.profile.dishes,
+        menu: edit.dishes,
       });
     } else {
       this.setState({
         menu: [],
       });
     }
-    // console.log('In restaurant menu did mount');
-    // UserServices.getMenu().then(
-    //     (response) => {
-    //       // console.log('response: ', response.data);
-    //       if (!response.data || !response.data.length) {
-    //         this.setState({
-    //         menu: [],
-    //           hasMenu: false,
-    //         });
-    //       } else {
-    //         this.setState({
-    //           menu: response.data,
-    //           menuFromDB: response.data,
-    //           restaurantID: response.data[0].restaurantID,
-    //         });
-    //       }
-    //     });
   }
 
   handleUserInput(filterText) {
@@ -64,10 +45,10 @@ class Menu extends Component {
   handleRowDel(menuItem) {
     // TODO : check if the initial list has this id, if so add to deleteEntriesList.
     // TODO : check if the id is in the updateEntriesMap if so remove it from the map.
-
-    if (menuItem.fromDB) {
-      this.state.deleteEntriesMap.set(parseInt(menuItem._id), menuItem);
-    }
+    // if (menuItem.fromDB) {
+    //   alert(menuItem._id);
+    this.state.deleteEntriesMap.set(menuItem._id, menuItem);
+    // }
     // console.log('check: ', this.state.updateEntriesMap.has(menuItem._id.toString()), typeof menuItem._id);
     if (this.state.updateEntriesMap.has(menuItem._id.toString())) {
       // console.log('Check in update map: ', menuItem._id);
@@ -82,7 +63,6 @@ class Menu extends Component {
     const id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
     const menuItem = {
       _id: id,
-      dishID: id,
       dishName: '',
       category: '',
       description: '',
@@ -117,9 +97,10 @@ class Menu extends Component {
         }
         this.state.updateEntriesMap.set(field.id, menuItem);
         if (menuItem.fromDB) {
-          this.state.deleteEntriesMap.set(parseInt(field.id), menuItem);
+          this.state.deleteEntriesMap.set(field.id, menuItem);
         }
       }
+      // alert(JSON.stringify(this.state.deleteEntriesMap));
       // console.log('in handler' + JSON.stringify(menuItem));
       return menuItem;
     });
@@ -141,26 +122,18 @@ class Menu extends Component {
     console.log(`Delete keys:${deleteIds}`);
     // alert('in update menu: ' + JSON.stringify(updateList) + JSON.stringify(deleteIds));
     dispatch(
-        menuUpdate(this.props.auth.user.id, updateList, deleteIds),
+      menuUpdate(this.props.auth.user.id, updateList, deleteIds),
     )
-        .then(() => {
-          this.setState({
-            success: true,
-          });
-          // console.log('success');
-          history.push('/menu');
-          window.location.reload();
-        })
-        .catch(() => {
-          this.setState({
-            success: false,
-          });
+      .then(() => {
+        this.setState({
+          success: true,
+          updateEntriesMap: new Map(),
+          deleteEntriesMap: new Map(),
         });
-  }
-
-  addDish(e) {
-    e.preventDefault();
-    this.props.history.push('/addDish');
+      }).catch(() => {
+        this.setState({
+          success: false,
+        });
   }
 
   render() {
@@ -176,22 +149,22 @@ class Menu extends Component {
         <div>
           <h2>
             Add/Update your dishes here
-            </h2>
-            <div>
-              <SearchBar filterText={this.state.filterText} onUserInput={this.handleUserInput.bind(this)} />
-              <MenuTable
-                  onMenuTableUpdate={this.handleMenuTable.bind(this)}
-                  onRowAdd={this.handleAddEvent.bind(this)}
-                  onRowDel={this.handleRowDel.bind(this)}
-                  menu={this.state.menu}
-                  filterText={this.state.filterText}
-                  />
-            </div>
-            <button onClick={this.updateMenu}>Update Menu</button>
+          </h2>
+          <div>
+            <SearchBar filterText={this.state.filterText} onUserInput={this.handleUserInput.bind(this)} />
+            <MenuTable
+              onMenuTableUpdate={this.handleMenuTable.bind(this)}
+              onRowAdd={this.handleAddEvent.bind(this)}
+              onRowDel={this.handleRowDel.bind(this)}
+              menu={this.state.menu}
+              filterText={this.state.filterText}
+            />
           </div>
+          <button type="button" onClick={this.updateMenu}>Update Menu</button>
+        </div>
       );
     }
-    return (<div></div>);
+    return (<div />);
   }
 }
 

@@ -4,14 +4,14 @@ const router = express.Router();
 const kafka = require('./kafka/client');
 // const { checkAuth } = require('../config/passport');
 
-router.get('/restaurantDashboard', (req, res) => {
+router.get('/events', (req, res) => {
   console.log(req.query);
   const payload = {
     id: req.query.restID,
   };
 
-  kafka.make_request('rest_profile_request', 'rest_profile_response', payload, function (err, results) {
-    console.log(`In Backend Routes RestProfile.js - profile : Results - ${JSON.stringify(results)}`);
+  kafka.make_request('view_rest_events_request', 'view_rest_events_response', payload, function (err, results) {
+    console.log(`In Backend Routes RestEvents.js - events : Results - ${JSON.stringify(results)}`);
     if (err) {
       res.send(err);
     } else {

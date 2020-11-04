@@ -96,11 +96,11 @@ class RestaurantProfile extends Component {
     }
     console.log("getting details");
     this.props.getRestaurantProfile(restID);
-    if (this.props.edit.profile) { this.paginateReviews(this.props.edit.profile); }
+    if (this.props.edit.profile) { this.paginateReviews(this.props.edit.reviews); }
   }
 
-  paginateReviews(profile) {
-    const data = profile.reviews;
+  paginateReviews(reviews) {
+    const data = reviews;
     const slice = data.slice(this.state.offset, this.state.offset + this.state.perPage);
     const postData = slice.map((review) => <React.Fragment>
       <div className="review">
@@ -145,9 +145,9 @@ class RestaurantProfile extends Component {
 
     this.setState({
       currentPage: selectedPage,
-      offset: offset
+      offset: offset,
     }, () => {
-      this.paginateReviews(this.props.edit.profile);
+      this.paginateReviews(this.props.edit.reviews);
     });
   }
 
@@ -183,7 +183,7 @@ class RestaurantProfile extends Component {
     const { auth, edit } = this.props;
     console.log('auth', auth);
     console.log('edit', edit);
-    console.log('edit.profile :', edit.profile && edit.profile.profile.email);
+    console.log('edit.profile :', edit.profile && edit.profile.email);
 
     if (!auth.user) {
       return <Redirect to="/login" />;
@@ -229,7 +229,7 @@ class RestaurantProfile extends Component {
                 <table>
                   <thead>
                   <tr>
-                    <td><h2>{edit.profile && edit.profile.profile.name}</h2></td>
+                    <td><h2>{edit.profile && edit.profile.name}</h2></td>
                     <td />
                     {editLink}
                   </tr>
@@ -247,44 +247,44 @@ class RestaurantProfile extends Component {
                             <p>
                               <b>Description:</b>
                               {' '}
-                              {edit.profile && edit.profile.profile.description ? edit.profile.profile.description : ('No description added yet')}
+                              {edit.profile && edit.profile.description ? edit.profile.description : ('No description added yet')}
                             </p>
                             <p>
                               <b>Location:</b>
                               {' '}
-                              {edit.profile && edit.profile.profile.streetAddress}
+                              {edit.profile && edit.profile.streetAddress}
                               ,
                               {' '}
-                              {edit.profile && edit.profile.profile.city}
+                              {edit.profile && edit.profile.city}
                               {' '}
-                              {edit.profile && edit.profile.profile.state}
+                              {edit.profile && edit.profile.state}
                               {' '}
-                              {edit.profile && edit.profile.profile.zipcode}
+                              {edit.profile && edit.profile.zipcode}
                             </p>
                             <p>
                               <b>Cuisine:</b>
                               {' '}
-                              {edit.profile && edit.profile.profile.cuisine ? edit.profile.profile.cuisine : ('No cuisine added yet')}
+                              {edit.profile && edit.profile.cuisine ? edit.profile.cuisine : ('No cuisine added yet')}
                             </p>
                             <p>
                               <b>E-mail us @</b>
                               {' '}
-                              {edit.profile && edit.profile.profile.email}
+                              {edit.profile && edit.profile.email}
                             </p>
                             <p>
                               <b>Call us @</b>
                               {' '}
-                              {edit.profile && edit.profile.profile.contactInfo ? edit.profile.profile.contactInfo : ('No contact added yet')}
+                              {edit.profile && edit.profile.contactInfo ? edit.profile.contactInfo : ('No contact added yet')}
                             </p>
                             <p>
                               <b>Services Offered:</b>
                               {' '}
-                              {edit.profile && edit.profile.profile.mode ? edit.profile.profile.mode : ('No services added yet')}
+                              {edit.profile && edit.profile.mode ? edit.profile.mode : ('No services added yet')}
                             </p>
                             <p>
                               <b>Status:</b>
                               {' '}
-                              {edit.profile && edit.profile.profile.status ? edit.profile.profile.status : ('Yet to be added')}
+                              {edit.profile && edit.profile.status ? edit.profile.status : ('Yet to be added')}
                             </p>
                           </div>
                         </td>
@@ -292,7 +292,7 @@ class RestaurantProfile extends Component {
                           <div>
                             <b> Hours: </b>
                             <table className="table">
-                              {(edit.profile && edit.profile.profile.hours) ? getDetails(edit.profile.profile) : ('No Business hours added yet')}
+                              {(edit.profile && edit.profile.hours) ? getDetails(edit.profile) : ('No Business hours added yet')}
                             </table>
                           </div>
                         </td>
@@ -303,7 +303,7 @@ class RestaurantProfile extends Component {
                   <hr size="30px" />
                   <div className="centre">
                     <Carousel containerClass="carousel-container" infinite responsive={responsive} centerMode>
-                      {!(edit.profile && edit.profile.profile.profileImage) ? ('Your images will be displayed here') : (edit.profile.profile.profileImage.map((image) => (
+                      {!(edit.profile && edit.profile.profileImage) ? ('Your images will be displayed here') : (edit.profile.profileImage.map((image) => (
                         <div>
                           <img id={image} src={image} alt="Restaurant Profile" width="350px" height="350px" />
                         </div>
@@ -364,7 +364,7 @@ class RestaurantProfile extends Component {
                           {
                     edit.profile ? (
                       <div>
-                        <CustViewMenu state={edit.profile.profile.dishes} history={this.props.history} />
+                        <CustViewMenu state={edit.profile.dishes} history={this.props.history} />
                       </div>
                     ) : (
                       <div />

@@ -1,14 +1,12 @@
 const mongo = require('mongodb');
 const { mongoDB } = require('../../Backend/config/auth.config');
+const conn = require('../dbConnection');
 
 // TODO: Edit this part with findOneAndUpdate
-function handle_edit_profile(msg, callback) {
+function handle_edit_profile(msg, db, callback) {
   let res ={};
   console.log('in get request restaurant profile');
-  mongo.connect(mongoDB,function (err, db){
-      if (err) {
-          callback(null, 'Cannot connect to db');
-      } else {
+    // conn.conn().then((db) => {
         console.log('connected to db');
         const options = { returnOriginal: false }
         let collectionName = '';
@@ -43,8 +41,7 @@ function handle_edit_profile(msg, callback) {
                 callback(null, res);
             }
         });
-      }
-  });
+  // });
 }
 
 exports.handle_edit_profile = handle_edit_profile;
