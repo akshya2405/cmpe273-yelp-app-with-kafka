@@ -7,6 +7,7 @@ var topics = [
     { topic: 'edit_menu_request', partition: 0 },
     { topic: 'view_order_request', partition: 0 },
     { topic: 'view_rest_events_request', partition: 0 },
+    { topic: 'add_rest_events_request', partition: 0 },
 ];
 
 function ConnectionProvider() {

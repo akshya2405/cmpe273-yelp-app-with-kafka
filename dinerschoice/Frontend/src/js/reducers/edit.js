@@ -9,7 +9,7 @@ import {
   LOOKUP_RESTAURANTS,
   GET_RESTAURANT_PROFILE_ERROR,
   GET_REST_ORDER,
-  GET_REST_ORDER_ERROR, GET_REST_EVENTS, GET_REST_EVENTS_ERROR,
+  GET_REST_ORDER_ERROR, GET_REST_EVENTS, GET_REST_EVENTS_ERROR, EVENTS_UPDATE, EVENTS_UPDATE_ERROR,
 } from '../constants/action-types';
 
 const user = {
@@ -26,6 +26,7 @@ export default function (state = initialState, action) {
   switch (type) {
     case GET_RESTAURANT_PROFILE:
       return {
+        ...state,
         profile: payload.profile,
         dishes: payload.dishes,
         reviews: payload.reviews,
@@ -42,7 +43,7 @@ export default function (state = initialState, action) {
     case GET_REST_ORDER:
       return {
         ...state,
-        orders: payload,
+        orders: payload.orders,
         loading: false,
         isEdited: false,
       };
@@ -54,6 +55,7 @@ export default function (state = initialState, action) {
       };
 
     case GET_REST_EVENTS:
+      console.log(payload);
       return {
         ...state,
         events: payload.events,
@@ -67,9 +69,26 @@ export default function (state = initialState, action) {
         isLoggedIn: true,
       };
 
+    case EVENTS_UPDATE:
+      console.log(payload);
+      return {
+        ...state,
+        events: payload.events,
+        isAdded: true,
+        loading: true,
+      };
+
+    case EVENTS_UPDATE_ERROR:
+      return {
+        ...state,
+        isAdded: false,
+        payload: user,
+      };
+
     case RESTAURANT_PROFILE_EDIT:
       console.log('in reducer', JSON.stringify(payload));
       return {
+        ...state,
         isLoggedIn: true,
         isEdited: true,
         profile: payload,

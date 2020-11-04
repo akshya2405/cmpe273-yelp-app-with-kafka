@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-filename-extension */
 import React, { Component } from 'react';
+import moment from 'moment';
 import EditableEventCell from './EditableEventCell';
 import EditableEventDate from './EditableEventDate';
 import EditableEventTime from './EditableEventTime';
@@ -27,7 +28,7 @@ class EventRow extends Component {
           cellData={{
             type: 'name',
             value: this.props.events.name,
-            id: this.props.events.eventID,
+            id: this.props.events._id,
           }}
         />
         <EditableEventCell
@@ -35,15 +36,15 @@ class EventRow extends Component {
           cellData={{
             type: 'description',
             value: this.props.events.description,
-            id: this.props.events.eventID,
+            id: this.props.events._id,
           }}
         />
         <EditableEventDate
           onEventTableUpdate={this.props.onEventTableUpdate}
           cellData={{
             type: 'date',
-            value: this.props.events.date,
-            id: this.props.events.eventID,
+            value: moment(this.props.events.date).format('YYYY-MM-DD'),
+            id: this.props.events._id,
           }}
         />
         <EditableEventTime
@@ -51,7 +52,7 @@ class EventRow extends Component {
           cellData={{
             type: 'time',
             value: this.props.events.time,
-            id: this.props.events.eventID,
+            id: this.props.events._id,
           }}
         />
         <EditableEventCell
@@ -59,7 +60,7 @@ class EventRow extends Component {
           cellData={{
             type: 'location',
             value: this.props.events.location,
-            id: this.props.events.eventID,
+            id: this.props.events._id,
           }}
         />
         <EditableEventCell
@@ -67,7 +68,7 @@ class EventRow extends Component {
           cellData={{
             type: 'hashtags',
             value: this.props.events.hashtags,
-            id: this.props.events.eventID,
+            id: this.props.events._id,
           }}
         />
         <td>

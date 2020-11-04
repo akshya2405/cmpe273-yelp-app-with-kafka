@@ -59,11 +59,12 @@ export const menuUpdate = (restID, updateList, deleteIds) => (dispatch) => AddSe
     return Promise.reject();
   });
 
-export const eventsUpdate = (updateList, deleteIds) => (dispatch) => AddService.eventsUpdate(updateList, deleteIds)
+export const eventsUpdate = (restID, updateList, deleteIds) => (dispatch) => AddService.eventsUpdate(restID, updateList, deleteIds)
   .then((response) => {
-    // console.log('Adding event');
+    console.log('Adding event', response);
     dispatch({
       type: EVENTS_UPDATE,
+      payload: response.data,
     });
     dispatch({
       type: SET_MESSAGE,

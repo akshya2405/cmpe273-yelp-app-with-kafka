@@ -67,6 +67,7 @@ const EditProfile = require('./Routes/EditProfile');
 const EditMenu = require('./Routes/EditMenu');
 const RestOrders = require('./Routes/RestOrders');
 const RestEvents = require('./Routes/RestEvents');
+const EditEvents = require('./Routes/EditEvents');
 
 app.use('/user', Login);
 app.use('/user', Signup);
@@ -75,17 +76,17 @@ app.use('/', EditProfile);
 app.use('/', EditMenu);
 app.use('/', RestOrders);
 app.use('/', RestEvents);
+app.use('/', EditEvents);
 
-// app.get('/events', (req, res) => {
-//   // console.log('Inside get events');
-//   // console.log('req: ', req.headers['x-access-token']);
-//   getEvents.getEvents(req)
-//     .then((output) => {
-//       // console.log(output);
+// app.post('/eventsUpdate', (req, res) => {
+//   // console.log('Inside event update');
+//   // console.log('req: ', req.body.updateDetails);
+//   eventUpdate.eventUpdate(req)
+//     .then(() => {
 //       res.writeHead(200, {
 //         'Content-Type': 'application/json',
 //       });
-//       res.end(JSON.stringify(output));
+//       res.end();
 //     })
 //     .catch((err) => {
 //       // console.log(err);
@@ -95,25 +96,6 @@ app.use('/', RestEvents);
 //       res.end();
 //     });
 // });
-
-app.post('/eventsUpdate', (req, res) => {
-  // console.log('Inside event update');
-  // console.log('req: ', req.body.updateDetails);
-  eventUpdate.eventUpdate(req)
-    .then(() => {
-      res.writeHead(200, {
-        'Content-Type': 'application/json',
-      });
-      res.end();
-    })
-    .catch((err) => {
-      // console.log(err);
-      res.writeHead(400, '*** Something went wrong. Please try again later ****', {
-        'Content-Type': 'text/plain',
-      });
-      res.end();
-    });
-});
 
 app.get('/registrationList', (req, res) => {
   // console.log('Inside get registration list');

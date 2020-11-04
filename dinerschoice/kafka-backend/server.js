@@ -10,6 +10,7 @@ const editProfile = require('./services/editProfile');
 const editMenu = require('./services/editMenu');
 const getRestOrders = require('./services/getRestOrders');
 const getRestEvents = require('./services/getRestEvents');
+const editEvents = require('./services/editEvents');
 
 connect.connect().then(dbConn => {
     var consumer = connection.getConsumer();
@@ -155,6 +156,28 @@ connect.connect().then(dbConn => {
             case "view_rest_events_request":
                 console.log("In server.js - view_order_request case");
                 getRestEvents.handle_rest_events(data.data, dbConn, function (err, res) {
+                    var payloads = [
+                        {
+                            topic: data.replyTo,
+                            messages: JSON.stringify({
+                                correlationId: data.correlationId,
+                                data: res
+                            }),
+                            partition: 0
+                        }
+                    ];
+                    producer.send(payloads, function (err, data) {
+                        if (err)
+                            console.log(err);
+                    });
+                    return;
+                });
+                break;
+
+            case "add_rest_events_request":
+                console.log("In server.js - add_rest_events_request case");
+                console.log('data in server: ', data.data);
+                editEvents.handle_edit_events(data.data, dbConn, function (err, res) {
                     var payloads = [
                         {
                             topic: data.replyTo,

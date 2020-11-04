@@ -43,5 +43,5 @@ export const getRestaurantEvents = () => (dispatch) => UserServices.getEvents()
       type: SET_MESSAGE,
       payload: response.data.message,
     });
-    return Promise.resolve(response.data);
+    return Promise.resolve();
   });

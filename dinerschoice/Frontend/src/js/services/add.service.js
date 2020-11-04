@@ -46,9 +46,9 @@ class AddService {
     });
   }
 
-  eventsUpdate(updateList, deleteIds) {
+  eventsUpdate(restID, updateList, deleteIds) {
     return axios
-      .post(`${API_URL}eventsUpdate`, { updateList, deleteIds }, options)
+      .post(`${API_URL}eventsUpdate`, { restID, updateList, deleteIds }, options)
       .then((response) => response);
   }
 

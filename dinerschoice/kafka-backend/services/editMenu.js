@@ -40,6 +40,7 @@ function handle_edit_menu(msg, db, callback) {
                 dishID = new mongo.ObjectID(dish._id);
             }
             collectionName.findOneAndReplace({_id: dishID}, update, options);
+        });
             db.collection('menu').find({restId: findrestId}).toArray(function (error, menu) {
                 if (error) {
                     console.log(error);
@@ -53,7 +54,7 @@ function handle_edit_menu(msg, db, callback) {
                     callback(null, menu);
                 }
             });
-        });
+        // });
 // });
 }
 
