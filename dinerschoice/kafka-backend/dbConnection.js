@@ -8,7 +8,6 @@ const options = {
     poolSize: 500,
     // bufferMaxEntries: 0,
 };
-
 // const conn = () => new Promise((resolve, reject) => {
 //     setTimeout(() => {
 //         MongoClient.connect(mongoDB, options, (err, client) => {

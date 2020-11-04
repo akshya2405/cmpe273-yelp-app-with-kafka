@@ -69,6 +69,7 @@ const RestOrders = require('./Routes/RestOrders');
 const RestEvents = require('./Routes/RestEvents');
 const EditEvents = require('./Routes/EditEvents');
 
+
 app.use('/user', Login);
 app.use('/user', Signup);
 app.use('/', RestProfile);
@@ -96,7 +97,6 @@ app.use('/', EditEvents);
 //       res.end();
 //     });
 // });
-
 app.get('/registrationList', (req, res) => {
   // console.log('Inside get registration list');
   // console.log('req: ', req.query.eventid);

@@ -51,6 +51,7 @@ function handle_signup(msg, db, callback) {
           collection.insert(profile, function (err, dat) {
             if (err) {
               res.status = 500;
+              db.close();
               callback(null, res);
             } else {
               console.log(dat);

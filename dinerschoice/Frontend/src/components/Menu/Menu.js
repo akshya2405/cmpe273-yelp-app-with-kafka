@@ -116,7 +116,7 @@ class Menu extends Component {
     const updateList = [];
     const deleteIds = Array.from(this.state.deleteEntriesMap.keys());
     Array.from(this.state.updateEntriesMap.keys()).forEach(
-      (k) => updateList.push(this.state.updateEntriesMap.get(k)),
+        (k) => updateList.push(this.state.updateEntriesMap.get(k)),
     );
     console.log(`Update list: ${updateList}`);
     console.log(`Delete keys:${deleteIds}`);
@@ -134,7 +134,6 @@ class Menu extends Component {
         this.setState({
           success: false,
         });
-      });
   }
 
   render() {

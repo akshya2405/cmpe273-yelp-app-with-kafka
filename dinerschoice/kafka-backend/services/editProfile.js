@@ -24,17 +24,20 @@ function handle_edit_profile(msg, db, callback) {
                 console.log(error);
                 res.status = 500
                 res.message = 'Error occurred';
+                db.close();
                 callback(null, res);
             }
             if (result) {
               console.log(JSON.stringify(result.value));
               res.status = 200;
               res.profile = result.value;
+              db.close();
               callback(null, res);
             } else {
                 console.log('in else');
                 res.status = 401;
                 res.message = 'Record not found';
+                db.close();
                 callback(null, res);
             }
         });

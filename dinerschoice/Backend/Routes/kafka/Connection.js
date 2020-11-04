@@ -9,6 +9,7 @@ const topics = [
   { topic: 'view_order_response', partition: 0 },
   { topic: 'view_rest_events_response', partition: 0 },
   { topic: 'add_rest_events_response', partition: 0 },
+
 ];
 
 function ConnectionProvider() {
