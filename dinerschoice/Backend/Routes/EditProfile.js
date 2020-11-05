@@ -10,7 +10,7 @@ router.post('/editProfile', (req, res) => {
   console.log(payload);
 
   kafka.make_request('edit_profile_request', 'edit_profile_response', payload, function (err, results) {
-    console.log(`In Backend Routes RestProfile.js - profile : Results - ${JSON.stringify(results)}`);
+    console.log(`In Backend Routes EditProfile.js - profile : Results - ${JSON.stringify(results)}`);
     if (err) {
       res.send(err);
     } else {

@@ -11,7 +11,7 @@ class UserService {
 
   getCustomerProfile(custID) {
     axios.defaults.headers.common.authorization = localStorage.getItem('token');
-    return axios.get(`${API_URL}customerprofile`, { params: { custID: custID } }, { withCredentials: true });
+    return axios.get(`${API_URL}customerProfile`, { params: { custID: custID } }, { withCredentials: true });
   }
 
   getRestaurantProfile(restID) {

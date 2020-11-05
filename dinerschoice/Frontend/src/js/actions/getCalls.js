@@ -1,5 +1,7 @@
 import {
-    SET_MESSAGE, GET_RESTAURANT_PROFILE, GET_RESTAURANT_PROFILE_ERROR, GET_REST_ORDER, GET_REST_EVENTS,
+    SET_MESSAGE,
+    GET_RESTAURANT_PROFILE, GET_RESTAURANT_PROFILE_ERROR,
+    GET_REST_ORDER, GET_REST_EVENTS, GET_CUSTOMER_PROFILE,
 } from '../constants/action-types';
 
 import UserServices from '../services/user.service';
@@ -37,6 +39,20 @@ export const getRestaurantEvents = () => (dispatch) => UserServices.getEvents()
     console.log('axios response: ', response);
     dispatch({
       type: GET_REST_EVENTS,
+      payload: response.data,
+    });
+    dispatch({
+      type: SET_MESSAGE,
+      payload: response.data.message,
+    });
+    return Promise.resolve();
+  });
+
+export const getCustomerProfile = (custID) => (dispatch) => UserServices.getCustomerProfile(custID)
+  .then((response) => {
+    console.log('axios response: ', response);
+    dispatch({
+      type: GET_CUSTOMER_PROFILE,
       payload: response.data,
     });
     dispatch({

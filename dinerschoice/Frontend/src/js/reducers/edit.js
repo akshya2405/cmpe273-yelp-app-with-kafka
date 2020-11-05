@@ -19,7 +19,7 @@ const user = {
   id: localStorage.getItem('id'),
 };
 
-const initialState = user ? { isEdited: false } : { isEdited: false, user: null, profile: null };
+const initialState = {};
 
 export default function (state = initialState, action) {
   const { type, payload } = action;
@@ -83,31 +83,32 @@ export default function (state = initialState, action) {
         isLoggedIn: false,
       };
 
-    case GET_CUSTOMER_PROFILE:
+    case LOOKUP_RESTAURANTS:
+      console.log('in reducer', JSON.stringify(payload));
       return {
         ...state,
-        users: action.payload,
+        restaurantList: payload,
+      };
+
+    case GET_CUSTOMER_PROFILE:
+      console.log(JSON.stringify(payload));
+      return {
+        ...state,
+        cust_profile: payload.profile,
         loading: false,
       };
 
     case CUSTOMER_PROFILE_EDIT:
       return {
         ...state,
-        isLoggedIn: true,
-        payload: user,
+        cust_profile: payload,
       };
 
     case CUSTOMER_PROFILE_EDIT_ERROR:
       return {
         ...state,
-        isLoggedIn: false,
       };
-    case LOOKUP_RESTAURANTS:
-      return {
-        ...state,
-        results: action.payload,
-        isLoggedIn: false,
-      }
+
     default:
       return state;
   }

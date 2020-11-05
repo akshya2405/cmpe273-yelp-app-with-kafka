@@ -8,11 +8,11 @@ import {
   PLACE_ORDER, PLACE_ORDER_ERROR,
 } from '../constants/action-types';
 
-const user = JSON.parse(localStorage.getItem('user'));
+// const user = JSON.parse(localStorage.getItem('user'));
+//
+// const initialState = { isAdded: false, user };
 
-const initialState = { isAdded: false, user };
-
-export default function (state = initialState, action) {
+export default function (state = {}, action) {
   const { type, payload } = action;
   switch (type) {
     case ADD_DISH:

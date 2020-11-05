@@ -53,7 +53,7 @@ class CustViewMenu extends Component {
   componentDidMount() {
     // console.log('In restaurant menu did mount', this.props.state.restaurantID);
     // console.log('restID: ', this.props.state.restaurantID);
-    UserServices.getMenu(this.props.state.restaurantID).then(
+    UserServices.getMenu(this.props.state.id).then(
       (response) => {
         // console.log('response: ', response.data);
         if (!response.data) {
@@ -172,7 +172,7 @@ class CustViewMenu extends Component {
       return <Redirect to="/login" />;
     }
     // console.log('In menu view');
-    const allowedServices = this.props.state.mode.split(',').filter((x) => ['Delivery', 'Curbside pickup', 'Pick up'].includes(x));
+    const allowedServices = this.props.state ? this.props.state.mode.split(',').filter((x) => ['Delivery', 'Curbside pickup', 'Pick up'].includes(x)) : ['No modes to display'];
     const services = [{ value: '', text: 'Select' }];
     allowedServices.forEach((service) => {
       services.push({ value: service, text: service });

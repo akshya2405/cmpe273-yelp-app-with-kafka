@@ -1,7 +1,6 @@
 /* eslint-disable linebreak-style */
 /* eslint-disable import/named */
 import { combineReducers } from 'redux';
-import storage from 'redux-persist/lib/storage';
 import auth from './auth';
 import message from './message';
 import edit from './edit';
@@ -17,8 +16,7 @@ const initialState = {};
 
 const rootReducer = (state, action) => {
   if (action.type === LOGOUT) {
-    storage.removeItem('persist:root');
-    state = initialState;
+    return { auth: { isLoggedIn: false }, edit: initialState, message: initialState };
   }
   return combinedReducer(state, action);
 };

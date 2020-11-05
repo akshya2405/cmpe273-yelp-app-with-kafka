@@ -11,6 +11,8 @@ const editMenu = require('./services/editMenu');
 const getRestOrders = require('./services/getRestOrders');
 const getRestEvents = require('./services/getRestEvents');
 const editEvents = require('./services/editEvents');
+const lookupService = require('./services/lookupService');
+const customerProfile = require('./services/customerProfile');
 
 connect.connect().then(dbConn => {
     var consumer = connection.getConsumer();
@@ -195,6 +197,50 @@ connect.connect().then(dbConn => {
                     return;
                 });
                 break;
+
+            case "lookup_request":
+                console.log("In server.js - lookup_request case");
+                console.log('data in server: ', data.data);
+                lookupService.handle_lookup(data.data, dbConn, function (err, res) {
+                    var payloads = [
+                        {
+                            topic: data.replyTo,
+                            messages: JSON.stringify({
+                                correlationId: data.correlationId,
+                                data: res
+                            }),
+                            partition: 0
+                        }
+                    ];
+                    producer.send(payloads, function (err, data) {
+                        if (err)
+                            console.log(err);
+                    });
+                    return;
+                });
+                break;
+
+            case "cust_profile_request":
+                console.log("In server.js - cust_profile_request case");
+                customerProfile.handle_profile(data.data, dbConn, function (err, res) {
+                    var payloads = [
+                        {
+                            topic: data.replyTo,
+                            messages: JSON.stringify({
+                                correlationId: data.correlationId,
+                                data: res
+                            }),
+                            partition: 0
+                        }
+                    ];
+                    producer.send(payloads, function (err, data) {
+                        if (err)
+                            console.log(err);
+                    });
+                    return;
+                });
+                break;
+
         }
     });
 });

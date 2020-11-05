@@ -12,12 +12,12 @@ function handle_edit_profile(msg, db, callback) {
         let collectionName = '';
         const { id, category, ...details } = msg;
         const findId = new mongo.ObjectID(id);
+        console.log(findId);
         if(category === 'Restaurant') {
           collectionName = db.collection('restaurantProfile');
         } else {
           collectionName = db.collection('customerProfiles');
         }
-
         collectionName.findOneAndUpdate({ id: findId },
             {$set: details}, options, function (error, result) {
             if (error) {
@@ -32,10 +32,10 @@ function handle_edit_profile(msg, db, callback) {
               res.profile = result.value;
               callback(null, res);
             } else {
-                console.log('in else');
-                res.status = 401;
-                res.message = 'Record not found';
-                callback(null, res);
+              console.log('in else');
+              res.status = 401;
+              res.message = 'Record not found';
+              callback(null, res);
             }
         });
   // });

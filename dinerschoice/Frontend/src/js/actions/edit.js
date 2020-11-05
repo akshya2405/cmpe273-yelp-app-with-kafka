@@ -37,6 +37,7 @@ export const editCustomerProfile = (updateDetails) => (dispatch) => EditService.
     (response) => {
       dispatch({
         type: CUSTOMER_PROFILE_EDIT,
+        payload: response.data,
       });
       dispatch({
         type: SET_MESSAGE,

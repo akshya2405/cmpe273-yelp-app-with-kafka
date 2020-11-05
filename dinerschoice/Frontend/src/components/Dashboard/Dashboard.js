@@ -2,9 +2,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import '../../App.css';
-import LookupService from '../../js/services/lookup.service';
 import DashWidget from "../../js/helpers/DashWidget";
 import RestaurantMap from "../Maps/RestaurantMap";
+import { lookupRestaurants } from '../../js/actions/lookup';
+import {clearMessage} from "../../js/actions/message";
 
 class Dashboard extends Component {
   constructor(props) {
@@ -26,12 +27,11 @@ class Dashboard extends Component {
     this.locationChangeHandler = this.locationChangeHandler.bind(this);
   }
 
-
   componentDidMount() {
       if(this.props.location.state && this.props.location.state.lookupParams) {
         this.state.lookupParams = this.props.location.state.lookupParams;
       }
-      LookupService.dashboardLookup(this.state.lookupParams)
+      this.props.dispatch(lookupRestaurants(this.state.lookupParams))
             .then((results) => {
               this.setState({
                 success: true,
@@ -49,7 +49,9 @@ class Dashboard extends Component {
             });
       }
 
-
+    componentWillUnmount() {
+        this.props.dispatch(clearMessage());
+    }
 
   modeChangeHandler(e) {
 
@@ -193,13 +195,12 @@ class Dashboard extends Component {
 
 }
 
-function mapStateToProps(state) {
-  console.log(state);
-  const { user } = state.auth;
-  return {
-    user,
-  };
-}
+const mapStateToProps = (state) => ({
+    // console.log('In mapstate to props');
+    auth: state.auth,
+    edit: state.edit,
+    message: state.message,
+});
 
 // export Home Component
 export default connect(mapStateToProps)(Dashboard);

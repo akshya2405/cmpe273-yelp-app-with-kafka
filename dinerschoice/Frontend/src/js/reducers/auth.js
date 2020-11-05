@@ -1,6 +1,6 @@
 /* eslint-disable linebreak-style */
 import {
-  SIGN_UP, SIGN_UP_ERROR, LOGIN, LOGIN_ERROR, LOGOUT,
+  SIGN_UP, SIGN_UP_ERROR, LOGIN, LOGIN_ERROR,
 } from '../constants/action-types';
 
 const user = {
@@ -10,7 +10,7 @@ const user = {
   id: localStorage.getItem('id'),
 };
 
-const initialState = user ? { isLoggedIn: true, user } : { isLoggedIn: false, user: null };
+const initialState = {};
 
 export default function (state = initialState, action) {
   const { type, payload } = action;
@@ -28,10 +28,16 @@ export default function (state = initialState, action) {
       };
 
     case LOGIN:
+      console.log('login reducer: ', user);
       return {
         ...state,
         isLoggedIn: true,
-        user: user,
+        user: {
+          token: localStorage.getItem('token'),
+          category: localStorage.getItem('category'),
+          email: localStorage.getItem('email'),
+          id: localStorage.getItem('id'),
+        },
       };
 
     case LOGIN_ERROR:
@@ -39,11 +45,6 @@ export default function (state = initialState, action) {
         ...state,
         isLoggedIn: false,
         user: null,
-      };
-
-    case LOGOUT:
-      return {
-        isLoggedIn: false,
       };
 
     default:

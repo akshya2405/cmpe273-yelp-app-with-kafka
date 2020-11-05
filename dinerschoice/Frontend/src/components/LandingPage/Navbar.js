@@ -33,6 +33,7 @@ const navbarRestaurant = (
     <li><NavLink to="/menu" activeStyle={{ background: 'white', color: 'red' }}>Menu</NavLink></li>
     <li><NavLink to="/orders" activeStyle={{ background: 'white', color: 'red' }}>Orders</NavLink></li>
     <li><NavLink to="/events" activeStyle={{ background: 'white', color: 'red' }}>Events</NavLink></li>
+    <li><NavLink to="/messages" activeStyle={{ background: 'white', color: 'red' }}>Messages</NavLink></li>
   </ul>
 );
 
@@ -110,7 +111,7 @@ class Navbar extends Component {
   render() {
     const { auth } = this.props;
     let navLogin = null;
-    { auth.isLoggedIn ? (
+    { auth && auth.isLoggedIn ? (
       navLogin = (
         <ul className="nav navbar-nav navbar-right">
           <li>
@@ -180,6 +181,5 @@ const mapStateToProps = (state) => ({
   edit: state.edit,
   message: state.message,
 });
-
 
 export default connect(mapStateToProps, { logout })(Navbar);

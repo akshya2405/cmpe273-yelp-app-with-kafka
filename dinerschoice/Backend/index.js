@@ -9,16 +9,16 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const cors = require('cors');
 
-const dbConnection = require('./dbConnection');
-const verifyToken = require('./middleware/authenticateToken');
-const restaurantProfile = require('./actions/restaurantProfile');
-const customerProfile = require('./actions/getCustProfile');
-const customerProfileUpdate = require('./actions/customerProfileUpdate');
-const getMenu = require('./actions/getMenu');
-const menuUpdate = require('./actions/menuUpdate');
-const getEvents = require('./actions/getEvents');
-const eventUpdate = require('./actions/eventUpdate');
-const getRegistrationList = require('./actions/getRegistrationList');
+// const dbConnection = require('./dbConnection');
+// const verifyToken = require('./middleware/authenticateToken');
+// const restaurantProfile = require('./actions/restaurantProfile');
+// const customerProfile = require('./actions/getCustProfile');
+// const customerProfileUpdate = require('./actions/customerProfileUpdate');
+// const getMenu = require('./actions/getMenu');
+// const menuUpdate = require('./actions/menuUpdate');
+// const getEvents = require('./actions/getEvents');
+// const eventUpdate = require('./actions/eventUpdate');
+// const getRegistrationList = require('./actions/getRegistrationList');
 const getUpcomingEvents = require('./actions/getUpcomingEvents');
 const getRegisteredEvents = require('./actions/getRegisteredEvents');
 const registerfor = require('./actions/registerfor');
@@ -68,7 +68,8 @@ const EditMenu = require('./Routes/EditMenu');
 const RestOrders = require('./Routes/RestOrders');
 const RestEvents = require('./Routes/RestEvents');
 const EditEvents = require('./Routes/EditEvents');
-
+const LookupService = require('./Routes/LookupService');
+const CustProfile = require('./Routes/CustProfile');
 
 app.use('/user', Login);
 app.use('/user', Signup);
@@ -78,45 +79,8 @@ app.use('/', EditMenu);
 app.use('/', RestOrders);
 app.use('/', RestEvents);
 app.use('/', EditEvents);
-
-// app.post('/eventsUpdate', (req, res) => {
-//   // console.log('Inside event update');
-//   // console.log('req: ', req.body.updateDetails);
-//   eventUpdate.eventUpdate(req)
-//     .then(() => {
-//       res.writeHead(200, {
-//         'Content-Type': 'application/json',
-//       });
-//       res.end();
-//     })
-//     .catch((err) => {
-//       // console.log(err);
-//       res.writeHead(400, '*** Something went wrong. Please try again later ****', {
-//         'Content-Type': 'text/plain',
-//       });
-//       res.end();
-//     });
-// });
-app.get('/registrationList', (req, res) => {
-  // console.log('Inside get registration list');
-  // console.log('req: ', req.query.eventid);
-  // console.log('req header:', req.headers['x-access-token']);
-  getRegistrationList.getRegistrationList(req)
-    .then((output) => {
-      // console.log(output);
-      res.writeHead(200, {
-        'Content-Type': 'application/json',
-      });
-      res.end(JSON.stringify(output));
-    })
-    .catch((err) => {
-      // console.log(err);
-      res.writeHead(400, '*** Something went wrong. Please try again later ****', {
-        'Content-Type': 'text/plain',
-      });
-      res.end();
-    });
-});
+app.use('/', LookupService);
+app.use('/', CustProfile);
 
 app.get('/allEvents', (req, res) => {
   // console.log('Inside get registration list');
@@ -235,25 +199,6 @@ app.post('/upload', (req, res) => {
       });
       res.end();
     });
-});
-
-app.post('/lookup', (req, res) => {
-  console.log(req);
-  lookup.lookup(req)
-    .then((result) => {
-      res.writeHead(200, {
-        'Content-Type': 'application/json',
-      });
-      res.end(JSON.stringify(result));
-    })
-    .catch((err) => {
-      // console.log(err);
-      res.writeHead(400, '*** Something went wrong. Please try again later ****', {
-        'Content-Type': 'text/plain',
-      });
-      res.end();
-    });
-  res.end();
 });
 
 app.post('/placeOrder', (req, res) => {

@@ -4,13 +4,11 @@ import axios from 'axios';
 import { API_URL } from '../config/config';
 
 class LookupService {
-
   dashboardLookup(lookupParams) {
-
     return axios
-      .post(`${API_URL}lookup`, {lookupParams: lookupParams})
+      .post(`${API_URL}lookup`, { lookupParams: lookupParams })
       .then((response) => {
-        return response
+        return response;
       });
   }
 }

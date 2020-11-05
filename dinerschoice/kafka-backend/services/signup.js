@@ -42,6 +42,7 @@ function handle_signup(msg, db, callback) {
             collection = db.collection('restaurantProfile');
           } else {
             profile = {
+              id: insertId,
               fname: msg.fname,
               lname: msg.lname,
               email: msg.email,

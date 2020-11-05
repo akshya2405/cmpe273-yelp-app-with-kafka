@@ -19,19 +19,21 @@ class DashWidget extends Component {
     //     });
     //     window.location.reload();
     // }
-
-    render() {
-        // eslint-disable-next-line react/prop-types
-        return (
-
-            (this.props.results.map((result) => (
-                <div className="dashwidget" id={result.restaurantID} >
-                    <table className="table-borderless table-condensed table-hover">
-                        <tr>
-                            <td width="200px"><img src={result.image} width="180px" height="180px"/></td>
-                            <td valign="top" align="justify">
-                                <div>
-                                    <Link to={{ pathname: '/restaurantDashboard', state: { restID: result.restaurantID } }}>
+  render() {
+    // eslint-disable-next-line react/prop-types
+    return (
+      (this.props.results.map((result) => (
+        <div className="dashwidget" id={result.restaurantID}>
+        <table className="table-borderless table-condensed table-hover">
+          <tr>
+            {
+              result.profileImage ? (
+                <td width="200px"><img src={result.profileImage[0]} width="180px" height="180px" /></td>) : (
+                <td width="200px"><img src='images/uploads/restaurant-placeholder.png' width="180px" height="180px" /></td>)
+            }
+            <td valign="top" align="justify">
+            <div>
+                                    <Link to={{ pathname: '/restaurantDashboard', state: { restID: result.id } }}>
                                         <h3>{result.name}</h3>
                                     </Link>
                                     <i>{result.description}</i><br/>
