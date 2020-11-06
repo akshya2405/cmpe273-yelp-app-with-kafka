@@ -50,7 +50,7 @@ class UserService {
 
   getOrders() {
     axios.defaults.headers.common.authorization = localStorage.getItem('token');
-    alert(`getorders: ${localStorage.getItem('id')}`);
+    // alert(`getorders: ${localStorage.getItem('id')}`);
     return axios.get(`${API_URL}getOrders`,
       { params: { id: localStorage.getItem('id'), category: localStorage.getItem('category') } }, { withCredentials: true });
   }

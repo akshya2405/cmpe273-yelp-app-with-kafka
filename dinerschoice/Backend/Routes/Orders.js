@@ -2,9 +2,9 @@ const express = require('express');
 
 const router = express.Router();
 const kafka = require('./kafka/client');
-// const { checkAuth } = require('../config/passport');
+const { checkAuth } = require('../config/passport');
 
-router.get('/getOrders', (req, res) => {
+router.get('/getOrders', checkAuth, (req, res) => {
   console.log(req.query);
   const payload = {
     category: req.query.category,

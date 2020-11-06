@@ -9,7 +9,6 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
 
-import UserServices from '../../js/services/user.service';
 import { getOrders } from '../../js/actions/getCalls';
 
 class CustomerOrders extends Component {
@@ -35,42 +34,17 @@ class CustomerOrders extends Component {
       });
     }
     console.log('filtered results: ', this.state.filteredResults);
-    // UserServices.getCustomerOrders().then(
-    //   (response) => {
-    //     // console.log('response: ', response.data);
-    //     // console.log('orders: ', response.data.orders);
-    //     // console.log('orderitems: ', response.data.orderItems);
-    //     this.setState({
-    //       orders: response.data.orders,
-    //       orderItems: response.data.orderItems,
-    //     });
-    //     const result = this.mapOrderItems();
-    //     this.setState({
-    //       ordersAndItemsArray: result,
-    //       filteredResults: result,
-    //     });
-    //   },
-    //   (error) => {
-    //     this.setState({
-    //       filteredResults: [],
-    //     });
-    //   },
-    // );
   }
 
-  // mapOrderItems() {
-  //   // console.log('in map items');
-  //   const ordersAndItemsArray = [];
-  //   if (this.state.orderItems && this.state.orders) {
-  //     this.state.orders.map((order) => {
-  //       const thisOrderItems = this.state.orderItems.filter((orderItem) => orderItem.orderID === order.orderID);
-  //       const orderAndItems = { ...order, orderItems: thisOrderItems };
-  //       ordersAndItemsArray.push(orderAndItems);
-  //     });
-  //     // console.log(ordersAndItemsArray);
-  //   }
-  //   return ordersAndItemsArray;
-  // }
+  componentDidUpdate(prevProps) {
+    if (this.props.edit.orders !== prevProps.edit.orders) {
+      // alert('change in props');
+      this.setState({
+        ordersAndItemsArray: this.props.edit.orders,
+        filteredResults: this.props.edit.orders,
+      });
+    }
+  }
 
   filterChangeHandler(e) {
     if (e.target.checked) {
@@ -115,7 +89,7 @@ class CustomerOrders extends Component {
     // console.log('user: ', currentUser);
 
     // console.log('In customer orders');
-    alert(JSON.stringify(this.state.filteredResults));
+    // alert(JSON.stringify(this.state.filteredResults));
 
     return (
       <div>

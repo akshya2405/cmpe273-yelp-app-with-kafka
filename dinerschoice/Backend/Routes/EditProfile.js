@@ -4,7 +4,7 @@ const router = express.Router();
 const kafka = require('./kafka/client');
 const { checkAuth } = require('../config/passport');
 // TODO: add details to payload
-router.post('/editProfile', (req, res) => {
+router.post('/editProfile', checkAuth, (req, res) => {
   const { updateDetails } = req.body;
   const payload = { ...updateDetails };
   console.log(payload);

@@ -2,9 +2,9 @@ const express = require('express');
 
 const router = express.Router();
 const kafka = require('./kafka/client');
-// const { checkAuth } = require('../config/passport');
+const { checkAuth } = require('../config/passport');
 
-router.get('/customerProfile', (req, res) => {
+router.get('/customerProfile', checkAuth, (req, res) => {
   console.log(req.query);
   const payload = {
     id: req.query.custID,

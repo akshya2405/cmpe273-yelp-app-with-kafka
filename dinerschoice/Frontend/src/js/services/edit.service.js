@@ -13,9 +13,9 @@ const options = {
 class EditService {
   editRestaurantProfile(updateDetailsInput, uploadedImage) {
     const updateDetails = updateDetailsInput;
-    alert(uploadedImage.image);
+    // alert(uploadedImage.image);
     if (uploadedImage) {
-      alert('in if');
+      // alert('in if');
       const multipartOptions = {
         headers: authHeaderMultipart(),
         withCredentials: true,
@@ -26,11 +26,11 @@ class EditService {
         .post(`${API_URL}upload`, formData, multipartOptions)
         // .then((response) => response);
         .then((response) => {
-          alert(response.data);
+          // alert(response.data);
           // {...obj, response.data}
 
           updateDetails.profileImage = [...updateDetails.profileImage, response.data.fileName];
-          alert(JSON.stringify(updateDetails));
+          // alert(JSON.stringify(updateDetails));
           return axios
             .post(`${API_URL}editProfile`, { updateDetails }, options)
             .then((response) => response);

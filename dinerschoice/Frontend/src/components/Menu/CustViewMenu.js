@@ -10,7 +10,6 @@ import { connect } from 'react-redux';
 import 'react-multi-carousel/lib/styles.css';
 import { Select, CaretIcon, ModalCloseButton } from 'react-responsive-select';
 
-import UserServices from '../../js/services/user.service';
 import { placeOrder } from '../../js/actions/add';
 import 'react-responsive-select/dist/react-responsive-select.css';
 
@@ -104,22 +103,21 @@ class CustViewMenu extends Component {
   }
 
   quantityChangeHandler(e) {
-    alert('qty value'+ e.target.value);
+    // alert('qty value'+ e.target.value);
     this.state.quantity[e.target.id] = e.target.value;
-    alert(JSON.stringify(this.state.quantity));
+    // alert(JSON.stringify(this.state.quantity));
   }
 
   addToCart(dish) {
     // console.log(dish._id);
     // console.log(this.state.quantity.get(dish._id));
     let quantity;
-    alert('quant: ' + dish._id in this.state.quantity);
+    // alert('quant: ' + dish._id in this.state.quantity);
     if (dish._id in this.state.quantity) {
-      alert('xxx: ' + parseInt(this.state.quantity[dish._id]));
+      // alert('xxx: ' + parseInt(this.state.quantity[dish._id]));
       quantity = parseInt(this.state.quantity[dish._id]);
       // this.state.quantity[dish._id] = 1;
-    }
-    else quantity = 1;
+    } else quantity = 1;
     const price = parseFloat(dish.price) * quantity;
     //dish.price = price;
     const item = {
@@ -165,6 +163,8 @@ class CustViewMenu extends Component {
       items: JSON.stringify(this.state.mycart),
       restID: this.props.profile.id,
       restName: this.props.profile.name,
+      fname: this.props.cust_profile.fname,
+      lname: this.props.cust_profile.lname,
       custID: this.props.user.id,
       total: this.state.totalPrice,
       orderStatus: 'New Order',
@@ -541,10 +541,12 @@ function mapStateToProps(state) {
   const { user } = state.auth;
   const { profile } = state.edit;
   const { dishes } = state.edit;
+  const { cust_profile } = state.edit;
   return {
     user,
     profile,
     dishes,
+    cust_profile,
   };
 }
 

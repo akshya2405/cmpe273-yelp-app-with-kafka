@@ -158,9 +158,9 @@ export const placeOrder = (updateDetails) => (dispatch) => AddService.placeOrder
 
 export const updateOrderStatus = (updateOrder) => (dispatch) => AddService.updateOrderStatus(updateOrder)
   .then((response) => {
-    // console.log('Updating order status');
     dispatch({
       type: ORDER_STATUS_UPDATE,
+      payload: response.data,
     });
     dispatch({
       type: SET_MESSAGE,

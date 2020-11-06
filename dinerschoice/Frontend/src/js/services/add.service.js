@@ -39,7 +39,7 @@ class AddService {
     });
 
     return Promise.all(promises).then((results) => {
-      alert('all promises resolved: ' + JSON.stringify(updateList) + JSON.stringify(deleteIds));
+      // alert('all promises resolved: ' + JSON.stringify(updateList) + JSON.stringify(deleteIds));
       return axios
           .post(`${API_URL}menuUpdate`, { restID, updateList:updateList, deleteIds }, options)
           .then((response) => response);

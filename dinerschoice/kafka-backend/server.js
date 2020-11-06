@@ -11,6 +11,7 @@ const editEvents = require('./services/editEvents');
 const lookupService = require('./services/lookupService');
 const customerProfile = require('./services/customerProfile');
 const placeOrder = require('./services/placeOrder');
+const updateOrderStatus = require('./services/updateOrderStatus');
 
 connect.connect().then(dbConn => {
     var consumer = connection.getConsumer();
@@ -260,6 +261,26 @@ connect.connect().then(dbConn => {
                 });
                 break;
 
+            case "update_order_request":
+                console.log("In server.js - place_order_request case");
+                updateOrderStatus.handle_update_order(data.data, dbConn, function (err, res) {
+                    var payloads = [
+                        {
+                            topic: data.replyTo,
+                            messages: JSON.stringify({
+                                correlationId: data.correlationId,
+                                data: res
+                            }),
+                            partition: 0
+                        }
+                    ];
+                    producer.send(payloads, function (err, data) {
+                        if (err)
+                            console.log(err);
+                    });
+                    return;
+                });
+                break;
         }
     });
 });

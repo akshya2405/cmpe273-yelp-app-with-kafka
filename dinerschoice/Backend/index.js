@@ -71,6 +71,7 @@ const EditEvents = require('./Routes/EditEvents');
 const LookupService = require('./Routes/LookupService');
 const CustProfile = require('./Routes/CustProfile');
 const PlaceOrder = require('./Routes/PlaceOrder');
+const UpdateOrderStatus = require('./Routes/UpdateOrderStatus');
 
 app.use('/user', Login);
 app.use('/user', Signup);
@@ -83,6 +84,7 @@ app.use('/', EditEvents);
 app.use('/', LookupService);
 app.use('/', CustProfile);
 app.use('/', PlaceOrder);
+app.use('/', UpdateOrderStatus);
 
 app.get('/allEvents', (req, res) => {
   // console.log('Inside get registration list');
@@ -221,26 +223,26 @@ app.post('/upload', (req, res) => {
 //       res.end();
 //     });
 // });
-
-app.get('/getcustomerOrders', (req, res) => {
-  // console.log('Inside get customer orders');
-  // console.log('req header:', req.headers['x-access-token']);
-  getCustomerOrders.getCustomerOrders(req)
-    .then((output) => {
-      // console.log('output: ', output);
-      res.writeHead(200, {
-        'Content-Type': 'application/json',
-      });
-      res.end(JSON.stringify(output));
-    })
-    .catch((err) => {
-      // console.log(err);
-      res.writeHead(400, '*** Something went wrong. Please try again later ****', {
-        'Content-Type': 'text/plain',
-      });
-      res.end();
-    });
-});
+//
+// app.get('/getcustomerOrders', (req, res) => {
+//   // console.log('Inside get customer orders');
+//   // console.log('req header:', req.headers['x-access-token']);
+//   getCustomerOrders.getCustomerOrders(req)
+//     .then((output) => {
+//       // console.log('output: ', output);
+//       res.writeHead(200, {
+//         'Content-Type': 'application/json',
+//       });
+//       res.end(JSON.stringify(output));
+//     })
+//     .catch((err) => {
+//       // console.log(err);
+//       res.writeHead(400, '*** Something went wrong. Please try again later ****', {
+//         'Content-Type': 'text/plain',
+//       });
+//       res.end();
+//     });
+// });
 
 // start your server on port 3001
 app.listen(3001);

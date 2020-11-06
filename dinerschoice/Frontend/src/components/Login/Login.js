@@ -108,7 +108,7 @@ class Login extends Component {
             window.location.reload();
           } else {
             // console.log('Else Redirecting to : ', this.state.category);
-            history.push('/dashboard');
+            history.push('/profile');
             window.location.reload();
           }
           // history.push(`/dashboard/${this.state.category}`);
