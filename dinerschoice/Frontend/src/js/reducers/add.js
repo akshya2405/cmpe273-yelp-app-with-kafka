@@ -94,7 +94,7 @@ export default function (state = {}, action) {
     case PLACE_ORDER:
       return {
         ...state,
-        users: action.payload,
+        orders: action.payload,
         isAdded: true,
         loading: true,
       };

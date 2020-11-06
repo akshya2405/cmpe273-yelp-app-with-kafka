@@ -37,7 +37,7 @@ class CustViewMenu extends Component {
     super(props);
     this.state = {
       menu: [],
-      quantity: new Map(),
+      quantity: {},
       hasMenu: false,
       mycart: [],
       totalPrice: 0.00,
@@ -50,58 +50,84 @@ class CustViewMenu extends Component {
     this.deliveryTypeChangeHandler = this.deliveryTypeChangeHandler.bind(this);
   }
 
+  // componentDidMount() {
+  //   // console.log('In restaurant menu did mount', this.props.state.restaurantID);
+  //   // console.log('restID: ', this.props.state.restaurantID);
+  //   UserServices.getMenu(this.props.state.id).then(
+  //     (response) => {
+  //       // console.log('response: ', response.data);
+  //       if (!response.data) {
+  //         this.setState({
+  //           menu: [],
+  //           hasMenu: false,
+  //         });
+  //       } else {
+  //         this.setState({
+  //           menu: response.data,
+  //           hasMenu: true,
+  //         });
+  //       }
+  //     },
+  //     (error) => {
+  //       this.setState({
+  //         menu:
+  //                       (error.response
+  //                           && error.response.data
+  //                           && error.response.data.message)
+  //                       || error.message
+  //                       || error.toString(),
+  //       });
+  //     },
+  //   );
+  //   splitMenu(this.state.menu);
+  // }
+
   componentDidMount() {
-    // console.log('In restaurant menu did mount', this.props.state.restaurantID);
-    // console.log('restID: ', this.props.state.restaurantID);
-    UserServices.getMenu(this.props.state.id).then(
-      (response) => {
-        // console.log('response: ', response.data);
-        if (!response.data) {
-          this.setState({
-            menu: [],
-            hasMenu: false,
-          });
-        } else {
-          this.setState({
-            menu: response.data,
-            hasMenu: true,
-          });
-        }
-      },
-      (error) => {
-        this.setState({
-          menu:
-                        (error.response
-                            && error.response.data
-                            && error.response.data.message)
-                        || error.message
-                        || error.toString(),
-        });
-      },
-    );
+    const { auth, dishes, profile } = this.props;
+    console.log(JSON.stringify(auth));
+    console.log(JSON.stringify(dishes));
+    console.log(JSON.stringify(profile));
+    if (dishes) {
+      console.log(dishes);
+      this.setState({
+        menu: dishes,
+      });
+      // , function () { this.paginateMenu(this.state.menu); }
+      // this.paginateMenu(this.state.menu);
+    } else {
+      this.setState({
+        menu: [],
+      });
+    }
     splitMenu(this.state.menu);
+    // alert(JSON.stringify(this.state.menu));
   }
 
   quantityChangeHandler(e) {
-    // console.log('qty value', e.target.value);
-    this.state.quantity.set(e.target.id, e.target.value);
-    // console.log(this.state.quantity);
+    alert('qty value'+ e.target.value);
+    this.state.quantity[e.target.id] = e.target.value;
+    alert(JSON.stringify(this.state.quantity));
   }
 
   addToCart(dish) {
-    // console.log(dish.dishID);
-    // console.log(this.state.quantity.get(dish.dishID.toString()));
+    // console.log(dish._id);
+    // console.log(this.state.quantity.get(dish._id));
     let quantity;
-    if (this.state.quantity.has(dish.dishID.toString())) quantity = parseInt(this.state.quantity.get(dish.dishID.toString()));
+    alert('quant: ' + dish._id in this.state.quantity);
+    if (dish._id in this.state.quantity) {
+      alert('xxx: ' + parseInt(this.state.quantity[dish._id]));
+      quantity = parseInt(this.state.quantity[dish._id]);
+      // this.state.quantity[dish._id] = 1;
+    }
     else quantity = 1;
     const price = parseFloat(dish.price) * quantity;
-    dish.price = price;
+    //dish.price = price;
     const item = {
-      dishName: dish.dishName, dishID: dish.dishID, quantity, price: dish.price,
+      dishName: dish.dishName, _id: dish._id, quantity, price: price,
     };
-    const verify = (cart.filter((row) => row.dishID === item.dishID));
+    const verify = (cart.filter((row) => row._id === item._id));
     if (verify.length > 0) {
-      cart.splice((cart.findIndex((row) => row.dishID === verify[0].dishID)), 1);
+      cart.splice((cart.findIndex((row) => row._id === verify[0]._id)), 1);
     }
     // console.log('item: ', item);
     cart.push(item);
@@ -137,14 +163,14 @@ class CustViewMenu extends Component {
   placeOrder() {
     const data = {
       items: JSON.stringify(this.state.mycart),
-      restID: this.props.state.restaurantID,
+      restID: this.props.profile.id,
+      restName: this.props.profile.name,
+      custID: this.props.user.id,
       total: this.state.totalPrice,
       orderStatus: 'New Order',
       deliveryType: this.state.deliveryType,
       deliveryStatus: 'Order Received',
     };
-    // console.log(this.state.mycart);
-    // console.log('data: ', data);
 
     const { dispatch, history } = this.props;
 
@@ -172,7 +198,7 @@ class CustViewMenu extends Component {
       return <Redirect to="/login" />;
     }
     // console.log('In menu view');
-    const allowedServices = this.props.state ? this.props.state.mode.split(',').filter((x) => ['Delivery', 'Curbside pickup', 'Pick up'].includes(x)) : ['No modes to display'];
+    const allowedServices = this.props.profile ? this.props.profile.mode.split(',').filter((x) => ['Delivery', 'Curbside pickup', 'Pick up'].includes(x)) : ['No modes to display'];
     const services = [{ value: '', text: 'Select' }];
     allowedServices.forEach((service) => {
       services.push({ value: service, text: service });
@@ -208,7 +234,7 @@ class CustViewMenu extends Component {
                                         {' '}
                                         <span hidden={this.services.length === 0}>
                                           [Quantity:
-                                          <input type="number" id={dish.dishID} name="quantity" style={{ width: '50px' }} value={this.state.quantity.get(dish.dishID.toString())} min="1" onChange={this.quantityChangeHandler} />
+                                          <input type="number" id={dish._id} name="quantity" style={{ width: '50px' }} value={this.state.quantity[dish._id]} min="1" onChange={this.quantityChangeHandler} />
                                           ]
                                           <button type="button" className="btn btn-default btn-sm" onClick={() => this.addToCart(dish)}>
                                             <span className="glyphicon glyphicon-plus-sign" />
@@ -260,7 +286,7 @@ class CustViewMenu extends Component {
                                         {' '}
                                         <span hidden={this.services.length === 0}>
                                           [Quantity:
-                                          <input type="number" id={dish.dishID} name="quantity" style={{ width: '50px' }} value={this.state.quantity.get(dish.dishID.toString())} min="1" onChange={this.quantityChangeHandler} />
+                                          <input type="number" id={dish._id} name="quantity" style={{ width: '50px' }} value={this.state.quantity[dish._id]} min="1" onChange={this.quantityChangeHandler} />
                                           ]
                                           <button type="button" className="btn btn-default btn-sm" onClick={() => this.addToCart(dish)}>
                                             <span className="glyphicon glyphicon-plus-sign" />
@@ -312,7 +338,7 @@ class CustViewMenu extends Component {
                                         {' '}
                                         <span hidden={this.services.length === 0}>
                                           [Quantity:
-                                          <input type="number" id={dish.dishID} name="quantity" style={{ width: '50px' }} value={this.state.quantity.get(dish.dishID.toString())} min="1" onChange={this.quantityChangeHandler} />
+                                          <input type="number" id={dish._id} name="quantity" style={{ width: '50px' }} value={this.state.quantity[dish._id]} min="1" onChange={this.quantityChangeHandler} />
                                           ]
                                           <button type="button" className="btn btn-default btn-sm" onClick={() => this.addToCart(dish)}>
                                             <span className="glyphicon glyphicon-plus-sign" />
@@ -364,7 +390,7 @@ class CustViewMenu extends Component {
                                         {' '}
                                         <span hidden={this.services.length === 0}>
                                           [Quantity:
-                                          <input type="number" id={dish.dishID} name="quantity" style={{ width: '50px' }} value={this.state.quantity.get(dish.dishID.toString())} min="1" onChange={this.quantityChangeHandler} />
+                                          <input type="number" id={dish._id} name="quantity" style={{ width: '50px' }} value={this.state.quantity[dish._id]} min="1" onChange={this.quantityChangeHandler} />
                                           ]
                                           <button type="button" className="btn btn-default btn-sm" onClick={() => this.addToCart(dish)}>
                                             <span className="glyphicon glyphicon-plus-sign" />
@@ -416,7 +442,7 @@ class CustViewMenu extends Component {
                                         {' '}
                                         <span hidden={this.services.length === 0}>
                                           [Quantity:
-                                          <input type="number" id={dish.dishID} name="quantity" style={{ width: '50px' }} value={this.state.quantity.get(dish.dishID.toString())} min="1" onChange={this.quantityChangeHandler} />
+                                          <input type="number" id={dish._id} name="quantity" style={{ width: '50px' }} value={this.state.quantity[dish._id]} min="1" onChange={this.quantityChangeHandler} />
                                           ]
                                           <button type="button" className="btn btn-default btn-sm" onClick={() => this.addToCart(dish)}>
                                             <span className="glyphicon glyphicon-plus-sign" />
@@ -513,8 +539,12 @@ class CustViewMenu extends Component {
 
 function mapStateToProps(state) {
   const { user } = state.auth;
+  const { profile } = state.edit;
+  const { dishes } = state.edit;
   return {
     user,
+    profile,
+    dishes,
   };
 }
 

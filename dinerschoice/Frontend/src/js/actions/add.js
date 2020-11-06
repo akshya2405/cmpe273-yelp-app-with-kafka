@@ -134,9 +134,9 @@ export const addReview = (review) => (dispatch) => AddService.addReview(review)
 
 export const placeOrder = (updateDetails) => (dispatch) => AddService.placeOrder(updateDetails)
   .then((response) => {
-    // console.log('Placing order');
     dispatch({
       type: PLACE_ORDER,
+      payload: response.data,
     });
     dispatch({
       type: SET_MESSAGE,

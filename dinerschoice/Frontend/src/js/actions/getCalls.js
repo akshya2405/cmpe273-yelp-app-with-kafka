@@ -20,7 +20,7 @@ export const getRestaurantProfile = (user) => (dispatch) => UserServices.getRest
     return Promise.resolve(response.data);
   });
 
-export const getRestaurantOrders = () => (dispatch) => UserServices.getRestaurantOrders()
+export const getOrders = () => (dispatch) => UserServices.getOrders()
   .then((response) => {
     console.log('axios response: ', response);
     dispatch({

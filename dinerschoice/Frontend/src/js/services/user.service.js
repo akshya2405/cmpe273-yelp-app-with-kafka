@@ -48,13 +48,11 @@ class UserService {
     return axios.get(`${API_URL}getCustReviews`, { headers: authHeader() }, { withCredentials: true });
   }
 
-  getCustomerOrders() {
-    return axios.get(`${API_URL}getcustomerOrders`, { headers: authHeader() }, { withCredentials: true });
-  }
-
-  getRestaurantOrders() {
+  getOrders() {
     axios.defaults.headers.common.authorization = localStorage.getItem('token');
-    return axios.get(`${API_URL}getrestaurantOrders`, { params: { restID: localStorage.getItem('id') } }, { withCredentials: true });
+    alert(`getorders: ${localStorage.getItem('id')}`);
+    return axios.get(`${API_URL}getOrders`,
+      { params: { id: localStorage.getItem('id'), category: localStorage.getItem('category') } }, { withCredentials: true });
   }
 }
 

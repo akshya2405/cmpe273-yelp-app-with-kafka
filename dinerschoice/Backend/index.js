@@ -65,22 +65,24 @@ const Signup = require('./Routes/Signup');
 const RestProfile = require('./Routes/RestProfile');
 const EditProfile = require('./Routes/EditProfile');
 const EditMenu = require('./Routes/EditMenu');
-const RestOrders = require('./Routes/RestOrders');
+const Orders = require('./Routes/Orders');
 const RestEvents = require('./Routes/RestEvents');
 const EditEvents = require('./Routes/EditEvents');
 const LookupService = require('./Routes/LookupService');
 const CustProfile = require('./Routes/CustProfile');
+const PlaceOrder = require('./Routes/PlaceOrder');
 
 app.use('/user', Login);
 app.use('/user', Signup);
 app.use('/', RestProfile);
 app.use('/', EditProfile);
 app.use('/', EditMenu);
-app.use('/', RestOrders);
+app.use('/', Orders);
 app.use('/', RestEvents);
 app.use('/', EditEvents);
 app.use('/', LookupService);
 app.use('/', CustProfile);
+app.use('/', PlaceOrder);
 
 app.get('/allEvents', (req, res) => {
   // console.log('Inside get registration list');
@@ -201,24 +203,24 @@ app.post('/upload', (req, res) => {
     });
 });
 
-app.post('/placeOrder', (req, res) => {
-  // console.log(req.body);
-  // console.log(JSON.parse(req.body.order.items));
-  placeOrder.placeOrder(req)
-    .then((output) => {
-      res.writeHead(200, {
-        'Content-Type': 'application/json',
-      });
-      res.end(JSON.stringify(output));
-    })
-    .catch((err) => {
-      // console.log(err);
-      res.writeHead(400, '*** Something went wrong. Please try again later ****', {
-        'Content-Type': 'text/plain',
-      });
-      res.end();
-    });
-});
+// app.post('/placeOrder', (req, res) => {
+//   // console.log(req.body);
+//   // console.log(JSON.parse(req.body.order.items));
+//   placeOrder.placeOrder(req)
+//     .then((output) => {
+//       res.writeHead(200, {
+//         'Content-Type': 'application/json',
+//       });
+//       res.end(JSON.stringify(output));
+//     })
+//     .catch((err) => {
+//       // console.log(err);
+//       res.writeHead(400, '*** Something went wrong. Please try again later ****', {
+//         'Content-Type': 'text/plain',
+//       });
+//       res.end();
+//     });
+// });
 
 app.get('/getcustomerOrders', (req, res) => {
   // console.log('Inside get customer orders');

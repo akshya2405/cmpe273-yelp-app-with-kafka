@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Select, CaretIcon, ModalCloseButton } from 'react-responsive-select';
 
-import { getRestaurantOrders } from '../../js/actions/getCalls';
+import { getOrders } from '../../js/actions/getCalls';
 import 'react-responsive-select/dist/react-responsive-select.css';
 import { updateOrderStatus } from '../../js/actions/add';
 
@@ -51,7 +51,9 @@ class RestaurantOrders extends Component {
   }
 
   componentDidMount() {
-    this.props.getRestaurantOrders();
+    const id = localStorage.getItem('id');
+    const category = localStorage.getItem('category');
+    this.props.getOrders();
     if (this.props.edit.orders) {
       this.setState({
         ordersAndItemsArray: this.props.edit.orders,
@@ -333,4 +335,4 @@ const mapStateToProps = (state) => ({
   edit: state.edit,
 });
 
-export default connect(mapStateToProps, { getRestaurantOrders })(RestaurantOrders);
+export default connect(mapStateToProps, { getOrders })(RestaurantOrders);

@@ -10,6 +10,7 @@ var topics = [
     { topic: 'add_rest_events_request', partition: 0 },
     { topic: 'lookup_request', partition: 0 },
     { topic: 'cust_profile_request', partition: 0 },
+    { topic: 'place_order_request', partition: 0 },
 ];
 
 function ConnectionProvider() {
