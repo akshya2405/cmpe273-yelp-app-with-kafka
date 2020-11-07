@@ -24,12 +24,12 @@ mongoose.connect(mongoDB, options, (err, res) => {
 // Setup work and export for the JWT passport strategy
 function auth() {
   const opts = {
-    jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('bearer'),
+    jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('jwt'),
     secretOrKey: secret,
   };
   passport.use(
     new JwtStrategy(opts, (jwt_payload, callback) => {
-      const user_id = jwt_payload.id;
+      const user_id = mongoose.Types.ObjectId(jwt_payload.id);
       Users.findById(user_id, (err, results) => {
         if (err) {
           return callback(err, false);

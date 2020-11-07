@@ -10,6 +10,8 @@ function handle_get_events(msg, db, callback) {
     const findId = new mongo.ObjectID(msg.id);
     console.log('findId:', findId);
     let results = [];
+    let allEvents = [];
+    let registeredEvents = [];
     if (msg.category === 'Restaurant') {
         events.find({ restId: findId }).toArray(function (error, result) {
             if (error) {
@@ -58,7 +60,12 @@ function handle_get_events(msg, db, callback) {
         });
     } else {
         let results;
-        db.collection('registrationList').find({ custId: findId }).toArray(function (error, result) {
+        let find_ids = [];
+        (msg.ids).map((id) => {
+            find_ids.push(id);
+        })
+        console.log('find_ids: ', find_ids);
+        events.find({ _id: {$in: Object.values(find_ids) } }).toArray(function (error, result) {
             if (error) {
                 console.log(error);
                 res.status = 500
@@ -66,28 +73,29 @@ function handle_get_events(msg, db, callback) {
                 callback(null, res);
             }
             if (result) {
-                console.log(JSON.stringify(result));
-                results = { allEvents: result };
-                // callback(null, res);
-            } else {
-                console.log('in else');
-                res.status = 401;
-                res.message = 'Record not found';
-                // callback(null, res);
-            }
-        });
-
-        events.find({ date : { $gte : new Date() } }).toArray(function (error, result) {
-            if (error) {
-                console.log(error);
-                res.status = 500
-                res.message = 'Error occurred';
-                callback(null, res);
-            }
-            if (result) {
-                console.log(JSON.stringify(result));
-                results = { allEvents: result };
-                // callback(null, res);
+                console.log('registered list:', JSON.stringify(result));
+                registeredEvents = result;
+                events.find({ date : { $gte : new Date() } }).toArray(function (error, result) {
+                    if (error) {
+                        console.log(error);
+                        res.status = 500
+                        res.message = 'Error occurred';
+                        callback(null, res);
+                    }
+                    if (result) {
+                        console.log(JSON.stringify(result));
+                        allEvents = result;
+                        res.status = 200;
+                        res.events = {registeredEvents, allEvents};
+                        console.log('sending out', JSON.stringify(res.events));
+                        callback(null, res);
+                    } else {
+                        console.log('in else');
+                        res.status = 401;
+                        res.message = 'Record not found';
+                        callback(null, res);
+                    }
+                });
             } else {
                 console.log('in else');
                 res.status = 401;

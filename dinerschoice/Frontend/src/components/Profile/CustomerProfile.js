@@ -37,6 +37,16 @@ class CustomerProfile extends Component {
     this.props.getCustomerProfile(custID);
   }
 
+  // componentDidUpdate(prevProps) {
+  //   if (this.props.auth !== prevProps.auth) {
+  //     // alert('change in props');
+  //     this.setState({
+  //       ordersAndItemsArray: this.props.orders,
+  //       filteredResults: this.props.orders,
+  //     });
+  //   }
+  // }
+
   handleFollow() {
     console.log(this.props.location.state);
   }

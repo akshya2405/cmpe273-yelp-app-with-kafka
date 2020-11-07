@@ -8,7 +8,7 @@ import {
   CUSTOMER_PROFILE_EDIT_ERROR,
   LOOKUP_RESTAURANTS,
   GET_RESTAURANT_PROFILE_ERROR,
-  GET_REST_ORDER,
+  GET_REST_ORDER, GET_CUST_EVENTS,
   GET_REST_ORDER_ERROR, GET_REST_EVENTS, GET_REST_EVENTS_ERROR, EVENTS_UPDATE, EVENTS_UPDATE_ERROR,
 } from '../constants/action-types';
 
@@ -67,6 +67,16 @@ export default function (state = initialState, action) {
       return {
         ...state,
         isLoggedIn: true,
+      };
+
+    case GET_CUST_EVENTS:
+      console.log(payload);
+      return {
+        ...state,
+        allEvents: payload.events.allEvents,
+        registeredEvents: payload.events.registeredEvents,
+        loading: false,
+        isEdited: false,
       };
 
     case RESTAURANT_PROFILE_EDIT:

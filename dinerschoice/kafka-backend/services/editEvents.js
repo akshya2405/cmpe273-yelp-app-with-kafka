@@ -29,7 +29,7 @@ function handle_edit_events(msg, db, callback) {
         update = {$set: {
                 restId: findrestId,
                 name: event.name,
-                date: event.date,
+                date: new Date(event.date),
                 description: event.description,
                 location: event.location,
                 time: event.time,

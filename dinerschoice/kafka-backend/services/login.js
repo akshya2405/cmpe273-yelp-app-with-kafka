@@ -22,9 +22,9 @@ function handle_login(msg, db, callback) {
                 if (bcrypt.compareSync(msg.password, user.password)) {
                     console.log('matched!!');
                     const payload = { category: user.category, email: user.email, id: user._id };
-                    const token = jwt.sign(payload, secret, { expiresIn: 86400 });
+                    const token = jwt.sign(payload, secret, { expiresIn: '10d' });
                     res.status = 200;
-                    res.data = `bearer ${token}`;
+                    res.data = `JWT ${token}`;
                     callback(null, res);
                 } else {
                     console.log('in else');

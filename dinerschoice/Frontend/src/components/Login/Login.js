@@ -63,7 +63,7 @@ class Login extends Component {
   }
 
   componentWillUnmount() {
-    this.props.dispatch(clearMessage());
+    this.props.clearMessage();
   }
 
   categoryChangeHandler(e) {
@@ -99,26 +99,27 @@ class Login extends Component {
     const { dispatch, history } = this.props;
 
     if (this.checkBtn.context._errors.length === 0) {
-      dispatch(login(this.state.category, this.state.email, this.state.password))
-        .then(() => {
-          console.log('Redirection category: ', this.state.category);
-          if (this.state.category === 'Restaurant') {
-            // console.log('Redirecting to : ', this.state.category);
-            history.push('/restaurantDashboard');
-            window.location.reload();
-          } else {
-            // console.log('Else Redirecting to : ', this.state.category);
-            history.push('/profile');
-            window.location.reload();
-          }
-          // history.push(`/dashboard/${this.state.category}`);
-          // window.location.reload();
-        })
-        .catch(() => {
-          this.setState({
-            loading: false,
-          });
-        });
+      this.props.login(this.state.category, this.state.email, this.state.password);
+      // dispatch(login(this.state.category, this.state.email, this.state.password))
+      //   .then(() => {
+      //     console.log('Redirection category: ', this.state.category);
+      //     if (this.state.category === 'Restaurant') {
+      //       // console.log('Redirecting to : ', this.state.category);
+      //       history.push('/restaurantDashboard');
+      //       window.location.reload();
+      //     } else {
+      //       // console.log('Else Redirecting to : ', this.state.category);
+      //       history.push('/profile');
+      //       window.location.reload();
+      //     }
+      //     // history.push(`/dashboard/${this.state.category}`);
+      //     // window.location.reload();
+      //   })
+      //   .catch(() => {
+      //     this.setState({
+      //       loading: false,
+      //     });
+      //   });
     } else {
       this.setState({
         loading: false,
@@ -253,4 +254,4 @@ const mapStateToProps = (state) => ({
 });
 
 // export Login Component
-export default connect(mapStateToProps, null)(Login);
+export default connect(mapStateToProps, { login, clearMessage })(Login);

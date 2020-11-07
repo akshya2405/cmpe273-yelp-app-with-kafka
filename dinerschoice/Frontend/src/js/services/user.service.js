@@ -28,6 +28,12 @@ class UserService {
     return axios.get(`${API_URL}events`, { params: { category, id } }, { withCredentials: true });
   }
 
+  getEventsForCustomer(idList) {
+    const category = localStorage.getItem('category');
+    const id = localStorage.getItem('id');
+    return axios.get(`${API_URL}events`, { params: { category, id, idList } }, { withCredentials: true });
+  }
+
   getRegistrationList(eventid) {
     // console.log(eventid);
     return axios.get(`${API_URL}registrationList`, { params: { eventid: eventid }, headers: authHeader() }, { withCredentials: true });

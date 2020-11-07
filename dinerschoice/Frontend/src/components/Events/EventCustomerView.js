@@ -10,6 +10,7 @@ import EventTable from '../../js/helpers/EventTable';
 import SearchBar from '../../js/helpers/SearchBar';
 import { registerfor } from '../../js/actions/add'; // add this to actions/add
 import '../../App.css';
+import {getCustomerEvents} from "../../js/actions/getCalls";
 
 class Events extends Component {
   constructor(props) {
@@ -25,57 +26,87 @@ class Events extends Component {
   }
 
   componentDidMount() {
-    // console.log('In upcoming event did mount');
-    UserServices.getUpcomingEvents().then( // add this to userservices
-      (response) => {
-        // console.log('response: ', response.data);
-        if (!response.data) {
-          this.setState({
-            events: [],
-            hasMenu: false,
-          });
-        } else {
-          this.setState({
-            events: response.data,
-          });
-        }
-      },
-      (error) => {
+    console.log('In upcoming event did mount');
+    const { dispatch } = this.props;
+    let list = [];
+    if (this.props.registeredEvents) {
+      list = this.props.registeredEvents;
+    }
+    dispatch(getCustomerEvents(list)).then(() => {
+      if (this.props.events) {
+        // alert('events available');
         this.setState({
-          events:
-                        (error.response
-                            && error.response.data
-                            && error.response.data.message)
-                        || error.message
-                        || error.toString(),
+          events: this.props.events.allEvents,
+          registeredEvents: this.props.events.registeredEvents,
+        // currentEvents: this.props.events,
         });
-      },
-    );
+      } else {
+        this.setState({
+          events: [],
+          // currentEvents: [],
+        });
+      }
+    });
+    // UserServices.getUpcomingEvents().then( // add this to userservices
+    //   (response) => {
+    //     // console.log('response: ', response.data);
+    //     if (!response.data) {
+    //       this.setState({
+    //         events: [],
+    //         hasMenu: false,
+    //       });
+    //     } else {
+    //       this.setState({
+    //         events: response.data,
+    //       });
+    //     }
+    //   },
+    //   (error) => {
+    //     this.setState({
+    //       events:
+    //                     (error.response
+    //                         && error.response.data
+    //                         && error.response.data.message)
+    //                     || error.message
+    //                     || error.toString(),
+    //     });
+    //   },
+    // );
+    //
+    // UserServices.getRegisteredEvents().then(
+    //   (response) => {
+    //     // console.log('response: ', response.data);
+    //     if (!response.data) {
+    //       this.setState({
+    //         registeredEvents: [],
+    //       });
+    //     } else {
+    //       this.setState({
+    //         registeredEvents: response.data,
+    //       });
+    //     }
+    //   },
+    //   (error) => {
+    //     this.setState({
+    //       registeredEvents:
+    //                     (error.response
+    //                         && error.response.data
+    //                         && error.response.data.message)
+    //                     || error.message
+    //                     || error.toString(),
+    //     });
+    //   },
+    // );
+  }
 
-    UserServices.getRegisteredEvents().then(
-      (response) => {
-        // console.log('response: ', response.data);
-        if (!response.data) {
-          this.setState({
-            registeredEvents: [],
-          });
-        } else {
-          this.setState({
-            registeredEvents: response.data,
-          });
-        }
-      },
-      (error) => {
-        this.setState({
-          registeredEvents:
-                        (error.response
-                            && error.response.data
-                            && error.response.data.message)
-                        || error.message
-                        || error.toString(),
-        });
-      },
-    );
+  componentDidUpdate(prevProps) {
+    if (this.props.events !== prevProps.events) {
+      // alert('change in props');
+      this.setState({
+        events: this.props.events.allEvents,
+        registeredEvents: this.props.events.registeredEvents,
+      });
+    }
   }
 
   register(e) {
@@ -242,8 +273,12 @@ class Events extends Component {
 
 function mapStateToProps(state) {
   const { user } = state.auth;
+  const { registeredEvents } = state.edit.cust_profile;
+  const { events } = state.edit;
   return {
     user,
+    registeredEvents,
+    events,
   };
 }
 
