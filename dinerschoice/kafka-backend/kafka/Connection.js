@@ -12,6 +12,7 @@ var topics = [
     { topic: 'cust_profile_request', partition: 0 },
     { topic: 'place_order_request', partition: 0 },
     { topic: 'update_order_request', partition: 0 },
+    { topic: 'register_to_event_request', partition: 0 },
 ];
 
 function ConnectionProvider() {

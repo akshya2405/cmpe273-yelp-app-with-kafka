@@ -2,9 +2,8 @@ const express = require('express');
 
 const router = express.Router();
 const kafka = require('./kafka/client');
-const { checkAuth } = require('../config/passport');
 
-router.post('/lookup', checkAuth, (req, res) => {
+router.post('/lookup', (req, res) => {
   console.log(req.body);
   const payload = {
     searchToken: req.body.lookupParams.searchToken.trim(),

@@ -28,6 +28,7 @@ class Dashboard extends Component {
   }
 
   componentDidMount() {
+      // alert('component mont');
       if(this.props.location.state && this.props.location.state.lookupParams) {
         this.state.lookupParams = this.props.location.state.lookupParams;
       }

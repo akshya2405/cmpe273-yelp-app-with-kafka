@@ -4,7 +4,7 @@ const router = express.Router();
 const kafka = require('./kafka/client');
 const { checkAuth } = require('../config/passport');
 
-router.post('/menuUpdate', checkAuth, (req, res) => {
+router.post('/menuUpdate', (req, res) => {
   console.log(req.body);
   const payload = {
     id: req.body.restID,

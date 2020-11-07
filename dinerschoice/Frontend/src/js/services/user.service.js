@@ -23,7 +23,9 @@ class UserService {
   }
 
   getEvents() {
-    return axios.get(`${API_URL}events`, { params: { restID: localStorage.getItem('id') } }, { withCredentials: true });
+    const category = localStorage.getItem('category');
+    const id = localStorage.getItem('id');
+    return axios.get(`${API_URL}events`, { params: { category, id } }, { withCredentials: true });
   }
 
   getRegistrationList(eventid) {

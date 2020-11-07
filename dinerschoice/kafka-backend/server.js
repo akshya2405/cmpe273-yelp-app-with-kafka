@@ -6,7 +6,7 @@ const restaurantProfile = require('./services/restaurantProfile');
 const editProfile = require('./services/editProfile');
 const editMenu = require('./services/editMenu');
 const getOrders = require('./services/getOrders');
-const getRestEvents = require('./services/getRestEvents');
+const getEvents = require('./services/getEvents');
 const editEvents = require('./services/editEvents');
 const lookupService = require('./services/lookupService');
 const customerProfile = require('./services/customerProfile');
@@ -28,23 +28,7 @@ connect.connect().then(dbConn => {
             case "login_request":
                 console.log("In server.js - login_request case");
                 login.handle_login(data.data, dbConn, function (err, res) {
-                    console.log(res);
-                    var payloads = [
-                        {
-                            topic: data.replyTo,
-                            messages: JSON.stringify({
-                                correlationId: data.correlationId,
-                                data: res
-                            }),
-                            partition: 0
-                        }
-                    ];
-                    console.log("In server.js - sending payload" + payloads);
-
-                    producer.send(payloads, function (err, data) {
-                        if (err)
-                            console.log(err);
-                    });
+                    handle_reply(producer, data, res);
                     return;
                 });
                 break;
@@ -52,20 +36,7 @@ connect.connect().then(dbConn => {
             case "signup_request":
                 console.log("In server.js - signup_request case");
                 signup.handle_signup(data.data, dbConn, function (err, res) {
-                    var payloads = [
-                        {
-                            topic: data.replyTo,
-                            messages: JSON.stringify({
-                                correlationId: data.correlationId,
-                                data: res
-                            }),
-                            partition: 0
-                        }
-                    ];
-                    producer.send(payloads, function (err, data) {
-                        if (err)
-                            console.log(err);
-                    });
+                    handle_reply(producer, data, res);
                     return;
                 });
                 break;
@@ -73,20 +44,7 @@ connect.connect().then(dbConn => {
             case "rest_profile_request":
                 console.log("In server.js - rest_profile_request case");
                 restaurantProfile.handle_profile(data.data, dbConn, function (err, res) {
-                    var payloads = [
-                        {
-                            topic: data.replyTo,
-                            messages: JSON.stringify({
-                                correlationId: data.correlationId,
-                                data: res
-                            }),
-                            partition: 0
-                        }
-                    ];
-                    producer.send(payloads, function (err, data) {
-                        if (err)
-                            console.log(err);
-                    });
+                    handle_reply(producer, data, res);
                     return;
                 });
                 break;
@@ -94,20 +52,7 @@ connect.connect().then(dbConn => {
             case "edit_profile_request":
                 console.log("In server.js - edit_profile_request case");
                 editProfile.handle_edit_profile(data.data, dbConn, function (err, res) {
-                    var payloads = [
-                        {
-                            topic: data.replyTo,
-                            messages: JSON.stringify({
-                                correlationId: data.correlationId,
-                                data: res
-                            }),
-                            partition: 0
-                        }
-                    ];
-                    producer.send(payloads, function (err, data) {
-                        if (err)
-                            console.log(err);
-                    });
+                    handle_reply(producer, data, res);
                     return;
                 });
                 break;
@@ -115,20 +60,7 @@ connect.connect().then(dbConn => {
             case "edit_menu_request":
                 console.log("In server.js - edit_profile_request case");
                 editMenu.handle_edit_menu(data.data, dbConn, function (err, res) {
-                    var payloads = [
-                        {
-                            topic: data.replyTo,
-                            messages: JSON.stringify({
-                                correlationId: data.correlationId,
-                                data: res
-                            }),
-                            partition: 0
-                        }
-                    ];
-                    producer.send(payloads, function (err, data) {
-                        if (err)
-                            console.log(err);
-                    });
+                    handle_reply(producer, data, res);
                     return;
                 });
                 break;
@@ -136,41 +68,15 @@ connect.connect().then(dbConn => {
             case "view_order_request":
                 console.log("In server.js - view_order_request case");
                 getOrders.handle_rest_orders(data.data, dbConn, function (err, res) {
-                    var payloads = [
-                        {
-                            topic: data.replyTo,
-                            messages: JSON.stringify({
-                                correlationId: data.correlationId,
-                                data: res
-                            }),
-                            partition: 0
-                        }
-                    ];
-                    producer.send(payloads, function (err, data) {
-                        if (err)
-                            console.log(err);
-                    });
+                    handle_reply(producer, data, res);
                     return;
                 });
                 break;
 
             case "view_rest_events_request":
                 console.log("In server.js - view_order_request case");
-                getRestEvents.handle_rest_events(data.data, dbConn, function (err, res) {
-                    var payloads = [
-                        {
-                            topic: data.replyTo,
-                            messages: JSON.stringify({
-                                correlationId: data.correlationId,
-                                data: res
-                            }),
-                            partition: 0
-                        }
-                    ];
-                    producer.send(payloads, function (err, data) {
-                        if (err)
-                            console.log(err);
-                    });
+                getEvents.handle_get_events(data.data, dbConn, function (err, res) {
+                    handle_reply(producer, data, res);
                     return;
                 });
                 break;
@@ -179,20 +85,7 @@ connect.connect().then(dbConn => {
                 console.log("In server.js - add_rest_events_request case");
                 console.log('data in server: ', data.data);
                 editEvents.handle_edit_events(data.data, dbConn, function (err, res) {
-                    var payloads = [
-                        {
-                            topic: data.replyTo,
-                            messages: JSON.stringify({
-                                correlationId: data.correlationId,
-                                data: res
-                            }),
-                            partition: 0
-                        }
-                    ];
-                    producer.send(payloads, function (err, data) {
-                        if (err)
-                            console.log(err);
-                    });
+                    handle_reply(producer, data, res);
                     return;
                 });
                 break;
@@ -201,20 +94,7 @@ connect.connect().then(dbConn => {
                 console.log("In server.js - lookup_request case");
                 console.log('data in server: ', data.data);
                 lookupService.handle_lookup(data.data, dbConn, function (err, res) {
-                    var payloads = [
-                        {
-                            topic: data.replyTo,
-                            messages: JSON.stringify({
-                                correlationId: data.correlationId,
-                                data: res
-                            }),
-                            partition: 0
-                        }
-                    ];
-                    producer.send(payloads, function (err, data) {
-                        if (err)
-                            console.log(err);
-                    });
+                    handle_reply(producer, data, res);
                     return;
                 });
                 break;
@@ -222,20 +102,7 @@ connect.connect().then(dbConn => {
             case "cust_profile_request":
                 console.log("In server.js - cust_profile_request case");
                 customerProfile.handle_profile(data.data, dbConn, function (err, res) {
-                    var payloads = [
-                        {
-                            topic: data.replyTo,
-                            messages: JSON.stringify({
-                                correlationId: data.correlationId,
-                                data: res
-                            }),
-                            partition: 0
-                        }
-                    ];
-                    producer.send(payloads, function (err, data) {
-                        if (err)
-                            console.log(err);
-                    });
+                    handle_reply(producer, data, res);
                     return;
                 });
                 break;
@@ -243,20 +110,7 @@ connect.connect().then(dbConn => {
             case "place_order_request":
                 console.log("In server.js - place_order_request case");
                 placeOrder.handle_place_order(data.data, dbConn, function (err, res) {
-                    var payloads = [
-                        {
-                            topic: data.replyTo,
-                            messages: JSON.stringify({
-                                correlationId: data.correlationId,
-                                data: res
-                            }),
-                            partition: 0
-                        }
-                    ];
-                    producer.send(payloads, function (err, data) {
-                        if (err)
-                            console.log(err);
-                    });
+                    handle_reply(producer, data, res);
                     return;
                 });
                 break;
@@ -264,23 +118,36 @@ connect.connect().then(dbConn => {
             case "update_order_request":
                 console.log("In server.js - place_order_request case");
                 updateOrderStatus.handle_update_order(data.data, dbConn, function (err, res) {
-                    var payloads = [
-                        {
-                            topic: data.replyTo,
-                            messages: JSON.stringify({
-                                correlationId: data.correlationId,
-                                data: res
-                            }),
-                            partition: 0
-                        }
-                    ];
-                    producer.send(payloads, function (err, data) {
-                        if (err)
-                            console.log(err);
-                    });
+                    handle_reply(producer, data, res);
+                    return;
+                });
+                break;
+
+            case "register_to_event_request":
+                console.log("In server.js - place_order_request case");
+                // TODO change this
+                updateOrderStatus.handle_update_order(data.data, dbConn, function (err, res) {
+                    handle_reply(producer, data, res);
                     return;
                 });
                 break;
         }
     });
 });
+
+function handle_reply(producer, data, res) {
+    var payloads = [
+        {
+            topic: data.replyTo,
+            messages: JSON.stringify({
+                correlationId: data.correlationId,
+                data: res
+            }),
+            partition: 0
+        }
+    ];
+    producer.send(payloads, function (err, data) {
+        if (err)
+            console.log(err);
+    });
+}

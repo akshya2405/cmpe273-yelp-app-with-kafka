@@ -13,6 +13,7 @@ const topics = [
   { topic: 'cust_profile_response', partition: 0 },
   { topic: 'place_order_response', partition: 0 },
   { topic: 'update_order_response', partition: 0 },
+  { topic: 'register_to_event_response', partition: 0 },
 ];
 
 function ConnectionProvider() {

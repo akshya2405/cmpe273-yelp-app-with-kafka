@@ -80,10 +80,10 @@ class Events extends Component {
 
   register(e) {
     // console.log(e);
-    const { dispatch, history } = this.props;
+    // const { dispatch } = this.props;
     if (this.state.registeredEvents.some((event) => event.eventID === e)) alert('You have already registered for this event');
     else {
-      dispatch(
+      this.props.dispatch(
         registerfor(e),
       )
         .then(() => {

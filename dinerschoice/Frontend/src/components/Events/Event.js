@@ -9,6 +9,7 @@ import { getRestaurantEvents } from '../../js/actions/getCalls';
 import EventTable from '../../js/helpers/EventTable';
 import SearchBar from '../../js/helpers/SearchBar';
 import { eventsUpdate } from '../../js/actions/add';
+import Pagination from '../../js/helpers/Pagination';
 
 class Events extends Component {
   constructor(props) {
@@ -18,6 +19,7 @@ class Events extends Component {
       events: null,
       updateEntriesMap: new Map(),
       deleteIds: [],
+      currentEvents: null,
     };
     this.updateEvents = this.updateEvents.bind(this);
   }
@@ -30,13 +32,25 @@ class Events extends Component {
         // alert('events available');
         this.setState({
           events: this.props.events,
+          currentEvents: this.props.events,
         });
       } else {
         this.setState({
           events: [],
+          currentEvents: [],
         });
       }
     });
+  }
+
+  onPageChanged = data => {
+    const { events } = this.state;
+    const { currentPage, totalPages, pageLimit } = data;
+    const offset = (currentPage - 1) * pageLimit;
+    const currentEvents = events.slice(offset, offset + pageLimit);
+    alert(JSON.stringify(events));
+    alert(JSON.stringify(data));
+    this.setState({ currentPage, currentEvents, totalPages });
   }
 
   handleUserInput(filterText) {
@@ -152,12 +166,15 @@ class Events extends Component {
           </h2>
           <div>
             <SearchBar filterText={this.state.filterText} onUserInput={this.handleUserInput.bind(this)} />
+            <div className="d-flex flex-row py-4 align-items-center">
+              <Pagination totalRecords={this.state.events.length} pageLimit={1} pageNeighbours={1} onPageChanged={this.onPageChanged} />
+            </div>
             <EventTable
               onEventTableUpdate={this.handleEventTable.bind(this)}
               onRowAdd={this.handleAddEvent.bind(this)}
               onRowDel={this.handleRowDel.bind(this)}
               onGetList={this.handleGetList.bind(this)}
-              events={this.state.events}
+              events={this.state.currentEvents}
               filterText={this.state.filterText}
             />
           </div>

@@ -95,7 +95,7 @@ class RestaurantRegistrationList extends Component {
                     (!this.state.eventDetail.registrationList || this.state.eventDetail.registrationList.length === 0) ? (
                       <p>No one has registered yet</p>
                     ) : this.state.eventDetail.registrationList.map((cust) => (
-                        <Link to={{ pathname: '/profile', state: cust.customerID }}>
+                        <Link to={{ pathname: '/profile', state: cust.custId }}>
                           {cust.fname}
                           {' '}
                           {cust.lname}

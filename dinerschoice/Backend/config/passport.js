@@ -24,7 +24,7 @@ mongoose.connect(mongoDB, options, (err, res) => {
 // Setup work and export for the JWT passport strategy
 function auth() {
   const opts = {
-    jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('jwt'),
+    jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('bearer'),
     secretOrKey: secret,
   };
   passport.use(
@@ -35,8 +35,10 @@ function auth() {
           return callback(err, false);
         }
         if (results) {
+          console.log('Authorized');
           callback(null, results);
         } else {
+          console.log('Unauthorized');
           callback(null, false);
         }
       });

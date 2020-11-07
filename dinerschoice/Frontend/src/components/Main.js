@@ -6,6 +6,7 @@
 
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
+import { Redirect } from 'react-router';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';
 

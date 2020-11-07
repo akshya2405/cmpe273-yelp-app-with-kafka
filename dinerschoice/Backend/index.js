@@ -19,18 +19,18 @@ const cors = require('cors');
 // const getEvents = require('./actions/getEvents');
 // const eventUpdate = require('./actions/eventUpdate');
 // const getRegistrationList = require('./actions/getRegistrationList');
-const getUpcomingEvents = require('./actions/getUpcomingEvents');
-const getRegisteredEvents = require('./actions/getRegisteredEvents');
-const registerfor = require('./actions/registerfor');
+// const getUpcomingEvents = require('./actions/getUpcomingEvents');
+// const getRegisteredEvents = require('./actions/getRegisteredEvents');
+// const registerfor = require('./actions/registerfor');
 const addReview = require('./actions/addReview');
-const getReviews = require('./actions/getReviews');
+// const getReviews = require('./actions/getReviews');
 const getCustReviews = require('./actions/getCustReviews');
 const uploadImage = require('./actions/uploadImage');
-const lookup = require('./actions/lookup');
-const placeOrder = require('./actions/placeOrder');
-const getCustomerOrders = require('./actions/getCustomerOrders');
-const getRestaurantOrders = require('./actions/getRestaurantOrders');
-const updateOrderStatus = require('./actions/updateOrderStatus');
+// const lookup = require('./actions/lookup');
+// const placeOrder = require('./actions/placeOrder');
+// const getCustomerOrders = require('./actions/getCustomerOrders');
+// const getRestaurantOrders = require('./actions/getRestaurantOrders');
+// const updateOrderStatus = require('./actions/updateOrderStatus');
 const { frontendURL } = require('./config/auth.config');
 
 app.set('view engine', 'ejs');
@@ -66,12 +66,13 @@ const RestProfile = require('./Routes/RestProfile');
 const EditProfile = require('./Routes/EditProfile');
 const EditMenu = require('./Routes/EditMenu');
 const Orders = require('./Routes/Orders');
-const RestEvents = require('./Routes/RestEvents');
+const GetEvents = require('./Routes/GetEvents');
 const EditEvents = require('./Routes/EditEvents');
 const LookupService = require('./Routes/LookupService');
 const CustProfile = require('./Routes/CustProfile');
 const PlaceOrder = require('./Routes/PlaceOrder');
 const UpdateOrderStatus = require('./Routes/UpdateOrderStatus');
+const RegisterForEvent = require('./Routes/RegisterFor');
 
 app.use('/user', Login);
 app.use('/user', Signup);
@@ -79,73 +80,74 @@ app.use('/', RestProfile);
 app.use('/', EditProfile);
 app.use('/', EditMenu);
 app.use('/', Orders);
-app.use('/', RestEvents);
+app.use('/', GetEvents);
 app.use('/', EditEvents);
 app.use('/', LookupService);
 app.use('/', CustProfile);
 app.use('/', PlaceOrder);
 app.use('/', UpdateOrderStatus);
+app.use('/', RegisterForEvent);
 
-app.get('/allEvents', (req, res) => {
-  // console.log('Inside get registration list');
-  // console.log('req: ', req.query.eventid);
-  // console.log('req header:', req.headers['x-access-token']);
-  getUpcomingEvents.getUpcomingEvents(req)
-    .then((output) => {
-      // console.log(output);
-      res.writeHead(200, {
-        'Content-Type': 'application/json',
-      });
-      res.end(JSON.stringify(output));
-    })
-    .catch((err) => {
-      // console.log(err);
-      res.writeHead(400, '*** Something went wrong. Please try again later ****', {
-        'Content-Type': 'text/plain',
-      });
-      res.end();
-    });
-});
+// app.get('/allEvents', (req, res) => {
+//   // console.log('Inside get registration list');
+//   // console.log('req: ', req.query.eventid);
+//   // console.log('req header:', req.headers['x-access-token']);
+//   getUpcomingEvents.getUpcomingEvents(req)
+//     .then((output) => {
+//       // console.log(output);
+//       res.writeHead(200, {
+//         'Content-Type': 'application/json',
+//       });
+//       res.end(JSON.stringify(output));
+//     })
+//     .catch((err) => {
+//       // console.log(err);
+//       res.writeHead(400, '*** Something went wrong. Please try again later ****', {
+//         'Content-Type': 'text/plain',
+//       });
+//       res.end();
+//     });
+// });
 
-app.get('/registeredEvents', (req, res) => {
-  // console.log('Inside get registration list');
-  // console.log('req: ', req.query.eventid);
-  // console.log('req header:', req.headers['x-access-token']);
-  getRegisteredEvents.getRegisteredEvents(req)
-    .then((output) => {
-      // console.log('output: ', output);
-      res.writeHead(200, {
-        'Content-Type': 'application/json',
-      });
-      res.end(JSON.stringify(output));
-    })
-    .catch((err) => {
-      // console.log(err);
-      res.writeHead(400, '*** Something went wrong. Please try again later ****', {
-        'Content-Type': 'text/plain',
-      });
-      res.end();
-    });
-});
+// app.get('/registeredEvents', (req, res) => {
+//   // console.log('Inside get registration list');
+//   // console.log('req: ', req.query.eventid);
+//   // console.log('req header:', req.headers['x-access-token']);
+//   getRegisteredEvents.getRegisteredEvents(req)
+//     .then((output) => {
+//       // console.log('output: ', output);
+//       res.writeHead(200, {
+//         'Content-Type': 'application/json',
+//       });
+//       res.end(JSON.stringify(output));
+//     })
+//     .catch((err) => {
+//       // console.log(err);
+//       res.writeHead(400, '*** Something went wrong. Please try again later ****', {
+//         'Content-Type': 'text/plain',
+//       });
+//       res.end();
+//     });
+// });
 
-app.post('/registerfor', (req, res) => {
-  // console.log('Inside register for');
-  // console.log('req: ', req.body.eventID);
-  registerfor.registerfor(req)
-    .then(() => {
-      res.writeHead(200, {
-        'Content-Type': 'application/json',
-      });
-      res.end();
-    })
-    .catch((err) => {
-      // console.log(err);
-      res.writeHead(400, '*** Something went wrong. Please try again later ****', {
-        'Content-Type': 'text/plain',
-      });
-      res.end();
-    });
-});
+// app.post('/registerfor', (req, res) => {
+//   // console.log('Inside register for');
+//   // console.log('req: ', req.body.eventID);
+//   registerfor.registerfor(req)
+//     .then(() => {
+//       res.writeHead(200, {
+//         'Content-Type': 'application/json',
+//       });
+//       res.end();
+//     })
+//     .catch((err) => {
+//       // console.log(err);
+//       res.writeHead(400, '*** Something went wrong. Please try again later ****', {
+//         'Content-Type': 'text/plain',
+//       });
+//       res.end();
+//     });
+// });
 
 app.post('/addReview', (req, res) => {
   // console.log('Inside add review');

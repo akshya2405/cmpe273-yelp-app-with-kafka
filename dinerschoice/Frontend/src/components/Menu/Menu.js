@@ -4,25 +4,20 @@ import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import UserServices from '../../js/services/user.service';
+import Pagination from '../../js/helpers/Pagination';
 import MenuTable from '../../js/helpers/MenuTable';
 import SearchBar from '../../js/helpers/SearchBar';
 import { menuUpdate } from '../../js/actions/add';
-import StarBasedRating from "star-based-rating";
-import ReactPaginate from "react-paginate";
 
 class Menu extends Component {
   constructor(props) {
     super(props);
     this.state = {
       filterText: '',
-      menuFromDB: [],
-      menu: [],
+      currentMenu: null,
+      menu: null,
       updateEntriesMap: new Map(),
       deleteEntriesMap: new Map(),
-      offset: 0,
-      perPage: 5,
-      currentPage: 0,
     };
     this.updateMenu = this.updateMenu.bind(this);
     // this.paginateMenu = this.paginateMenu.bind(this);
@@ -36,15 +31,39 @@ class Menu extends Component {
       console.log(dishes);
       this.setState({
         menu: dishes,
-      });
-    // , function () { this.paginateMenu(this.state.menu); }
+        currentMenu: dishes,
+      }
+    , function () { alert('after state set : '+ JSON.stringify(this.state.currentMenu)); });
       // this.paginateMenu(this.state.menu);
     } else {
       this.setState({
         menu: [],
+        currentMenu:[],
       });
     }
     // alert(JSON.stringify(this.state.menu));
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.dishes !== prevProps.dishes) {
+      alert('change in props');
+      this.setState({
+        menu: this.props.dishes,
+        currentMenu: this.props.dishes,
+      }
+      , function () { alert('after state set did update: '+ JSON.stringify(this.state.currentMenu)); });
+    }
+  }
+
+  onPageChanged = data => {
+    const { menu } = this.state;
+    const { currentPage, totalPages, pageLimit } = data;
+    const offset = (currentPage - 1) * pageLimit;
+    const currentMenu = menu.slice(offset, offset + pageLimit);
+    alert(JSON.stringify(menu));
+    alert('data value: ' + JSON.stringify(data));
+    alert('current menu page change: '+JSON.stringify(currentMenu));
+    this.setState({ currentPage, currentMenu, totalPages });
   }
 
   handleUserInput(filterText) {
@@ -82,8 +101,9 @@ class Menu extends Component {
       restaurantID: this.state.restaurantID,
       fromDB: false,
     };
+    this.state.currentMenu.push(menuItem);
     this.state.menu.push(menuItem);
-    this.setState(this.state.menu);
+    this.setState(this.state.currentMenu);
   }
 
   handleMenuTable(evt) {
@@ -94,7 +114,7 @@ class Menu extends Component {
       value: evt.target.value,
     };
     // console.log('Item: ', field);
-    const menu = this.state.menu.slice();
+    const menu = this.state.currentMenu.slice();
     // alert(JSON.stringify(menu) + "\n fieldid: " + field.id + field.name);
     const newmenu = menu.map((menuItem) => {
       for (const key in menuItem) {
@@ -146,25 +166,6 @@ class Menu extends Component {
       });
   }
 
-  // paginateMenu(menu) {
-  //   const data = menu;
-  //   console.log(menu);
-  //   const slice = data.slice(this.state.offset, this.state.offset + this.state.perPage);
-  //   const postData = slice.map((menu) => <React.Fragment>
-  //     <MenuTable
-  //         onMenuTableUpdate={this.handleMenuTable.bind(this)}
-  //         onRowAdd={this.handleAddEvent.bind(this)}
-  //         onRowDel={this.handleRowDel.bind(this)}
-  //         menu={menu}
-  //         filterText={this.state.filterText}
-  //     />
-  //   </React.Fragment>);
-  //   this.setState({
-  //     pageCount: Math.ceil(data.length / this.state.perPage),
-  //     postData,
-  //   });
-  // }
-
   render() {
     const { user: currentUser } = this.props.auth;
     // const { edit } = this.props.edit;
@@ -181,28 +182,17 @@ class Menu extends Component {
           </h2>
           <div>
             <SearchBar filterText={this.state.filterText} onUserInput={this.handleUserInput.bind(this)} />
+            <div className="d-flex flex-row py-4 align-items-center">
+              <Pagination totalRecords={this.state.menu.length} pageLimit={1} pageNeighbours={1} onPageChanged={this.onPageChanged} />
+            </div>
+            {alert('' + this.state.currentMenu)}
             <MenuTable
               onMenuTableUpdate={this.handleMenuTable.bind(this)}
               onRowAdd={this.handleAddEvent.bind(this)}
               onRowDel={this.handleRowDel.bind(this)}
-              menu={this.state.menu}
+              menu={this.state.currentMenu}
               filterText={this.state.filterText}
             />
-            {/*{this.state.postData ? (this.state.postData,*/}
-            {/*        <ReactPaginate*/}
-            {/*            previousLabel="prev"*/}
-            {/*            nextLabel="next"*/}
-            {/*            breakLabel="..."*/}
-            {/*            breakClassName="break-me"*/}
-            {/*            pageCount={this.state.pageCount}*/}
-            {/*            marginPagesDisplayed={2}*/}
-            {/*            pageRangeDisplayed={5}*/}
-            {/*            onPageChange={this.handlePageClick}*/}
-            {/*            containerClassName="pagination"*/}
-            {/*            subContainerClassName="pages pagination"*/}
-            {/*            activeClassName="active"*/}
-            {/*        />*/}
-            {/*) : ('No menu added')}*/}
           </div>
           <button type="button" onClick={this.updateMenu}>Update Menu</button>
         </div>

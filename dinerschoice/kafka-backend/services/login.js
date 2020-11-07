@@ -24,7 +24,7 @@ function handle_login(msg, db, callback) {
                     const payload = { category: user.category, email: user.email, id: user._id };
                     const token = jwt.sign(payload, secret, { expiresIn: 86400 });
                     res.status = 200;
-                    res.data = `JWT ${token}`;
+                    res.data = `bearer ${token}`;
                     callback(null, res);
                 } else {
                     console.log('in else');

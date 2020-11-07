@@ -7,7 +7,8 @@ const { checkAuth } = require('../config/passport');
 router.get('/events', checkAuth, (req, res) => {
   console.log(req.query);
   const payload = {
-    id: req.query.restID,
+    id: req.query.id,
+    category: req.query.category,
   };
 
   kafka.make_request('view_rest_events_request', 'view_rest_events_response', payload, function (err, results) {
