@@ -86,7 +86,7 @@ export const eventsUpdate = (restID, updateList, deleteIds) => (dispatch) => Add
 
 export const registerfor = (event, regList) => (dispatch) => AddService.registerfor(event, regList)
   .then((response) => {
-    alert(JSON.stringify(response));
+    // alert('register for action alert: ' + JSON.stringify(response.data.cust_profile));
     dispatch({
       type: REGISTER_FOR_EVENT,
       payload: response.data.cust_profile,

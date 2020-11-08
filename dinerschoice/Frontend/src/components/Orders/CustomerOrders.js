@@ -10,16 +10,20 @@ import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
 
 import { getOrders } from '../../js/actions/getCalls';
+import Pagination from '../../js/helpers/Pagination';
 
 class CustomerOrders extends Component {
   constructor(props) {
     super(props);
+    this.pageLimit = 1;
     this.state = {
       orders: [],
       orderItems: [],
       ordersAndItemsArray: [],
       appliedFilters: [],
       filteredResults: [],
+      currentResults: [],
+      resultCount: 0
     };
     // this.mapOrderItems = this.mapOrderItems.bind(this);
     this.filterChangeHandler = this.filterChangeHandler.bind(this);
@@ -27,21 +31,23 @@ class CustomerOrders extends Component {
 
   componentDidMount() {
     this.props.getOrders();
-    if (this.props.edit.orders) {
+    if (this.props.orders) {
       this.setState({
-        ordersAndItemsArray: this.props.edit.orders,
-        filteredResults: this.props.edit.orders,
+        ordersAndItemsArray: this.props.orders,
+        filteredResults: this.props.orders,
+        resultCount: this.props.orders.length
       });
     }
     console.log('filtered results: ', this.state.filteredResults);
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.edit.orders !== prevProps.edit.orders) {
+    if (this.props.user && this.props.orders !== prevProps.orders) {
       // alert('change in props');
       this.setState({
-        ordersAndItemsArray: this.props.edit.orders,
-        filteredResults: this.props.edit.orders,
+        ordersAndItemsArray: this.props.orders,
+        filteredResults: this.props.orders,
+        resultCount: this.props.orders.length
       });
     }
   }
@@ -63,7 +69,14 @@ class CustomerOrders extends Component {
     let filteredResults = this.state.ordersAndItemsArray;
 
     filteredResults = this.filterByMode(this.state.appliedFilters, filteredResults);
-    this.setState({ filteredResults });
+    this.setState({ filteredResults: filteredResults, resultCount: filteredResults.length }, () => {
+      let totalPages = Math.ceil(filteredResults.length/ this.pageLimit);
+      this.onPageChanged({
+        currentPage: 1,
+        totalPages: totalPages,
+        pageLimit: this.pageLimit
+      })
+    });
     // console.log('Filter Results: ', filteredResults);
   }
 
@@ -81,8 +94,16 @@ class CustomerOrders extends Component {
     return results;
   }
 
+  onPageChanged = data => {
+    const { filteredResults } = this.state;
+    const { currentPage, totalPages, pageLimit } = data;
+    const offset = (currentPage - 1) * pageLimit;
+    const currentResults = filteredResults.slice(offset, offset + pageLimit);
+    this.setState({ currentPage, currentResults, totalPages });
+  }
+
   render() {
-    const { user: currentUser } = this.props.auth;
+    const currentUser = this.props.user;
     if (!currentUser) {
       return <Redirect to="/login" />;
     }
@@ -150,11 +171,18 @@ class CustomerOrders extends Component {
           </table>
           <div>
             {
-      (this.state.filteredResults.length === 0) ? (
-        <div><h2>You have not ordered yet...</h2></div>
+              (this.state.resultCount > 0) ? (
+                  <div className="d-flex flex-row py-4 align-items-center">
+                    <Pagination totalRecords={this.state.resultCount} pageLimit={this.pageLimit} pageNeighbours={1} onPageChanged={this.onPageChanged} />
+                  </div>
+              ) : (<div></div>)
+            }
+            {
+      (this.state.currentResults.length === 0) ? (
+        <div><h2>No orders...</h2></div>
       ) : (
         // console.log(this.state.filteredResults.length),
-        this.state.filteredResults.map((order) => (
+        this.state.currentResults.map((order) => (
           <div style={{ height: '200px' }}>
             <hr />
             <div className="custordercolumn1">
@@ -210,8 +238,8 @@ class CustomerOrders extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  auth: state.auth,
-  edit: state.edit,
+  user: state.auth.user,
+  orders: state.edit.orders,
 });
 
 export default connect(mapStateToProps, { getOrders })(CustomerOrders);

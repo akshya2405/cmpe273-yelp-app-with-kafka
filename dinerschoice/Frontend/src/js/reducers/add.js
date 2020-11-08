@@ -60,14 +60,6 @@ export default function (state = {}, action) {
         isAdded: false,
       };
 
-    case REGISTER_FOR_EVENT:
-      return {
-        ...state,
-        cust_profile: action.payload,
-        isAdded: true,
-        loading: true,
-      };
-
     case REGISTER_FOR_EVENT_ERROR:
       return {
         ...state,

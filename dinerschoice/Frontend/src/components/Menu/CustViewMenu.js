@@ -12,6 +12,7 @@ import { Select, CaretIcon, ModalCloseButton } from 'react-responsive-select';
 
 import { placeOrder } from '../../js/actions/add';
 import 'react-responsive-select/dist/react-responsive-select.css';
+import Pagination from '../../js/helpers/Pagination';
 
 let appetizers = [];
 let salads = [];
@@ -34,6 +35,7 @@ const splitMenu = (menu) => {
 class CustViewMenu extends Component {
   constructor(props) {
     super(props);
+    this.pageLimit = 1;
     this.state = {
       menu: [],
       quantity: {},
@@ -42,6 +44,11 @@ class CustViewMenu extends Component {
       totalPrice: 0.00,
       deliveryType: '',
       message: 'Select a delivery mode',
+      currentAppetizers: [],
+      currentSalads: [],
+      currentMains: [],
+      currentDesserts: [],
+      currentBeverages: [],
     };
     this.services = [];
     this.quantityChangeHandler = this.quantityChangeHandler.bind(this);
@@ -192,6 +199,41 @@ class CustViewMenu extends Component {
       });
   }
 
+  onPageChangedAppetizers = data => {
+    const { currentPage, totalPages, pageLimit } = data;
+    const offset = (currentPage - 1) * pageLimit;
+    const currentAppetizers = appetizers.slice(offset, offset + pageLimit);
+    this.setState({ currentPage, currentAppetizers, totalPages });
+  }
+
+  onPageChangedSalads = data => {
+    const { currentPage, totalPages, pageLimit } = data;
+    const offset = (currentPage - 1) * pageLimit;
+    const currentSalads = salads.slice(offset, offset + pageLimit);
+    this.setState({ currentPage, currentSalads, totalPages });
+  }
+
+  onPageChangedMains = data => {
+    const { currentPage, totalPages, pageLimit } = data;
+    const offset = (currentPage - 1) * pageLimit;
+    const currentMains = mains.slice(offset, offset + pageLimit);
+    this.setState({ currentPage, currentMains, totalPages });
+  }
+
+  onPageChangedDesserts = data => {
+    const { currentPage, totalPages, pageLimit } = data;
+    const offset = (currentPage - 1) * pageLimit;
+    const currentDesserts = desserts.slice(offset, offset + pageLimit);
+    this.setState({ currentPage, currentDesserts, totalPages });
+  }
+
+  onPageChangedBeverages = data => {
+    const { currentPage, totalPages, pageLimit } = data;
+    const offset = (currentPage - 1) * pageLimit;
+    const currentBeverages = beverages.slice(offset, offset + pageLimit);
+    this.setState({ currentPage, currentBeverages, totalPages });
+  }
+
   render() {
     const { user: currentUser } = this.props;
     if (!currentUser) {
@@ -215,10 +257,14 @@ class CustViewMenu extends Component {
             <span hidden={this.services.length !== 0}> (This restaurant does not support delivery or pickup)</span>
           </h1>
           <i>To add to cart, click the + icon near the dish name. To change quantity, modify the quantity and click the + icon</i>
-          <h2><b><i>Appetizers</i></b></h2>
+          <h2>Appetizers</h2> {this.state.menu.length !== 0 ? (
+                <Pagination totalRecords={appetizers.length} pageLimit={this.pageLimit} pageNeighbours={1}
+                            onPageChanged={this.onPageChangedAppetizers}/>
+          ):(<div></div>)
+          }
           {
-                        appetizers.length !== 0 ? (
-                          appetizers.map((dish) => (
+                        this.state.currentAppetizers.length !== 0 ? (
+                            this.state.currentAppetizers.map((dish) => (
                             <div>
                               <table className="table">
                                 <tr>
@@ -271,10 +317,15 @@ class CustViewMenu extends Component {
                           <div />
                         )
                     }
-          <h2><b><i>Salads</i></b></h2>
+          <h2>Salads</h2>
+          {this.state.menu.length !== 0 ? (
+              <Pagination totalRecords={salads.length} pageLimit={this.pageLimit} pageNeighbours={1}
+                          onPageChanged={this.onPageChangedSalads}/>
+          ):(<div></div>)
+          }
           {
-                        salads.length !== 0 ? (
-                          salads.map((dish) => (
+                        this.state.currentSalads.length !== 0 ? (
+                            this.state.currentSalads.map((dish) => (
                             <div>
                               <table className="table">
                                 <tr>
@@ -323,10 +374,15 @@ class CustViewMenu extends Component {
                           <div />
                         )
                     }
-          <h2><b><i>Main Course</i></b></h2>
+          <h2>Main Course</h2>
+          {this.state.menu.length !== 0 ? (
+              <Pagination totalRecords={mains.length} pageLimit={this.pageLimit} pageNeighbours={1}
+                          onPageChanged={this.onPageChangedMains}/>
+          ):(<div></div>)
+          }
           {
-                        mains.length !== 0 ? (
-                          mains.map((dish) => (
+                        this.state.currentMains.length !== 0 ? (
+                            this.state.currentMains.map((dish) => (
                             <div>
                               <table className="table">
                                 <tr>
@@ -375,10 +431,15 @@ class CustViewMenu extends Component {
                           <div />
                         )
                     }
-          <h2><b><i>Desserts</i></b></h2>
+          <h2>Desserts</h2>
+          {this.state.menu.length !== 0 ? (
+              <Pagination totalRecords={desserts.length} pageLimit={this.pageLimit} pageNeighbours={1}
+                          onPageChanged={this.onPageChangedDesserts}/>
+          ):(<div></div>)
+          }
           {
-                        desserts.length !== 0 ? (
-                          desserts.map((dish) => (
+                        this.state.currentDesserts.length !== 0 ? (
+                            this.state.currentDesserts.map((dish) => (
                             <div>
                               <table className="table">
                                 <tr>
@@ -427,10 +488,15 @@ class CustViewMenu extends Component {
                           <div />
                         )
                     }
-          <h2><b><i>Beverages</i></b></h2>
+          <h2>Beverages</h2>
+          {this.state.menu.length !== 0 ? (
+              <Pagination totalRecords={beverages.length} pageLimit={this.pageLimit} pageNeighbours={1}
+                          onPageChanged={this.onPageChangedBeverages}/>
+          ):(<div></div>)
+          }
           {
-                        beverages.length !== 0 ? (
-                          beverages.map((dish) => (
+                        this.state.currentBeverages.length !== 0 ? (
+                            this.state.currentBeverages.map((dish) => (
                             <div>
                               <table className="table">
                                 <tr>

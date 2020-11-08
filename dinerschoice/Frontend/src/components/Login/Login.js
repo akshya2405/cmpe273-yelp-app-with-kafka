@@ -169,7 +169,7 @@ class Login extends Component {
     if (auth.isLoggedIn && auth.user.category === 'Restaurant') {
       redirectVar = <Redirect to="/restaurantDashboard" />;
     } else if (auth.isLoggedIn && auth.user.category === 'Customer') {
-      redirectVar = <Redirect to="/dashboard" />;
+      redirectVar = <Redirect to="/profile" />;
     }
     return (
       <div>
