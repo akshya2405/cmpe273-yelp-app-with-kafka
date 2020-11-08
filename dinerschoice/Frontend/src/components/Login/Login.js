@@ -63,7 +63,7 @@ class Login extends Component {
   }
 
   componentWillUnmount() {
-    this.props.dispatch(clearMessage());
+    this.props.clearMessage();
   }
 
   categoryChangeHandler(e) {
@@ -99,26 +99,27 @@ class Login extends Component {
     const { dispatch, history } = this.props;
 
     if (this.checkBtn.context._errors.length === 0) {
-      dispatch(login(this.state.category, this.state.email, this.state.password))
-        .then(() => {
-          console.log('Redirection category: ', this.state.category);
-          if (this.state.category === 'Restaurant') {
-            // console.log('Redirecting to : ', this.state.category);
-            history.push('/restaurantDashboard');
-            window.location.reload();
-          } else {
-            // console.log('Else Redirecting to : ', this.state.category);
-            history.push('/dashboard');
-            window.location.reload();
-          }
-          // history.push(`/dashboard/${this.state.category}`);
-          // window.location.reload();
-        })
-        .catch(() => {
-          this.setState({
-            loading: false,
-          });
-        });
+      this.props.login(this.state.category, this.state.email, this.state.password);
+      // dispatch(login(this.state.category, this.state.email, this.state.password))
+      //   .then(() => {
+      //     console.log('Redirection category: ', this.state.category);
+      //     if (this.state.category === 'Restaurant') {
+      //       // console.log('Redirecting to : ', this.state.category);
+      //       history.push('/restaurantDashboard');
+      //       window.location.reload();
+      //     } else {
+      //       // console.log('Else Redirecting to : ', this.state.category);
+      //       history.push('/profile');
+      //       window.location.reload();
+      //     }
+      //     // history.push(`/dashboard/${this.state.category}`);
+      //     // window.location.reload();
+      //   })
+      //   .catch(() => {
+      //     this.setState({
+      //       loading: false,
+      //     });
+      //   });
     } else {
       this.setState({
         loading: false,
@@ -162,15 +163,17 @@ class Login extends Component {
 
   render() {
     // console.log(this.props);
-    const { isLoggedIn, message } = this.props;
+    const { auth, message } = this.props;
     // redirect based on successful login
-    // let redirectVar = null;
-    // if (isLoggedIn && this.state.category === 'Restaurant') {
-    //   redirectVar = <Redirect to="/restaurantDashboard" />;
-    // }
+    let redirectVar = null;
+    if (auth.isLoggedIn && auth.user.category === 'Restaurant') {
+      redirectVar = <Redirect to="/restaurantDashboard" />;
+    } else if (auth.isLoggedIn && auth.user.category === 'Customer') {
+      redirectVar = <Redirect to="/dashboard" />;
+    }
     return (
       <div>
-        {/* {redirectVar} */}
+        {redirectVar}
         <div className="container">
           <div className="login-form">
             <div className="main-div">
@@ -221,10 +224,10 @@ class Login extends Component {
                     <span>Login</span>
                   </button>
                 </div>
-                {message && (
+                {message.message && (
                 <div className="form-group">
                   <div className="alert alert-danger" role="alert">
-                    {message}
+                    {message.message}
                   </div>
                 </div>
                 )}
@@ -243,17 +246,12 @@ class Login extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  console.log(state);
-  const { isLoggedIn } = state.auth;
-  const { message } = state.message;
-  console.log('isloggedin : ', isLoggedIn);
-  console.log('message', message);
-  return {
-    isLoggedIn,
-    message,
-  };
-}
+const mapStateToProps = (state) => ({
+  // console.log('In mapstate to props');
+  auth: state.auth,
+  edit: state.edit,
+  message: state.message,
+});
 
 // export Login Component
-export default connect(mapStateToProps, null)(Login);
+export default connect(mapStateToProps, { login, clearMessage })(Login);

@@ -13,13 +13,14 @@ import 'react-multi-carousel/lib/styles.css';
 import StarBasedRating from 'star-based-rating';
 import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
+import ReactPaginate from 'react-paginate';
 
-import UserServices from '../../js/services/user.service';
+import { getRestaurantProfile } from '../../js/actions/getCalls';
 import { addReview } from '../../js/actions/add';
 import CustViewMenu from '../Menu/CustViewMenu';
 
 const getDetails = (value) => {
-  // console.log('value: ', value);
+  console.log('value: ', value);
   if (value) {
     // console.log('in get details', typeof value.hours);
     const hoursMap = new Map(Object.entries(value.hours));
@@ -72,10 +73,15 @@ class RestaurantProfile extends Component {
       allReviews: [],
       success: false,
       isCustView: false,
+      offset: 0,
+      perPage: 5,
+      currentPage: 0,
     };
     this.handleRating = this.handleRating.bind(this);
     this.reviewChangeHandler = this.reviewChangeHandler.bind(this);
     this.submitReview = this.submitReview.bind(this);
+    this.handlePageClick = this.handlePageClick.bind(this);
+    this.paginateReviews = this.paginateReviews.bind(this);
   }
 
   componentDidMount() {
@@ -85,66 +91,64 @@ class RestaurantProfile extends Component {
       this.setState({
         isCustView: true,
       });
+    } else {
+      restID = localStorage.getItem('id');
     }
-    // console.log('In restaurant profile did mount', restID);
+    console.log("getting details");
+    this.props.getRestaurantProfile(restID);
+    if (this.props.edit.profile) { this.paginateReviews(this.props.edit.reviews); }
+  }
 
-    let profile = '';
+  paginateReviews(reviews) {
+    const data = reviews;
+    const slice = data.slice(this.state.offset, this.state.offset + this.state.perPage);
+    const postData = slice.map((review) => <React.Fragment>
+      <div className="review">
+        <div className="review1">
+          <p>
+            <b>Reviewed By:</b>
+            {' '}
+            {review.fname}
+            {' '}
+            {review.lname}
+          </p>
+          <p>
+            <b>Reviewed On: </b>
+            {review.date}
+          </p>
+          <p>
+            <b>Choosing Since: </b>
+            {review.choosingSince}
+          </p>
+        </div>
+        <div className="review2">
+          <p>
+            <StarBasedRating
+              totalStars={5}
+              previousStarsToDisplay={review.rating}
+            />
+          </p>
+          <p>{review.comment === 'undefined' ? 'No comment' : review.comment}</p>
+        </div>
+      </div>
+    </React.Fragment>);
 
-    function promise1() {
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          UserServices.getRestaurantProfile(restID).then(
-            (response) => {
-              profile = response.data,
-              resolve(response);
-            },
-            (error) => {
-              this.setState({
-                profile:
-                  (error.response
-                    && error.response.data
-                    && error.response.data.message)
-                  || error.message
-                  || error.toString(),
-              });
-            },
-          );
-        }, 100);
-      });
-    }
-    // console.log('Getting reviews');
-    const promise2 = (restaurantID) => UserServices.getReviews(restaurantID).then(
-      (response) => {
-        if (!response.data) {
-          // console.log('response: ', response.data);
-          this.setState({
-            allReviews: [],
-          });
-        } else {
-          // console.log('response: ', response.data);
-          this.setState({
-            allReviews: response.data,
-          });
-        }
-      },
-      (error) => {
-        this.setState({
-          allReviews:
-            (error.response
-              && error.response.data
-              && error.response.data.message)
-            || error.message
-            || error.toString(),
-        });
-      },
-    );
+    this.setState({
+      pageCount: Math.ceil(data.length / this.state.perPage),
+      postData,
+    });
+  }
 
-    promise1().then((response) => {
-      this.setState({
-        profile: response.data,
-      });
-      promise2(response.data.restaurantID);
-    }).then(() => console.log('done'));
+  handlePageClick(e) {
+    const selectedPage = e.selected;
+    const offset = selectedPage * this.state.perPage;
+
+    this.setState({
+      currentPage: selectedPage,
+      offset: offset,
+    }, () => {
+      this.paginateReviews(this.props.edit.reviews);
+    });
   }
 
   handleRating(totalStarsSelected) {
@@ -172,41 +176,30 @@ class RestaurantProfile extends Component {
       success: false,
     });
 
-    const { dispatch } = this.props;
-    dispatch(
-      addReview(data),
-    )
-      .then(() => {
-        this.setState({
-          success: true,
-        });
-        window.location.reload();
-      })
-      .catch(() => {
-        this.setState({
-          success: false,
-        });
-      });
+    this.props.addReview(data);
   }
 
   render() {
-    const { user: currentUser } = this.props;
-    if (!currentUser) {
+    const { auth, edit } = this.props;
+    console.log('auth', auth);
+    console.log('edit', edit);
+    console.log('edit.profile :', edit.profile && edit.profile.email);
+
+    if (!auth.user) {
       return <Redirect to="/login" />;
     }
-    // console.log('In restaurant dashboard');
-    const editLink = (currentUser.userid === this.state.profile.email) ? (
+    const editLink = (!this.state.isCustView) ? (
       <td>
         <h4>
           {' '}
-          <Link to={{ pathname: '/editRestaurantProfile', state: this.state.profile }} className="glyphicon glyphicon-edit">
+          <Link to={{ pathname: '/editRestaurantProfile', state: edit.profile }} className="glyphicon glyphicon-edit">
             {' '}
           </Link>
         </h4>
       </td>
     ) : (<td />);
 
-    const newReview = (true && currentUser) ? (
+    const newReview = (true && auth.user) ? (
       <div>
         <div>
           <h2>Add your review here: </h2>
@@ -234,83 +227,85 @@ class RestaurantProfile extends Component {
             <Card>
               <Accordion.Toggle as={Card.Header} eventKey="0">
                 <table>
+                  <thead>
                   <tr>
-                    <td><h2>{this.state.profile.name}</h2></td>
+                    <td><h2>{edit.profile && edit.profile.name}</h2></td>
                     <td />
                     {editLink}
                   </tr>
+                  </thead>
                 </table>
               </Accordion.Toggle>
               <Accordion.Collapse eventKey="0">
                 <Card.Body>
                   <div className="div1">
                     <table width="100%">
+                      <tbody>
                       <tr>
                         <td>
                           <div className="div2">
                             <p>
                               <b>Description:</b>
                               {' '}
-                              {this.state.profile.description ? this.state.profile.description : ('No description added yet')}
+                              {edit.profile && edit.profile.description ? edit.profile.description : ('No description added yet')}
                             </p>
                             <p>
                               <b>Location:</b>
                               {' '}
-                              {this.state.profile.streetAddress}
+                              {edit.profile && edit.profile.streetAddress}
                               ,
                               {' '}
-                              {this.state.profile.city}
+                              {edit.profile && edit.profile.city}
                               {' '}
-                              {this.state.profile.state}
+                              {edit.profile && edit.profile.state}
                               {' '}
-                              {this.state.profile.zipcode}
+                              {edit.profile && edit.profile.zipcode}
                             </p>
                             <p>
                               <b>Cuisine:</b>
                               {' '}
-                              {this.state.profile.cuisine ? this.state.profile.cuisine : ('No cuisine added yet')}
+                              {edit.profile && edit.profile.cuisine ? edit.profile.cuisine : ('No cuisine added yet')}
                             </p>
                             <p>
                               <b>E-mail us @</b>
                               {' '}
-                              {this.state.profile.email}
+                              {edit.profile && edit.profile.email}
                             </p>
                             <p>
                               <b>Call us @</b>
                               {' '}
-                              {this.state.profile.contactInfo ? this.state.profile.contactInfo : ('No contact added yet')}
+                              {edit.profile && edit.profile.contactInfo ? edit.profile.contactInfo : ('No contact added yet')}
                             </p>
                             <p>
                               <b>Services Offered:</b>
                               {' '}
-                              {this.state.profile.mode ? this.state.profile.mode : ('No services added yet')}
+                              {edit.profile && edit.profile.mode ? edit.profile.mode : ('No services added yet')}
                             </p>
                             <p>
                               <b>Status:</b>
                               {' '}
-                              {this.state.profile.status ? this.state.profile.status : ('Yet to be added')}
+                              {edit.profile && edit.profile.status ? edit.profile.status : ('Yet to be added')}
                             </p>
                           </div>
                         </td>
                         <td>
-                          <p>
-                            <b> Hours:</b>
-                            {' '}
+                          <div>
+                            <b> Hours: </b>
                             <table className="table">
-                              {' '}
-                              {(this.state.profile) ? getDetails(this.state.profile) : ('No Business hours added yet')}
+                              {(edit.profile && edit.profile.hours) ? getDetails(edit.profile) : ('No Business hours added yet')}
                             </table>
-                          </p>
+                          </div>
                         </td>
                       </tr>
+                      </tbody>
                     </table>
                   </div>
                   <hr size="30px" />
                   <div className="centre">
                     <Carousel containerClass="carousel-container" infinite responsive={responsive} centerMode>
-                      {!(this.state.profile) ? ('Your images will be displayed here') : (this.state.profile.images.map((image) => (
+                      {!(edit.profile && edit.profile.profileImage) ? ('Your images will be displayed here') : (edit.profile.profileImage.map((image) => (
                         <div>
-                          <img id={image} src={image} width="350px" height="350px" />
+                          <img id={image} src={image} alt="Restaurant Profile" width="350px" height="350px" />
                         </div>
                       )))}
                     </Carousel>
@@ -325,45 +320,21 @@ class RestaurantProfile extends Component {
               <Accordion.Collapse eventKey="1">
                 <Card.Body>
                   <div>
-                    <h2>Reviews:</h2>
-                    {
-                        (this.state.allReviews.length !== 0) ? (
-                          this.state.allReviews.map((review) => {
-                            // console.log('in display: ', review);
-                            return (
-                              <div className="review">
-                                <div className="review1">
-                                  <p>
-                                    <b>Reviewed By:</b>
-                                    {' '}
-                                    {review.fname}
-                                    {' '}
-                                    {review.lname}
-                                  </p>
-                                  <p>
-                                    <b>Reviewed On: </b>
-                                    {review.date}
-                                  </p>
-                                  <p>
-                                    <b>Choosing Since: </b>
-                                    {review.choosingSince}
-                                  </p>
-                                </div>
-                                <div className="review2">
-                                  <p>
-                                    {' '}
-                                    <StarBasedRating
-                                      totalStars={5}
-                                      previousStarsToDisplay={review.rating}
-                                    />
-                                  </p>
-                                  <p>{review.comment === 'undefined' ? 'No comment' : review.comment}</p>
-                                </div>
-                              </div>
-                            );
-                          })
-                        ) : ((<div>No reviews yet</div>))
-                      }
+                    {this.state.postData ? (this.state.postData,
+                      <ReactPaginate
+                        previousLabel="prev"
+                        nextLabel="next"
+                        breakLabel="..."
+                        breakClassName="break-me"
+                        pageCount={this.state.pageCount}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={5}
+                        onPageChange={this.handlePageClick}
+                        containerClassName="pagination"
+                        subContainerClassName="pages pagination"
+                        activeClassName="active"
+                      />
+                    ) : ('No reviews yet')}
                   </div>
                 </Card.Body>
               </Accordion.Collapse>
@@ -391,9 +362,9 @@ class RestaurantProfile extends Component {
                       <Accordion.Collapse eventKey="3">
                         <Card.Body>
                           {
-                    this.state.profile ? (
+                    edit.profile ? (
                       <div>
-                        <CustViewMenu state={this.state.profile} history={this.props.history} />
+                        <CustViewMenu state={edit.profile.dishes} history={this.props.history} />
                       </div>
                     ) : (
                       <div />
@@ -412,11 +383,10 @@ class RestaurantProfile extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  const { user } = state.auth;
-  return {
-    user,
-  };
-}
+const mapStateToProps = (state) => ({
+  // console.log('in state to props - state : ', state);
+  auth: state.auth,
+  edit: state.edit,
+});
 
-export default connect(mapStateToProps)(RestaurantProfile);
+export default connect(mapStateToProps, { addReview, getRestaurantProfile })(RestaurantProfile);

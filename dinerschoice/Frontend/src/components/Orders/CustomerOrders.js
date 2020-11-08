@@ -9,7 +9,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
 
-import UserServices from '../../js/services/user.service';
+import { getOrders } from '../../js/actions/getCalls';
 
 class CustomerOrders extends Component {
   constructor(props) {
@@ -21,46 +21,29 @@ class CustomerOrders extends Component {
       appliedFilters: [],
       filteredResults: [],
     };
-    this.mapOrderItems = this.mapOrderItems.bind(this);
+    // this.mapOrderItems = this.mapOrderItems.bind(this);
     this.filterChangeHandler = this.filterChangeHandler.bind(this);
   }
 
   componentDidMount() {
-    UserServices.getCustomerOrders().then(
-      (response) => {
-        // console.log('response: ', response.data);
-        // console.log('orders: ', response.data.orders);
-        // console.log('orderitems: ', response.data.orderItems);
-        this.setState({
-          orders: response.data.orders,
-          orderItems: response.data.orderItems,
-        });
-        const result = this.mapOrderItems();
-        this.setState({
-          ordersAndItemsArray: result,
-          filteredResults: result,
-        });
-      },
-      (error) => {
-        this.setState({
-          filteredResults: [],
-        });
-      },
-    );
+    this.props.getOrders();
+    if (this.props.edit.orders) {
+      this.setState({
+        ordersAndItemsArray: this.props.edit.orders,
+        filteredResults: this.props.edit.orders,
+      });
+    }
+    console.log('filtered results: ', this.state.filteredResults);
   }
 
-  mapOrderItems() {
-    // console.log('in map items');
-    const ordersAndItemsArray = [];
-    if (this.state.orderItems && this.state.orders) {
-      this.state.orders.map((order) => {
-        const thisOrderItems = this.state.orderItems.filter((orderItem) => orderItem.orderID === order.orderID);
-        const orderAndItems = { ...order, orderItems: thisOrderItems };
-        ordersAndItemsArray.push(orderAndItems);
+  componentDidUpdate(prevProps) {
+    if (this.props.edit.orders !== prevProps.edit.orders) {
+      // alert('change in props');
+      this.setState({
+        ordersAndItemsArray: this.props.edit.orders,
+        filteredResults: this.props.edit.orders,
       });
-      // console.log(ordersAndItemsArray);
     }
-    return ordersAndItemsArray;
   }
 
   filterChangeHandler(e) {
@@ -99,13 +82,14 @@ class CustomerOrders extends Component {
   }
 
   render() {
-    const { user: currentUser } = this.props;
+    const { user: currentUser } = this.props.auth;
     if (!currentUser) {
       return <Redirect to="/login" />;
     }
     // console.log('user: ', currentUser);
 
     // console.log('In customer orders');
+    // alert(JSON.stringify(this.state.filteredResults));
 
     return (
       <div>
@@ -198,7 +182,7 @@ class CustomerOrders extends Component {
                 </thead>
                 <tbody>
                   {
-                order.orderItems.map((item) => (
+                JSON.parse(order.items).map((item) => (
                   <tr>
                     <td>{item.dishName}</td>
                     <td>{item.quantity}</td>
@@ -209,7 +193,7 @@ class CustomerOrders extends Component {
                   <tr>
                     <td />
                     <td>Order Total:</td>
-                    <td>{order.orderTotalPrice}</td>
+                    <td>{order.total}</td>
                   </tr>
                 </tbody>
               </table>
@@ -225,12 +209,9 @@ class CustomerOrders extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  const { user } = state.auth;
-  // console.log('user: ', user);
-  return {
-    user,
-  };
-}
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+  edit: state.edit,
+});
 
-export default connect(mapStateToProps)(CustomerOrders);
+export default connect(mapStateToProps, { getOrders })(CustomerOrders);

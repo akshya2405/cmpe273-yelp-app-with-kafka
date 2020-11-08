@@ -3,53 +3,54 @@
 /* eslint-disable react/jsx-filename-extension */
 import React, { Component } from 'react';
 import { Redirect } from 'react-router';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import UserServices from '../../js/services/user.service';
+import { getRestaurantEvents } from '../../js/actions/getCalls';
 import EventTable from '../../js/helpers/EventTable';
 import SearchBar from '../../js/helpers/SearchBar';
-import { eventsUpdate } from '../../js/actions/add'; // change to eventUpdate
+import { eventsUpdate } from '../../js/actions/add';
+import Pagination from '../../js/helpers/Pagination';
 
 class Events extends Component {
   constructor(props) {
     super(props);
     this.state = {
       filterText: '',
-      events: [],
+      events: null,
       updateEntriesMap: new Map(),
-      deleteEntriesMap: new Map(),
+      deleteIds: [],
+      currentEvents: null,
     };
     this.updateEvents = this.updateEvents.bind(this);
   }
 
   componentDidMount() {
-    // console.log('In restaurant event did mount');
-    UserServices.getEvents().then(// change to getEvents
-      (response) => {
-        // console.log('response: ', response.data);
-        if (!response.data) {
-          this.setState({
-            events: [],
-            hasMenu: false,
-          });
-        } else {
-          this.setState({
-            events: response.data,
-          });
-        }
-      },
-      (error) => {
+    console.log('In restaurant event did mount');
+    const { dispatch } = this.props;
+    dispatch(getRestaurantEvents()).then(() => {
+      if (this.props.events) {
+        // alert('events available');
         this.setState({
-          events:
-          (error.response
-            && error.response.data
-            && error.response.data.message)
-            || error.message
-            || error.toString(),
+          events: this.props.events,
+          currentEvents: this.props.events,
         });
-      },
-    );
+      } else {
+        this.setState({
+          events: [],
+          currentEvents: [],
+        });
+      }
+    });
+  }
+
+  onPageChanged = data => {
+    const { events } = this.state;
+    const { currentPage, totalPages, pageLimit } = data;
+    const offset = (currentPage - 1) * pageLimit;
+    const currentEvents = events.slice(offset, offset + pageLimit);
+    alert(JSON.stringify(events));
+    alert(JSON.stringify(data));
+    this.setState({ currentPage, currentEvents, totalPages });
   }
 
   handleUserInput(filterText) {
@@ -65,22 +66,28 @@ class Events extends Component {
     // TODO : check if the initial list has this id, if so add to deleteEntriesList.
     // TODO : check if the id is in the updateEntriesMap if so remove it from the map.
 
-    if (eventItem.fromDB) {
-      this.state.deleteEntriesMap.set(eventItem.eventID, eventItem);
-    }
+    // alert(JSON.stringify(eventItem));
+    // if (eventItem.fromDB) {
+    // alert(this.state.deleteIds)
+    this.state.deleteIds.push(eventItem._id);
+    // }
     // console.log('check: ', this.state.updateEntriesMap.has(eventItem.eventID.toString()), typeof eventItem.eventID);
-    if (this.state.updateEntriesMap.has(eventItem.eventID.toString())) {
+    if (this.state.updateEntriesMap.has(eventItem._id)) {
       // console.log('Check in update map: ', eventItem.eventID);
-      this.state.updateEntriesMap.delete(eventItem.eventID.toString());
+      this.state.updateEntriesMap.delete(eventItem._id);
     }
+    // alert(JSON.stringify(this.state.deleteIds));
     const index = this.state.events.indexOf(eventItem);
     this.state.events.splice(index, 1);
     this.setState(this.state.events);
+    this.setState(this.state.deleteIds);
   }
 
   handleAddEvent(evt) {
     const id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
+    // alert('in add event');
     const eventItem = {
+      _id: id,
       eventID: id,
       name: '',
       date: '',
@@ -88,9 +95,10 @@ class Events extends Component {
       location: '',
       time: '',
       hashtags: '',
-      fromDB: false,
+      restId: this.props.auth.user._id,
     };
     this.state.events.push(eventItem);
+    // alert(JSON.stringify(this.state.events));
     this.setState(this.state.events);
   }
 
@@ -101,25 +109,29 @@ class Events extends Component {
       name: evt.target.name,
       value: evt.target.value,
     };
-    // console.log('Item: ', field);
+    // alert(JSON.stringify(field));
     const events = this.state.events.slice();
+    console.log(JSON.stringify(events));
     const newevent = events.map((eventItem) => {
       for (const key in eventItem) {
-        // console.log('zzzz:', key, field.name, key === field.name);
-        // console.log('zzzz:', eventItem.eventID, field.id, eventItem.eventID.toString() === field.id);
-        if (key === field.name && eventItem.eventID.toString() === field.id) {
+        console.log('before if' + JSON.stringify(eventItem));
+
+        console.log('zzzz:', key, field.name, key === field.name);
+        console.log('zzzz:', eventItem._id, field.id, eventItem._id === field.id);
+        if (key === field.name && eventItem._id === field.id) {
           eventItem[key] = field.value;
           // console.log(`XX: ${eventItem}`);
           // console.log(`YY: ${key}`);
           this.state.updateEntriesMap.set(field.id, eventItem);
-          if (eventItem.fromDB) {
-            this.state.deleteEntriesMap.set(field.id, eventItem);
-          }
+          // alert(JSON.stringify(this.state.updateEntriesMap));
+          // if (eventItem.fromDB) {
+          // this.state.deleteEntriesMap[field.id] = eventItem;
+          // }
         }
       }
       return eventItem;
     });
-    // console.log('new event: ', newevent);
+    // alert('new event: ', newevent);
     // console.log('state event: ', this.state.events);
     this.setState({ newEvents: newevent });
     // console.log('update map: ', this.state.updateEntriesMap);
@@ -130,37 +142,23 @@ class Events extends Component {
     e.preventDefault();
     const { dispatch, history } = this.props;
     const updateList = [];
-    const deleteIds = Array.from(this.state.deleteEntriesMap.keys());
+    // const deleteIds = Array.from(this.state.deleteEntriesMap.keys());
     Array.from(this.state.updateEntriesMap.keys()).forEach(
       (k) => updateList.push(this.state.updateEntriesMap.get(k)),
     );
-    // console.log(`Update list: ${updateList}`);
-    // console.log(`Delete keys:${deleteIds}`);
-    dispatch(
-      eventsUpdate(updateList, deleteIds),
-    )
-      .then(() => {
-        this.setState({
-          success: true,
-        });
-        // console.log('success');
-        history.push('/events');
-        window.location.reload();
-      })
-      .catch(() => {
-        this.setState({
-          success: false,
-        });
-      });
+    // alert('delete ids' + this.state.deleteIds);
+    dispatch(eventsUpdate(this.props.auth.user.id, updateList, this.state.deleteIds)).then(() => {
+    });
   }
 
   render() {
-    const { user: currentUser } = this.props;
+    const { user: currentUser } = this.props.auth;
+    // this.state.events = this.props.edit.events;
     if (!currentUser) {
       return <Redirect to="/login" />;
     }
-    if (this.state.events) {
-      // console.log('In restaurant events');
+    if (this.props.events && this.state.events) {
+      console.log('In restaurant events');
       return (
         <div>
           <h2>
@@ -168,21 +166,32 @@ class Events extends Component {
           </h2>
           <div>
             <SearchBar filterText={this.state.filterText} onUserInput={this.handleUserInput.bind(this)} />
-            <EventTable onEventTableUpdate={this.handleEventTable.bind(this)} onRowAdd={this.handleAddEvent.bind(this)} onRowDel={this.handleRowDel.bind(this)} onGetList={this.handleGetList.bind(this)} events={this.state.events} filterText={this.state.filterText} />
+            <div className="d-flex flex-row py-4 align-items-center">
+              <Pagination totalRecords={this.state.events.length} pageLimit={1} pageNeighbours={1} onPageChanged={this.onPageChanged} />
+            </div>
+            <EventTable
+              onEventTableUpdate={this.handleEventTable.bind(this)}
+              onRowAdd={this.handleAddEvent.bind(this)}
+              onRowDel={this.handleRowDel.bind(this)}
+              onGetList={this.handleGetList.bind(this)}
+              events={this.state.currentEvents}
+              filterText={this.state.filterText}
+            />
           </div>
           {/* change to updateEvent */}
           <button onClick={this.updateEvents}>Update Event</button>
         </div>
       );
+    } else {
+      return <div />;
     }
   }
 }
 
-function mapStateToProps(state) {
-  const { user } = state.auth;
-  return {
-    user,
-  };
-}
+const mapStateToProps = (state) => ({
+  // console.log('in state to props - state : ', state);
+  auth: state.auth,
+  events: state.edit.events,
+});
 
-export default connect(mapStateToProps, null)(Events);
+export default connect(mapStateToProps)(Events);

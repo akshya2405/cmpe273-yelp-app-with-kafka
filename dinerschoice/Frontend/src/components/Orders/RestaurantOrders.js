@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Select, CaretIcon, ModalCloseButton } from 'react-responsive-select';
 
-import UserServices from '../../js/services/user.service';
+import { getOrders } from '../../js/actions/getCalls';
 import 'react-responsive-select/dist/react-responsive-select.css';
 import { updateOrderStatus } from '../../js/actions/add';
 
@@ -45,55 +45,57 @@ class RestaurantOrders extends Component {
       filteredResults: [],
     };
     this.orderStatus = [{ value: 'New Order', text: 'New Order' }, { value: 'Delivered Order', text: 'Delivered' }, { value: 'Cancelled Order', text: 'Cancel' }];
-    this.mapOrderItems = this.mapOrderItems.bind(this);
+    // this.mapOrderItems = this.mapOrderItems.bind(this);
     this.filterChangeHandler = this.filterChangeHandler.bind(this);
     this.updateOrderStatus = this.updateOrderStatus.bind(this);
   }
 
   componentDidMount() {
-    UserServices.getRestaurantOrders().then(
-      (response) => {
-        // console.log('response: ', response.data);
-        // console.log('orders: ', response.data.orders);
-        // console.log('orderitems: ', response.data.orderItems);
-        this.setState({
-          orders: response.data.orders,
-          orderItems: response.data.orderItems,
-        });
-        const result = this.mapOrderItems();
-        this.setState({
-          ordersAndItemsArray: result,
-          filteredResults: result,
-        });
-      },
-      (error) => {
-        this.setState({
-          filteredResults: [],
-        });
-      },
-    );
+    const id = localStorage.getItem('id');
+    const category = localStorage.getItem('category');
+    this.props.getOrders();
+    if (this.props.orders) {
+      this.setState({
+        ordersAndItemsArray: this.props.orders,
+        filteredResults: this.props.orders,
+      });
+    }
+
+    console.log('filtered results: ', this.state.filteredResults);
   }
 
-  mapOrderItems() {
-    // console.log('in map items');
-    const ordersAndItemsArray = [];
-    if (this.state.orderItems && this.state.orders) {
-      this.state.orders.map((order) => {
-        const thisOrderItems = this.state.orderItems.filter((orderItem) => orderItem.orderID === order.orderID);
-        const orderAndItems = { ...order, orderItems: thisOrderItems };
-        ordersAndItemsArray.push(orderAndItems);
+  componentDidUpdate(prevProps) {
+    if (this.props.orders !== prevProps.orders) {
+      // alert('change in props');
+      this.setState({
+        ordersAndItemsArray: this.props.orders,
+        filteredResults: this.props.orders,
       });
-      // console.log(ordersAndItemsArray);
     }
-    return ordersAndItemsArray;
   }
+
+  // mapOrderItems() {
+  //   // console.log('in map items');
+  //   const ordersAndItemsArray = [];
+  //   if (this.state.orderItems && this.state.orders) {
+  //     this.state.orders.map((order) => {
+  //       const thisOrderItems = this.state.orderItems.filter((orderItem) => orderItem.orderID === order.orderID);
+  //       const orderAndItems = { ...order, orderItems: thisOrderItems };
+  //       ordersAndItemsArray.push(orderAndItems);
+  //     });
+  //     // console.log(ordersAndItemsArray);
+  //   }
+  //   return ordersAndItemsArray;
+  // }
 
   orderStatusChangeHandler(order, e) {
     // console.log('in change handler', e);
     // console.log('order: ', order);
-    const index = (this.state.orders.findIndex((row) => row.orderID === order.orderID));
+    const index = (this.state.ordersAndItemsArray.findIndex((row) => row._id === order._id));
     order.orderStatus = e.value;
-    this.state.orders[index].orderStatus = e.value;
+    console.log(this.state.ordersAndItemsArray);
+    // alert(index);
+    this.state.ordersAndItemsArray[index].orderStatus = e.value;
     // console.log(this.state.orders[index].orderStatus);
     this.setState({
       message: 'Please update delivery Status also...',
@@ -103,9 +105,10 @@ class RestaurantOrders extends Component {
   deliveryStatusChangeHandler(order, e) {
     // console.log('in change handler', e);
     // console.log('order: ', order);
-    const index = (this.state.orders.findIndex((row) => row.orderID === order.orderID));
+    const index = (this.state.ordersAndItemsArray.findIndex((row) => row._id === order._id));
     order.deliveryStatus = e.value;
-    this.state.orders[index].deliveryStatus = e.value;
+    // alert(JSON.stringify(this.state.ordersAndItemsArray));
+    this.state.ordersAndItemsArray[index].deliveryStatus = e.value;
     // console.log(this.state.orders[index].deliveryStatus);
     this.setState({
       message: '',
@@ -148,46 +151,26 @@ class RestaurantOrders extends Component {
   }
 
   updateOrderStatus(order) {
-    const index = (this.state.orders.findIndex((row) => row.orderID === order.orderID));
+    const index = (this.state.ordersAndItemsArray.findIndex((row) => row._id === order._id));
     const data = {
-      orderID: order.orderID,
-      orderStatus: this.state.orders[index].orderStatus,
-      deliveryStatus: this.state.orders[index].deliveryStatus,
+      _id: order._id,
+      orderStatus: this.state.ordersAndItemsArray[index].orderStatus,
+      deliveryStatus: this.state.ordersAndItemsArray[index].deliveryStatus,
     };
     if (data.orderStatus === 'Cancelled Order') {
-      data.deliveryStatus === 'Cancelled';
+      data.deliveryStatus = 'Cancelled';
     } else if (data.deliveryStatus === 'Picked up' || data.deliveryStatus === 'Delivered') {
       data.orderStatus = 'Delivered Order';
     }
-    // console.log('data: ', data);
-
-    const { dispatch } = this.props;
-
-    dispatch(
-      updateOrderStatus(data),
-    )
-      .then(() => {
-        this.setState({
-          success: true,
-        });
-        // console.log('success');
-        window.location.reload();
-      })
-      .catch(() => {
-        this.setState({
-          success: false,
-        });
-      });
+    // alert('data: '+ data);
+    this.props.updateOrderStatus(data);
   }
 
   render() {
-    const { user: currentUser } = this.props;
+    const currentUser = this.props.auth.user;
     if (!currentUser) {
       return <Redirect to="/login" />;
     }
-    // console.log('user: ', currentUser);
-
-    // console.log('In restaurant orders');
 
     return (
       <div>
@@ -220,7 +203,7 @@ class RestaurantOrders extends Component {
           </table>
           <div>
             {
-      (this.state.filteredResults.length === 0) ? (
+      (this.state.filteredResults && this.state.filteredResults.length === 0) ? (
         <div><h2>There are no orders yet...</h2></div>
       ) : (
         // console.log(this.state.filteredResults.length),
@@ -229,7 +212,7 @@ class RestaurantOrders extends Component {
             <hr />
             <div className="ordercolumn1">
               <b>Order ID: </b>
-              {order.orderID}
+              {order._id}
               <br />
               <b>Ordered By: </b>
               <Link to={{ pathname: '/profile', state: order.customerID }}>
@@ -248,36 +231,39 @@ class RestaurantOrders extends Component {
             <div className="ordercolumn2">
               <p style={{ color: 'red' }}>{this.state.message}</p>
               <table>
-                <tr>
-                  <td>Order Status:</td>
-                  <td>
-                    <Select
-                      name="orderStatus"
-                      id="orderStatus"
-                      modalCloseButton={<ModalCloseButton />}
-                      options={this.orderStatus}
-                      selectedValue={order.orderStatus}
-                      caretIcon={<CaretIcon />}
-                      onChange={this.orderStatusChangeHandler.bind(this, order)}
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    Delivery Status:
-                  </td>
-                  <td>
-                    <Select
-                      name="deliveryStatus"
-                      id="deliveryStatus"
-                      modalCloseButton={<ModalCloseButton />}
-                      options={setDeliveryStatus(order.deliveryType)}
-                      selectedValue={order.deliveryStatus}
-                      caretIcon={<CaretIcon />}
-                      onChange={this.deliveryStatusChangeHandler.bind(this, order)}
-                    />
-                  </td>
-                </tr>
+                <tbody>
+                  <tr>
+                    <td>Order Status:</td>
+                    <td>
+                      <Select
+                        name="orderStatus"
+                        id="orderStatus"
+                        modalCloseButton={<ModalCloseButton />}
+                        options={this.orderStatus}
+                        selectedValue={order.orderStatus}
+                        caretIcon={<CaretIcon />}
+                        onChange={this.orderStatusChangeHandler.bind(this, order)}
+                      />
+                    </td>
+                  </tr>
+                  <tr />
+                  <tr>
+                    <td>
+                      Delivery Status:
+                    </td>
+                    <td>
+                      <Select
+                        name="deliveryStatus"
+                        id="deliveryStatus"
+                        modalCloseButton={<ModalCloseButton />}
+                        options={setDeliveryStatus(order.deliveryType)}
+                        selectedValue={order.deliveryStatus}
+                        caretIcon={<CaretIcon />}
+                        onChange={this.deliveryStatusChangeHandler.bind(this, order)}
+                      />
+                    </td>
+                  </tr>
+                </tbody>
               </table>
               <input type="button" className="btn btn-primary btn-lg" id="UpdateOrder" name="UpdateOrder" value="Update Order Status" onClick={() => this.updateOrderStatus(order)} disabled={this.state.message} />
             </div>
@@ -292,18 +278,18 @@ class RestaurantOrders extends Component {
                 </thead>
                 <tbody>
                   {
-                order.orderItems.map((item) => (
+                JSON.parse(order.items).map((item) => (
                   <tr>
                     <td>{item.dishName}</td>
                     <td>{item.quantity}</td>
-                    <td>{item.price}</td>
+                    <td>${item.price}</td>
                   </tr>
                 ))
                 }
                   <tr>
                     <td />
                     <td>Order Total:</td>
-                    <td>{order.orderTotalPrice}</td>
+                    <td>${order.total}</td>
                   </tr>
                 </tbody>
               </table>
@@ -319,12 +305,9 @@ class RestaurantOrders extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  const { user } = state.auth;
-  // console.log('user: ', user);
-  return {
-    user,
-  };
-}
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+  orders: state.edit.orders,
+});
 
-export default connect(mapStateToProps)(RestaurantOrders);
+export default connect(mapStateToProps, { getOrders, updateOrderStatus })(RestaurantOrders);

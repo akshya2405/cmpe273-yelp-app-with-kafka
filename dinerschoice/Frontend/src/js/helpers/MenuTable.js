@@ -9,11 +9,11 @@ class MenuTable extends Component {
     let result = [];
     // console.log(this.props.menu);
     const menuItems = this.props.menu.map(function (menuItem) {
-        // console.log('item:', menuItem);
-      if (menuItem.dishName.indexOf(filterText) === -1) {
+        console.log('item:', !(menuItem !== {}));
+      if (!(menuItem !== {}) && menuItem.dishName.indexOf(filterText) === -1) {
         return;
       }
-      return (<MenuRow onMenuTableUpdate={onMenuTableUpdate} menu={menuItem} onDelEvent={rowDel.bind(this)} key={menuItem.dishID} />);
+      return (<MenuRow onMenuTableUpdate={onMenuTableUpdate} menu={menuItem} onDelEvent={rowDel.bind(this)} key={menuItem._id} />);
     });
     return (
       <div>

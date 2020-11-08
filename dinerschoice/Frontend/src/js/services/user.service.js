@@ -2,8 +2,7 @@
 /* eslint-disable class-methods-use-this */
 import axios from 'axios';
 import authHeader from './authHeader';
-
-const API_URL = 'http://localhost:3001/';
+import { API_URL } from '../config/config';
 
 class UserService {
   getPublicContent() {
@@ -11,22 +10,30 @@ class UserService {
   }
 
   getCustomerProfile(custID) {
-    // console.log('Header: ', authHeader());
-    return axios.get(`${API_URL}customerprofile`, { params: { custID: custID }, headers: authHeader() }, { withCredentials: true });
+    axios.defaults.headers.common.authorization = localStorage.getItem('token');
+    return axios.get(`${API_URL}customerProfile`, { params: { custID: custID } }, { withCredentials: true });
   }
 
   getRestaurantProfile(restID) {
-    // console.log(authHeader());
-    return axios.get(`${API_URL}restaurantDashboard`, { params: { restID: restID }, headers: authHeader() }, { withCredentials: true });
-  }
-
-  getMenu(restID) {
-    // console.log('in service: ', restID);
-    return axios.get(`${API_URL}menu`, { params: { restID: restID }, headers: authHeader() }, { withCredentials: true });
+    axios.defaults.headers.common.authorization = localStorage.getItem('token');
+    console.log(restID);
+    return axios
+      .get(`${API_URL}restaurantDashboard`, { params: { restID: restID } }, { withCredentials: true })
+      .then((response) => response);
   }
 
   getEvents() {
-    return axios.get(`${API_URL}events`, { headers: authHeader() }, { withCredentials: true });
+    const category = localStorage.getItem('category');
+    const id = localStorage.getItem('id');
+    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
+    return axios.get(`${API_URL}events`, { params: { category, id } }, { withCredentials: true });
+  }
+
+  getEventsForCustomer(idList) {
+    const category = localStorage.getItem('category');
+    const id = localStorage.getItem('id');
+    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
+    return axios.get(`${API_URL}events`, { params: { category, id, idList } }, { withCredentials: true });
   }
 
   getRegistrationList(eventid) {
@@ -51,12 +58,11 @@ class UserService {
     return axios.get(`${API_URL}getCustReviews`, { headers: authHeader() }, { withCredentials: true });
   }
 
-  getCustomerOrders() {
-    return axios.get(`${API_URL}getcustomerOrders`, { headers: authHeader() }, { withCredentials: true });
-  }
-
-  getRestaurantOrders() {
-    return axios.get(`${API_URL}getrestaurantOrders`, { headers: authHeader() }, { withCredentials: true });
+  getOrders() {
+    axios.defaults.headers.common.authorization = localStorage.getItem('token');
+    // alert(`getorders: ${localStorage.getItem('id')}`);
+    return axios.get(`${API_URL}getOrders`,
+      { params: { id: localStorage.getItem('id'), category: localStorage.getItem('category') } }, { withCredentials: true });
   }
 }
 

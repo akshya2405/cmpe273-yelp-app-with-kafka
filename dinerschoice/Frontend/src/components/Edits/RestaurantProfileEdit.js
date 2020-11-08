@@ -5,6 +5,7 @@
 /* eslint-disable linebreak-style */
 /* eslint-disable no-console */
 import React, { Component } from 'react';
+import { Redirect } from 'react-router';
 import '../../App.css';
 import Form from 'react-validation/build/form';
 // import Select from 'react-validation/build/select';
@@ -17,7 +18,6 @@ import { Select, CaretIcon, ModalCloseButton } from 'react-responsive-select';
 
 import { editRestaurantProfile } from '../../js/actions/edit';
 import { clearMessage } from '../../js/actions/message';
-import UserServices from '../../js/services/user.service';
 import ReactUploadImageMultiple from '../../js/helpers/MultiImageUpload';
 import 'react-dropdown/style.css';
 import 'react-responsive-select/dist/react-responsive-select.css';
@@ -124,28 +124,13 @@ class EditRestaurantProfile extends Component {
   }
 
   componentDidMount() {
-    UserServices.getRestaurantProfile().then(
-      (response) => {
-        // console.log('response:', response.data);
-        this.setState({
-          profile: response.data,
-          country: response.data.country,
-        });
-        this.populateServicesOffered();
-        this.populateOpenHours();
-        // console.log(this.state.profile);
-      },
-      (error) => {
-        this.setState({
-          profile:
-                (error.response
-                  && error.response.data
-                  && error.response.data.message)
-                  || error.message
-                  || error.toString(),
-        });
-      },
-    );
+    console.log(this.props.location.state);
+    this.setState({
+      profile: this.props.location.state,
+    });
+    // console.log("calling populate services");
+    this.populateServicesOffered();
+    this.populateOpenHours();
   }
 
   componentWillUnmount() {
@@ -153,9 +138,13 @@ class EditRestaurantProfile extends Component {
   }
 
   populateServicesOffered() {
-    if (this.state.profile && this.state.profile.mode) {
-      this.state.modes = this.state.profile.mode.split(',');
-      const modeList = this.state.profile.mode.split(',');
+    console.log(this.props.location.state.profile && this.props.location.state.profile.mode);
+    if (this.props.location.state.profile && this.props.location.state.profile.mode) {
+      console.log('populating services');
+      this.setState({
+        modes: this.props.location.state.profile.mode.split(','),
+      });
+      const modeList = this.props.location.state.profile.mode.split(',');
 
       if (modeList.includes('Dine-in')) this.setState({ dineInOffered: true });
       if (modeList.includes('Curbside pickup')) this.setState({ curbsideOffered: true });
@@ -233,8 +222,8 @@ class EditRestaurantProfile extends Component {
   }
 
   imageUploadChangeHandler(e) {
-    this.state.uploadedImage = e.target.files[0];
-    // console.log(`file:${this.state.uploadedImage}`);
+    this.setState({ uploadedImage: e.target.files[0] });
+    // alert(`file:${this.state.uploadedImage}`);
   }
 
   updateServicesState(service, status) {
@@ -280,35 +269,38 @@ class EditRestaurantProfile extends Component {
 
   updateProfile(e) {
     e.preventDefault();
+    console.log('check category: ', this.props.auth.user.category);
     const data = {
-      restaurantID: this.state.profile.restaurantID,
-      restaurantName: this.state.name,
+      category: this.props.auth.user.category,
+      id: this.state.profile.id,
+      name: this.state.name,
       description: this.state.description,
-      address: this.state.address,
+      streetAddress: this.state.address,
       city: this.state.city,
       state: this.state.state,
       country: this.state.country,
       zipcode: this.state.zipcode,
-      contactinfo: this.state.contactinfo,
+      contactInfo: this.state.contactinfo,
       cuisine: this.state.cuisine,
       status: this.state.status,
-      modes: this.state.modes.toString(),
+      mode: this.state.modes.toString(),
       hours: this.state.hours,
-      uploadedImage: this.state.uploadedImage,
+      profileImage: this.state.profile.profileImage,
     };
-    if (data.restaurantName === '') data.restaurantName = this.state.profile.name.replace(/'/g, "\\'");
-    if (data.description === '' && this.state.profile.description !== null) data.description = this.state.profile.description.replace(/'/g, "\\'");
-    if (data.address === '' && this.state.profile.streetAddress !== '') data.address = this.state.profile.streetAddress.replace(/'/g, "\\'");
+    if (data.name === '') data.name = this.state.profile.name.replace(/'/g, "\\'");
+    if (data.description === '' && this.state.profile.description) data.description = this.state.profile.description.replace(/'/g, "\\'");
+    if (data.streetAddress === '' && this.state.profile.streetAddress !== '') data.streetAddress = this.state.profile.streetAddress.replace(/'/g, "\\'");
     if (data.city === '' && this.state.profile.city !== '') data.city = this.state.profile.city.replace(/'/g, "\\'");
     if (data.state === '' && this.state.profile.state !== '') data.state = this.state.profile.state;
     if (data.country === '' && this.state.profile.country !== '') data.country = this.state.profile.country;
     if (data.zipcode === '' && this.state.profile.zipcode !== '') data.zipcode = this.state.profile.zipcode;
-    if (data.contactinfo === '' && this.state.profile.contactinfo !== null) data.contactinfo = this.state.profile.contactInfo;
-    if (data.cuisine === '' && this.state.profile.cuisine !== null) data.cuisine = this.state.profile.cuisine.replace(/'/g, "\\'");
-    if (data.status === '' && this.state.profile.status !== null) data.status = this.state.profile.status;
-    if (data.modes === '' && this.state.profile.modes !== null) data.modes = this.state.profile.mode;
-    // console.log('Data to node:', data);
-
+    if (data.contactInfo === '' && this.state.profile.contactInfo) data.contactInfo = this.state.profile.contactInfo;
+    if (data.cuisine === '' && this.state.profile.cuisine) data.cuisine = this.state.profile.cuisine.replace(/'/g, "\\'");
+    if (data.status === '' && this.state.profile.status) data.status = this.state.profile.status;
+    // if (data.mode === '' && this.state.profile.mode) data.mode = this.state.profile.mode;
+    const image = {
+      image: this.state.uploadedImage,
+    };
     this.setState({
       success: false,
     });
@@ -318,9 +310,9 @@ class EditRestaurantProfile extends Component {
     const { dispatch, history } = this.props;
 
     if (this.checkBtn.context._errors.length === 0) {
-      // console.log(this.state);
+      alert(JSON.stringify(image));
       dispatch(
-        editRestaurantProfile(data),
+        editRestaurantProfile(data, image),
       )
         .then(() => {
           this.setState({
@@ -341,7 +333,13 @@ class EditRestaurantProfile extends Component {
   render() {
     // Display profile
     // if not logged in go to login page
-    const { message } = this.props;
+    if (!this.props.auth.isLoggedIn) {
+      return <Redirect to="/login" />;
+    }
+    if (this.props.edit.isEdited) {
+      return <Redirect to="/restaurantDashboard" />;
+    }
+    const { message } = this.props.message;
     const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
     const details = daysOfWeek.map((day) => {
@@ -612,13 +610,12 @@ class EditRestaurantProfile extends Component {
     );
   }
 }
-// export Home Component
-function mapStateToProps(state) {
+
+const mapStateToProps = (state) => ({
   // console.log('In mapstate to props');
-  const { message } = state.message;
-  return {
-    message,
-  };
-}
+  auth: state.auth,
+  edit: state.edit,
+  message: state.message,
+});
 
 export default connect(mapStateToProps, null)(EditRestaurantProfile);

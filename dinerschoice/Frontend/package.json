@@ -13,6 +13,7 @@
     "history": "^5.0.0",
     "jwt-decode": "^3.0.0",
     "mdbreact": "^4.27.0",
+    "moment": "^2.29.1",
     "multer": "^1.4.2",
     "prop-types": "^15.7.2",
     "react": "^16.5.0",
@@ -28,6 +29,7 @@
     "react-google-maps": "^9.4.5",
     "react-multi-carousel": "^2.5.5",
     "react-native": "^0.63.3",
+    "react-paginate": "^6.5.0",
     "react-redux": "7.2.1",
     "react-responsive-carousel": "^3.2.10",
     "react-responsive-select": "^6.0.3",
@@ -39,8 +41,10 @@
     "react-star-ratings": "^2.3.0",
     "react-validation": "^3.0.7",
     "redux": "4.0.5",
+    "redux-persist": "^6.0.0",
     "redux-thunk": "2.3.0",
     "star-based-rating": "^1.5.7",
+    "url-loader": "^3.0.0",
     "validator": "^13.1.17"
   },
   "scripts": {

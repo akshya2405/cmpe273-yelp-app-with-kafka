@@ -7,7 +7,6 @@
 import React, { Component } from 'react';
 import '../../App.css';
 import Form from 'react-validation/build/form';
-// import Select from 'react-validation/build/select';
 import Input from 'react-validation/build/input';
 import CheckButton from 'react-validation/build/button';
 import Textarea from 'react-validation/build/textarea';
@@ -18,6 +17,7 @@ import { connect } from 'react-redux';
 import { editCustomerProfile } from '../../js/actions/edit';
 import { clearMessage } from '../../js/actions/message';
 import ReactUploadImageSingle from '../../js/helpers/SingleImageUpload';
+import {Redirect} from "react-router";
 
 const required = (value) => {
   if (!value) {
@@ -186,6 +186,8 @@ class EditCustomerProfile extends Component {
     // prevent page from refresh
     e.preventDefault();
     const data = {
+      category: this.props.auth.user.category,
+      id: this.state.profile.id,
       fname: this.state.fname,
       lname: this.state.lname,
       headline: this.state.headline,
@@ -202,14 +204,14 @@ class EditCustomerProfile extends Component {
     // console.log(data.dob);
     if (data.fname === '') data.fname = this.state.profile.fname;
     if (data.lname === '') data.lname = this.state.profile.lname;
-    if (data.headline === '' && this.state.profile.headline !== null) data.headline = this.state.profile.headline.replace(/'/g, "\\'");
-    if (data.nickname === '' && this.state.profile.nickname !== '') data.nickname = this.state.profile.nickname;
-    if (data.city === '' && this.state.profile.city !== null) data.city = this.state.profile.city.replace(/'/g, "\\'");
-    if (data.state === '' && this.state.profile.state !== '') data.state = this.state.profile.state;
-    if (data.country === '' && this.state.profile.country !== '') data.country = this.state.profile.country;
-    if (data.dob === '' && this.state.profile.dob !== null) data.dob = this.state.profile.dob;
-    if (data.phoneNumber === '' && this.state.profile.phoneNumber !== null) data.phoneNumber = this.state.profile.phoneNumber;
-    if (data.favorites === '' && this.state.profile.favorites !== null) data.favorites = this.state.profile.favorites.replace(/'/g, "\\'");
+    if (data.headline === '' && this.state.profile.headline) data.headline = this.state.profile.headline.replace(/'/g, "\\'");
+    if (data.nickname === '' && this.state.profile.nickname) data.nickname = this.state.profile.nickname;
+    if (data.city === '' && this.state.profile.city) data.city = this.state.profile.city.replace(/'/g, "\\'");
+    if (data.state === '' && this.state.profile.state) data.state = this.state.profile.state;
+    if (data.country === '' && this.state.profile.country) data.country = this.state.profile.country;
+    if (data.dob === '' && this.state.profile.dob) data.dob = this.state.profile.dob;
+    if (data.phoneNumber === '' && this.state.profile.phoneNumber) data.phoneNumber = this.state.profile.phoneNumber;
+    if (data.favorites === '' && this.state.profile.favorites) data.favorites = this.state.profile.favorites.replace(/'/g, "\\'");
     // console.log('Data to node:', data.headline, data.dob, data);
 
     this.setState({
@@ -242,12 +244,10 @@ class EditCustomerProfile extends Component {
   }
 
   render() {
-    const { message } = this.props;
-    withRouter(({ history }) => (
-      <div>
-        <button onClick={() => history.goBack()}>BACK</button>
-      </div>
-    ));
+    const { auth, edit, message } = this.props;
+    if (!auth.user) {
+      return <Redirect to="/login" />;
+    }
     return (
       <div>
         <div className="container">
@@ -413,13 +413,13 @@ class EditCustomerProfile extends Component {
               </div>
             </div>
             )}
-            {message && (
-            <div className="form-group">
-              <div className="alert alert-danger" role="alert">
-                {message}
-              </div>
-            </div>
-            )}
+            {/*{message && (*/}
+            {/*<div className="form-group">*/}
+            {/*  <div className="alert alert-danger" role="alert">*/}
+            {/*    {message}*/}
+            {/*  </div>*/}
+            {/*</div>*/}
+            {/*)}*/}
             <CheckButton
               style={{ display: 'none' }}
               ref={(c) => {
@@ -433,12 +433,11 @@ class EditCustomerProfile extends Component {
   }
 }
 // export Home Component
-function mapStateToProps(state) {
+const mapStateToProps = (state) => ({
   // console.log('In mapstate to props');
-  const { message } = state.message;
-  return {
-    message,
-  };
-}
+  auth: state.auth,
+  edit: state.edit,
+  message: state.message,
+});
 
 export default connect(mapStateToProps, null)(EditCustomerProfile);

@@ -8,17 +8,17 @@ import {
   PLACE_ORDER, PLACE_ORDER_ERROR,
 } from '../constants/action-types';
 
-const user = JSON.parse(localStorage.getItem('user'));
+// const user = JSON.parse(localStorage.getItem('user'));
+//
+// const initialState = { isAdded: false, user };
 
-const initialState = { isAdded: false, user };
-
-export default function (state = initialState, action) {
+export default function (state = {}, action) {
   const { type, payload } = action;
   switch (type) {
     case ADD_DISH:
       return {
         ...state,
-        users: action.payload,
+        users: payload,
         isAdded: true,
         loading: true,
       };
@@ -33,7 +33,7 @@ export default function (state = initialState, action) {
     case MENU_UPDATE:
       return {
         ...state,
-        users: action.payload,
+        dishes: payload,
         isAdded: true,
         loading: true,
       };
@@ -46,9 +46,10 @@ export default function (state = initialState, action) {
       };
 
     case EVENTS_UPDATE:
+      console.log(payload);
       return {
         ...state,
-        users: action.payload,
+        events: payload.events,
         isAdded: true,
         loading: true,
       };
@@ -93,7 +94,7 @@ export default function (state = initialState, action) {
     case PLACE_ORDER:
       return {
         ...state,
-        users: action.payload,
+        orders: action.payload,
         isAdded: true,
         loading: true,
       };

@@ -35,7 +35,7 @@ export const addDish = (updateDetails) => (dispatch) => AddService.addDish(updat
     return Promise.reject();
   });
 
-export const menuUpdate = (updateList, deleteIds) => (dispatch) => AddService.menuUpdate(updateList, deleteIds)
+export const menuUpdate = (restID, updateList, deleteIds) => (dispatch) => AddService.menuUpdate(restID, updateList, deleteIds)
   .then((response) => {
     // console.log('Adding Dish to menu');
     dispatch({
@@ -59,11 +59,12 @@ export const menuUpdate = (updateList, deleteIds) => (dispatch) => AddService.me
     return Promise.reject();
   });
 
-export const eventsUpdate = (updateList, deleteIds) => (dispatch) => AddService.eventsUpdate(updateList, deleteIds)
+export const eventsUpdate = (restID, updateList, deleteIds) => (dispatch) => AddService.eventsUpdate(restID, updateList, deleteIds)
   .then((response) => {
-    // console.log('Adding event');
+    console.log('Adding event', response);
     dispatch({
       type: EVENTS_UPDATE,
+      payload: response.data,
     });
     dispatch({
       type: SET_MESSAGE,
@@ -133,9 +134,9 @@ export const addReview = (review) => (dispatch) => AddService.addReview(review)
 
 export const placeOrder = (updateDetails) => (dispatch) => AddService.placeOrder(updateDetails)
   .then((response) => {
-    // console.log('Placing order');
     dispatch({
       type: PLACE_ORDER,
+      payload: response.data,
     });
     dispatch({
       type: SET_MESSAGE,
@@ -157,9 +158,9 @@ export const placeOrder = (updateDetails) => (dispatch) => AddService.placeOrder
 
 export const updateOrderStatus = (updateOrder) => (dispatch) => AddService.updateOrderStatus(updateOrder)
   .then((response) => {
-    // console.log('Updating order status');
     dispatch({
       type: ORDER_STATUS_UPDATE,
+      payload: response.data,
     });
     dispatch({
       type: SET_MESSAGE,
