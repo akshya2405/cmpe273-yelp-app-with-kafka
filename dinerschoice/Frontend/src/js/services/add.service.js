@@ -27,6 +27,7 @@ class AddService {
         };
         const formData = new FormData();
         formData.append('myImage', update.uploadedImage);
+        axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
         return axios
             .post(`${API_URL}upload`, formData, multipartOptions)
             // .then((response) => response);
@@ -40,6 +41,7 @@ class AddService {
 
     return Promise.all(promises).then((results) => {
       // alert('all promises resolved: ' + JSON.stringify(updateList) + JSON.stringify(deleteIds));
+      axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
       return axios
           .post(`${API_URL}menuUpdate`, { restID, updateList:updateList, deleteIds }, options)
           .then((response) => response);
@@ -47,30 +49,36 @@ class AddService {
   }
 
   eventsUpdate(restID, updateList, deleteIds) {
+    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
     return axios
       .post(`${API_URL}eventsUpdate`, { restID, updateList, deleteIds }, options)
       .then((response) => response);
   }
 
   registerfor(eventID) {
+    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
+    const id = localStorage.getItem('id');
     return axios
-      .post(`${API_URL}registerfor`, { eventID }, options)
+      .post(`${API_URL}registerfor`, { eventID, id }, options)
       .then((response) => response);
   }
 
   addReview(review) {
+    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
     return axios
       .post(`${API_URL}addReview`, { review }, options)
       .then((response) => response);
   }
 
   placeOrder(order) {
+    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
     return axios
       .post(`${API_URL}placeOrder`, { order }, options)
       .then((response) => response);
   }
 
   updateOrderStatus(order) {
+    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
     return axios
       .post(`${API_URL}updateOrderStatus`, { order }, options)
       .then((response) => response);

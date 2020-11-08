@@ -4,7 +4,7 @@ const router = express.Router();
 const kafka = require('./kafka/client');
 const { checkAuth } = require('../config/passport');
 
-router.get('/events', (req, res) => {
+router.get('/events', checkAuth, (req, res) => {
   console.log(req.query);
   let ids = [];
   if (req.query.idList) {

@@ -22,6 +22,7 @@ class EditService {
       };
       const formData = new FormData();
       formData.append('myImage', uploadedImage.image);
+      axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
       return axios
         .post(`${API_URL}upload`, formData, multipartOptions)
         // .then((response) => response);
@@ -38,7 +39,7 @@ class EditService {
           // console.log(error);
         });
     }
-
+    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
     return axios
       .post(`${API_URL}editProfile`, { updateDetails }, options)
       .then((response) => response);
@@ -55,6 +56,7 @@ class EditService {
       };
       const formData = new FormData();
       formData.append('myImage', updateDetailsInput.uploadedImage);
+      axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
       return axios
         .post(`${API_URL}upload`, formData, multipartOptions)
       // .then((response) => response);
@@ -62,6 +64,7 @@ class EditService {
           // console.log(response.data);
           // {...obj, response.data}
           updateDetails.uploadedImageUrl = response.data.fileName;
+          axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
           return axios
             .post(`${API_URL}editProfile`, { updateDetails }, options)
             .then((response) => response);
@@ -69,6 +72,7 @@ class EditService {
           // console.log(error);
         });
     }
+    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
     return axios
       .post(`${API_URL}editProfile`, { updateDetails }, options)
       .then((response) => response);

@@ -25,12 +25,14 @@ class UserService {
   getEvents() {
     const category = localStorage.getItem('category');
     const id = localStorage.getItem('id');
+    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
     return axios.get(`${API_URL}events`, { params: { category, id } }, { withCredentials: true });
   }
 
   getEventsForCustomer(idList) {
     const category = localStorage.getItem('category');
     const id = localStorage.getItem('id');
+    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
     return axios.get(`${API_URL}events`, { params: { category, id, idList } }, { withCredentials: true });
   }
 

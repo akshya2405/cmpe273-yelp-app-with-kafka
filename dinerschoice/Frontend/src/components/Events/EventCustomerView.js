@@ -4,13 +4,11 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
+import moment from "moment";
 
-import UserServices from '../../js/services/user.service';
-import EventTable from '../../js/helpers/EventTable';
-import SearchBar from '../../js/helpers/SearchBar';
 import { registerfor } from '../../js/actions/add'; // add this to actions/add
 import '../../App.css';
-import {getCustomerEvents} from "../../js/actions/getCalls";
+import { getCustomerEvents } from '../../js/actions/getCalls';
 
 class Events extends Component {
   constructor(props) {
@@ -23,6 +21,7 @@ class Events extends Component {
     };
     this.register = this.register.bind(this);
     this.findEvent = this.findEvent.bind(this);
+    this.sortedEvents = this.sortedEvents.bind(this);
   }
 
   componentDidMount() {
@@ -47,56 +46,6 @@ class Events extends Component {
         });
       }
     });
-    // UserServices.getUpcomingEvents().then( // add this to userservices
-    //   (response) => {
-    //     // console.log('response: ', response.data);
-    //     if (!response.data) {
-    //       this.setState({
-    //         events: [],
-    //         hasMenu: false,
-    //       });
-    //     } else {
-    //       this.setState({
-    //         events: response.data,
-    //       });
-    //     }
-    //   },
-    //   (error) => {
-    //     this.setState({
-    //       events:
-    //                     (error.response
-    //                         && error.response.data
-    //                         && error.response.data.message)
-    //                     || error.message
-    //                     || error.toString(),
-    //     });
-    //   },
-    // );
-    //
-    // UserServices.getRegisteredEvents().then(
-    //   (response) => {
-    //     // console.log('response: ', response.data);
-    //     if (!response.data) {
-    //       this.setState({
-    //         registeredEvents: [],
-    //       });
-    //     } else {
-    //       this.setState({
-    //         registeredEvents: response.data,
-    //       });
-    //     }
-    //   },
-    //   (error) => {
-    //     this.setState({
-    //       registeredEvents:
-    //                     (error.response
-    //                         && error.response.data
-    //                         && error.response.data.message)
-    //                     || error.message
-    //                     || error.toString(),
-    //     });
-    //   },
-    // );
   }
 
   componentDidUpdate(prevProps) {
@@ -109,10 +58,37 @@ class Events extends Component {
     }
   }
 
+  sortedEvents(e) {
+    const events = this.state.events;
+    let sorted;
+    // alert(e.currentTarget.id);
+    if (e.currentTarget.id === 'desc') {
+      sorted = events.sort((a, b) => {
+        console.log('b ', b.date);
+        console.log('a ', a.date);
+        return moment(b.date).diff(moment(a.date));
+      });
+      console.log(sorted);
+      this.setState({
+        events: sorted,
+      });
+    } else {
+      sorted = events.sort((a, b) => {
+        console.log('b ', b.date);
+        console.log('a ', a.date);
+        return moment(a.date).diff(moment(b.date));
+      });
+      console.log(sorted);
+      this.setState({
+        events: sorted,
+      });
+    }
+  }
+
   register(e) {
-    // console.log(e);
+    console.log(e._id);
     // const { dispatch } = this.props;
-    if (this.state.registeredEvents.some((event) => event.eventID === e)) alert('You have already registered for this event');
+    if (this.state.registeredEvents.some((event) => event._id === e._id)) alert('You have already registered for this event');
     else {
       this.props.dispatch(
         registerfor(e),
@@ -143,11 +119,18 @@ class Events extends Component {
     if (!currentUser) {
       return <Redirect to="/login" />;
     }
+
     return (
       <div>
         <div>
           <div className="column1">
             <h2>Upcoming Events</h2>
+            <button type="button" id="desc" className="btn btn-default btn-sm" onClick={this.sortedEvents}>
+              <span className="glyphicon glyphicon-sort"></span>Descending
+            </button>
+            <button type="button" id="asc" className="btn btn-default btn-sm" onClick={this.sortedEvents}>
+              <span className="glyphicon glyphicon-sort"></span>Ascending
+            </button>
             <hr />
             {(this.state.events.length !== 0)
               ? this.state.events.map((event) => (
@@ -165,14 +148,15 @@ class Events extends Component {
                             </p>
                             <p>
                               On:
-                              {event.date}
+                              {' '}
+                              {moment(event.date).format('YYYY-MM-DD')}
                               {' '}
                               @
                               {event.time}
                             </p>
                           </div>
                         </td>
-                        <td align="right"><input type="button" value="Register" onClick={() => this.register(event.eventID)} /></td>
+                        <td align="right"><input type="button" value="Register" onClick={() => this.register(event)} /></td>
                       </tr>
                     </table>
                   </div>
@@ -205,7 +189,8 @@ class Events extends Component {
                             </p>
                             <p>
                               On:
-                              {event.date}
+                              {' '}
+                              {moment(event.date).format('YYYY-MM-DD')}
                               {' '}
                               @
                               {event.time}
@@ -255,7 +240,7 @@ class Events extends Component {
                             </p>
                           </div>
                         </td>
-                        <td align="right"><input type="button" value="Register" onClick={() => this.register(result.eventID)} /></td>
+                        <td align="right"><input type="button" value="Register" onClick={() => this.register(result._id)} /></td>
                       </tr>
                     </table>
                   </div>
