@@ -7,6 +7,7 @@ import {
   REGISTER_FOR_EVENT, REGISTER_FOR_EVENT_ERROR,
   PLACE_ORDER, PLACE_ORDER_ERROR,
   ORDER_STATUS_UPDATE, ORDER_STATUS_UPDATE_ERROR,
+  ADD_MESSAGE,
 } from '../constants/action-types';
 
 import AddService from '../services/add.service';
@@ -179,4 +180,17 @@ export const updateOrderStatus = (updateOrder) => (dispatch) => AddService.updat
       payload: message,
     });
     return Promise.reject();
+  });
+
+export const addMessage = (message) => (dispatch) => AddService.addMessage(message)
+  .then((response) => {
+    dispatch({
+      type: ADD_MESSAGE,
+      payload: response.data,
+    });
+    dispatch({
+      type: SET_MESSAGE,
+      payload: response.data.message,
+    });
+    return Promise.resolve();
   });

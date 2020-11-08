@@ -73,6 +73,9 @@ const CustProfile = require('./Routes/CustProfile');
 const PlaceOrder = require('./Routes/PlaceOrder');
 const UpdateOrderStatus = require('./Routes/UpdateOrderStatus');
 const RegisterForEvent = require('./Routes/RegisterFor');
+const getAllCustomers = require('./Routes/GetAllCust');
+const getMessagesList = require('./Routes/GetMessageList');
+const addMessages = require('./Routes/AddMessages');
 
 app.use('/user', Login);
 app.use('/user', Signup);
@@ -87,12 +90,14 @@ app.use('/', CustProfile);
 app.use('/', PlaceOrder);
 app.use('/', UpdateOrderStatus);
 app.use('/', RegisterForEvent);
+app.use('/', getAllCustomers);
+app.use('/', getMessagesList);
+app.use('/', addMessages);
 
-// app.get('/allEvents', (req, res) => {
-//   // console.log('Inside get registration list');
-//   // console.log('req: ', req.query.eventid);
-//   // console.log('req header:', req.headers['x-access-token']);
-//   getUpcomingEvents.getUpcomingEvents(req)
+// app.post('/addReview', (req, res) => {
+//   // console.log('Inside add review');
+//   // console.log('req: ', req.body.review);
+//   addReview.addReview(req)
 //     .then((output) => {
 //       // console.log(output);
 //       res.writeHead(200, {
@@ -109,11 +114,10 @@ app.use('/', RegisterForEvent);
 //     });
 // });
 
-// app.get('/registeredEvents', (req, res) => {
-//   // console.log('Inside get registration list');
-//   // console.log('req: ', req.query.eventid);
+// app.get('/getCustReviews', (req, res) => {
+//   // console.log('Inside get reviews list');
 //   // console.log('req header:', req.headers['x-access-token']);
-//   getRegisteredEvents.getRegisteredEvents(req)
+//   getCustReviews.getCustReviews(req)
 //     .then((output) => {
 //       // console.log('output: ', output);
 //       res.writeHead(200, {
@@ -129,65 +133,6 @@ app.use('/', RegisterForEvent);
 //       res.end();
 //     });
 // });
-
-// app.post('/registerfor', (req, res) => {
-//   // console.log('Inside register for');
-//   // console.log('req: ', req.body.eventID);
-//   registerfor.registerfor(req)
-//     .then(() => {
-//       res.writeHead(200, {
-//         'Content-Type': 'application/json',
-//       });
-//       res.end();
-//     })
-//     .catch((err) => {
-//       // console.log(err);
-//       res.writeHead(400, '*** Something went wrong. Please try again later ****', {
-//         'Content-Type': 'text/plain',
-//       });
-//       res.end();
-//     });
-// });
-
-app.post('/addReview', (req, res) => {
-  // console.log('Inside add review');
-  // console.log('req: ', req.body.review);
-  addReview.addReview(req)
-    .then((output) => {
-      // console.log(output);
-      res.writeHead(200, {
-        'Content-Type': 'application/json',
-      });
-      res.end(JSON.stringify(output));
-    })
-    .catch((err) => {
-      // console.log(err);
-      res.writeHead(400, '*** Something went wrong. Please try again later ****', {
-        'Content-Type': 'text/plain',
-      });
-      res.end();
-    });
-});
-
-app.get('/getCustReviews', (req, res) => {
-  // console.log('Inside get reviews list');
-  // console.log('req header:', req.headers['x-access-token']);
-  getCustReviews.getCustReviews(req)
-    .then((output) => {
-      // console.log('output: ', output);
-      res.writeHead(200, {
-        'Content-Type': 'application/json',
-      });
-      res.end(JSON.stringify(output));
-    })
-    .catch((err) => {
-      // console.log(err);
-      res.writeHead(400, '*** Something went wrong. Please try again later ****', {
-        'Content-Type': 'text/plain',
-      });
-      res.end();
-    });
-});
 
 app.post('/upload', (req, res) => {
   console.log('in upload');
@@ -206,45 +151,6 @@ app.post('/upload', (req, res) => {
       res.end();
     });
 });
-
-// app.post('/placeOrder', (req, res) => {
-//   // console.log(req.body);
-//   // console.log(JSON.parse(req.body.order.items));
-//   placeOrder.placeOrder(req)
-//     .then((output) => {
-//       res.writeHead(200, {
-//         'Content-Type': 'application/json',
-//       });
-//       res.end(JSON.stringify(output));
-//     })
-//     .catch((err) => {
-//       // console.log(err);
-//       res.writeHead(400, '*** Something went wrong. Please try again later ****', {
-//         'Content-Type': 'text/plain',
-//       });
-//       res.end();
-//     });
-// });
-//
-// app.get('/getcustomerOrders', (req, res) => {
-//   // console.log('Inside get customer orders');
-//   // console.log('req header:', req.headers['x-access-token']);
-//   getCustomerOrders.getCustomerOrders(req)
-//     .then((output) => {
-//       // console.log('output: ', output);
-//       res.writeHead(200, {
-//         'Content-Type': 'application/json',
-//       });
-//       res.end(JSON.stringify(output));
-//     })
-//     .catch((err) => {
-//       // console.log(err);
-//       res.writeHead(400, '*** Something went wrong. Please try again later ****', {
-//         'Content-Type': 'text/plain',
-//       });
-//       res.end();
-//     });
-// });
 
 // start your server on port 3001
 app.listen(3001);

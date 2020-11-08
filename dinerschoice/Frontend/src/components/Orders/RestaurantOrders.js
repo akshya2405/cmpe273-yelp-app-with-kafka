@@ -74,24 +74,11 @@ class RestaurantOrders extends Component {
       // alert('change in props');
       this.setState({
         ordersAndItemsArray: this.props.orders,
-        filteredResults: this.props.orders
+        filteredResults: this.props.orders,
+        resultCount: this.props.orders.length
       });
     }
   }
-
-  // mapOrderItems() {
-  //   // console.log('in map items');
-  //   const ordersAndItemsArray = [];
-  //   if (this.state.orderItems && this.state.orders) {
-  //     this.state.orders.map((order) => {
-  //       const thisOrderItems = this.state.orderItems.filter((orderItem) => orderItem.orderID === order.orderID);
-  //       const orderAndItems = { ...order, orderItems: thisOrderItems };
-  //       ordersAndItemsArray.push(orderAndItems);
-  //     });
-  //     // console.log(ordersAndItemsArray);
-  //   }
-  //   return ordersAndItemsArray;
-  // }
 
   orderStatusChangeHandler(order, e) {
     // console.log('in change handler', e);
@@ -244,7 +231,7 @@ class RestaurantOrders extends Component {
               {order._id}
               <br />
               <b>Ordered By: </b>
-              <Link to={{ pathname: '/profile', state: order.customerID }}>
+              <Link to={{ pathname: '/profile', state: order.custID }}>
                 {order.fname}
                 {' '}
                 {order.lname}

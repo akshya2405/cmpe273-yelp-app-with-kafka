@@ -24,6 +24,8 @@ const navbarCustomer = (
     <li><NavLink to="/customerorders" activeStyle={{ background: 'white', color: 'red' }}>Orders</NavLink></li>
     <li><NavLink to="/upcomingEvents" activeStyle={{ background: 'white', color: 'red' }}>Events</NavLink></li>
     <li><NavLink to="/myReviews" activeStyle={{ background: 'white', color: 'red' }}>My Reviews</NavLink></li>
+    <li><NavLink to="/allCustomers" activeStyle={{ background: 'white', color: 'red' }}>Users</NavLink></li>
+    <li><NavLink to="/messages" activeStyle={{ background: 'white', color: 'red' }}>Messages</NavLink></li>
   </ul>
 );
 
@@ -66,7 +68,7 @@ class Navbar extends Component {
     };
 
     history.listen((location) => {
-      props.dispatch(clearMessage()); // clear message when changing location
+      this.props.clearMessage(); // clear message when changing location
     });
   }
 
@@ -182,4 +184,4 @@ const mapStateToProps = (state) => ({
   message: state.message,
 });
 
-export default connect(mapStateToProps, { logout })(Navbar);
+export default connect(mapStateToProps, { logout, clearMessage })(Navbar);

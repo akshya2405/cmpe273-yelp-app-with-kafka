@@ -189,7 +189,7 @@ class CustViewMenu extends Component {
           success: true,
         });
         // console.log('success');
-        history.push('/dashboard');
+        history.push('/customerorders');
         window.location.reload();
       })
       .catch(() => {

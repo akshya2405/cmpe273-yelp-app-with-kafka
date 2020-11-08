@@ -82,6 +82,13 @@ class AddService {
       .post(`${API_URL}updateOrderStatus`, { order }, options)
       .then((response) => response);
   }
+
+  addMessage(message) {
+    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
+    return axios
+      .post(`${API_URL}addMessages`, { message }, options)
+      .then((response) => response);
+  }
 }
 
 export default new AddService();

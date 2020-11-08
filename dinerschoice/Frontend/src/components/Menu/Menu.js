@@ -183,7 +183,7 @@ class Menu extends Component {
           <div>
             <SearchBar filterText={this.state.filterText} onUserInput={this.handleUserInput.bind(this)} />
             <div className="d-flex flex-row py-4 align-items-center">
-              <Pagination totalRecords={this.state.menu.length} pageLimit={1} pageNeighbours={1} onPageChanged={this.onPageChanged} />
+              <Pagination totalRecords={this.state.menu.length} pageLimit={5} pageNeighbours={1} onPageChanged={this.onPageChanged} />
             </div>
             {alert('' + this.state.currentMenu)}
             <MenuTable
