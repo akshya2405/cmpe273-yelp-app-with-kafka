@@ -43,8 +43,8 @@ class AddService {
       // alert('all promises resolved: ' + JSON.stringify(updateList) + JSON.stringify(deleteIds));
       axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
       return axios
-          .post(`${API_URL}menuUpdate`, { restID, updateList:updateList, deleteIds }, options)
-          .then((response) => response);
+        .post(`${API_URL}menuUpdate`, { restID, updateList:updateList, deleteIds }, options)
+        .then((response) => response);
     });
   }
 
@@ -55,11 +55,10 @@ class AddService {
       .then((response) => response);
   }
 
-  registerfor(eventID) {
+  registerfor(event, regList) {
     axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
-    const id = localStorage.getItem('id');
     return axios
-      .post(`${API_URL}registerfor`, { eventID, id }, options)
+      .post(`${API_URL}registerfor`, { event, regList }, options)
       .then((response) => response);
   }
 

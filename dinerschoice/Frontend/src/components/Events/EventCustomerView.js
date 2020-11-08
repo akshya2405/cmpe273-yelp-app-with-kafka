@@ -49,7 +49,7 @@ class Events extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.events !== prevProps.events) {
+    if (this.props.events && this.props.events !== prevProps.events) {
       // alert('change in props');
       this.setState({
         events: this.props.events.allEvents,
@@ -90,8 +90,12 @@ class Events extends Component {
     // const { dispatch } = this.props;
     if (this.state.registeredEvents.some((event) => event._id === e._id)) alert('You have already registered for this event');
     else {
+      let regList;
+      const { id } = this.props.user;
+      const { fname, lname } = this.props.cust_profile;
+      regList = { id, fname, lname };
       this.props.dispatch(
-        registerfor(e),
+        registerfor(e, regList),
       )
         .then(() => {
           // console.log('success');
@@ -126,10 +130,12 @@ class Events extends Component {
           <div className="column1">
             <h2>Upcoming Events</h2>
             <button type="button" id="desc" className="btn btn-default btn-sm" onClick={this.sortedEvents}>
-              <span className="glyphicon glyphicon-sort"></span>Descending
+              <span className="glyphicon glyphicon-sort" />
+              Descending
             </button>
             <button type="button" id="asc" className="btn btn-default btn-sm" onClick={this.sortedEvents}>
-              <span className="glyphicon glyphicon-sort"></span>Ascending
+              <span className="glyphicon glyphicon-sort" />
+              Ascending
             </button>
             <hr />
             {(this.state.events.length !== 0)
@@ -260,10 +266,12 @@ function mapStateToProps(state) {
   const { user } = state.auth;
   const { registeredEvents } = state.edit.cust_profile;
   const { events } = state.edit;
+  const { cust_profile } = state.edit;
   return {
     user,
     registeredEvents,
     events,
+    cust_profile,
   };
 }
 

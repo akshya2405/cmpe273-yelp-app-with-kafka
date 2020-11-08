@@ -84,16 +84,17 @@ export const eventsUpdate = (restID, updateList, deleteIds) => (dispatch) => Add
     return Promise.reject();
   });
 
-export const registerfor = (eventID) => (dispatch) => AddService.registerfor(eventID)
+export const registerfor = (event, regList) => (dispatch) => AddService.registerfor(event, regList)
   .then((response) => {
-    // console.log('Adding event');
+    alert(JSON.stringify(response));
     dispatch({
       type: REGISTER_FOR_EVENT,
+      payload: response.data.cust_profile,
     });
-    dispatch({
-      type: SET_MESSAGE,
-      payload: response.data.message,
-    });
+    // dispatch({
+    //   type: SET_MESSAGE,
+    //   payload: response.data.message,
+    // });
     return Promise.resolve();
   },
   (error) => {

@@ -46,6 +46,7 @@ function handle_signup(msg, db, callback) {
               fname: msg.fname,
               lname: msg.lname,
               email: msg.email,
+              registeredEvents: [],
             };
             collection = db.collection('customerProfiles');
           }

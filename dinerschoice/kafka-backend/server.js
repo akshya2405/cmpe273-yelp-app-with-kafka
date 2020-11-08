@@ -12,6 +12,7 @@ const lookupService = require('./services/lookupService');
 const customerProfile = require('./services/customerProfile');
 const placeOrder = require('./services/placeOrder');
 const updateOrderStatus = require('./services/updateOrderStatus');
+const registerForEvent = require('./services/registerForEvent');
 
 connect.connect().then(dbConn => {
     var consumer = connection.getConsumer();
@@ -126,7 +127,7 @@ connect.connect().then(dbConn => {
             case "register_to_event_request":
                 console.log("In server.js - place_order_request case");
                 // TODO change this
-                updateOrderStatus.handle_update_order(data.data, dbConn, function (err, res) {
+                registerForEvent.handle_register_for_event(data.data, dbConn, function (err, res) {
                     handle_reply(producer, data, res);
                     return;
                 });
