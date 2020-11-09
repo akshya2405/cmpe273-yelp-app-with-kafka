@@ -32,11 +32,11 @@ class RestMessages extends Component {
     this.setState({
       chats: this.props.messages,
     }, () => {
-      if (this.props.location.state  && this.state.chats) {
-        // alert(JSON.stringify(this.props.location.state));
+      if (this.props.location.state && this.state.chats) {
+        alert(JSON.stringify(this.state.chats));
         this.state.chats.unshift(this.props.location.state);
         this.setState(this.state.chats);
-        this.props.history.replace();
+        alert(JSON.stringify(this.state.chats));
       }
     });
   }
@@ -46,7 +46,7 @@ class RestMessages extends Component {
       this.setState({
         chats: this.props.messages,
       }, () => {
-        if (this.props.location.state) {
+        if (this.props.location.state  && this.state.chats) {
           // alert(JSON.stringify(this.props.location.state));
           this.state.chats.unshift(this.props.location.state);
           this.setState(this.state.chats);
@@ -78,7 +78,8 @@ class RestMessages extends Component {
       closed: false,
     };
     this.props.addMessage(messageDetails);
-    window.location.reload();
+    alert("Sent Message: "+JSON.stringify(messageDetails));
+	  this.props.history.replace();
   }
 
   handleClose(chat) {
