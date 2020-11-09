@@ -54,7 +54,7 @@
     "eject": "react-scripts eject",
     "lint": "eslint ."
   },
-  "proxy": "http://localhost:3001",
+  "proxy": "http://54.151.21.30:3001",
   "devDependencies": {
     "eslint": "^7.9.0",
     "eslint-config-airbnb": "^18.2.0",
