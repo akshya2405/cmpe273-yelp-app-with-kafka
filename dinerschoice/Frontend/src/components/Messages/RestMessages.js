@@ -32,10 +32,11 @@ class RestMessages extends Component {
     this.setState({
       chats: this.props.messages,
     }, () => {
-      if (this.props.location.state) {
-        // alert(JSON.stringify(this.props.location.state));
+      if (this.props.location.state && this.state.chats) {
+        alert(JSON.stringify(this.state.chats));
         this.state.chats.unshift(this.props.location.state);
         this.setState(this.state.chats);
+        alert(JSON.stringify(this.state.chats));
         this.props.history.replace();
       }
     });
