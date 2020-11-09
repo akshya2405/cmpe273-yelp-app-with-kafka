@@ -96,7 +96,7 @@ class RestaurantProfile extends Component {
     }
     console.log("getting details");
     this.props.getRestaurantProfile(restID);
-    if (this.props.edit) {
+    if (this.props.edit && this.props.edit.reviews) {
       this.setState({
         allReviews: this.props.edit.reviews,
         currentReviews: this.props.edit.reviews,

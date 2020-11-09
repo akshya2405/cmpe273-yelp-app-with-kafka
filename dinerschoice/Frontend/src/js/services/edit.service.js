@@ -14,7 +14,7 @@ class EditService {
   editRestaurantProfile(updateDetailsInput, uploadedImage) {
     const updateDetails = updateDetailsInput;
     // alert(uploadedImage.image);
-    if (uploadedImage) {
+    if (uploadedImage.image) {
       // alert('in if');
       const multipartOptions = {
         headers: authHeaderMultipart(),
