@@ -1,23 +1,16 @@
 # cmpe273-yelp-app-with-Kafka
 Lab2 Assignment for CMPE273 - Yelp App prototype - Diner's Choice
-Use npm i to install both frontend and backend dependencies.
-Use npm start to run frontend.
-Use node index.js to run backend.
 
-Steps to install Node on EC2
+Download Apache Kafka (kafka_2.11-2.2.1.tgz ) from https://kafka.apache.org/downloads
 
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+Navigate to the downloaded kafka folder in the terminal and run `bin/zookeeper-server-start.sh config/zookeeper.properties` to start zookeeper.
+Navigate to the downloaded kafka folder in the terminal and run `bin/kafka-server-start.sh config/server.properties` to start kafka.
 
-. ~/.nvm/nvm.sh
+Add the createTopics.sh file to this folder and run `./createTopics.sh` to create kafka topics.
 
-nvm install node
+Use `npm i` to install frontend, kafka-backend and backend dependencies.
+Navigate to the Frontend folder in the terminal and use `npm start` to run frontend.
+Navigate to the kafka-backend folder in the terminal and use `npm start` to run kafka-backend.
+Navigate to Backend folder and use `node index.js` to run backend.
 
-node -e "console.log('Running Node.js ' + process.version)"
-
-Steps to install Git on EC2
-
-sudo yum update -y
-
-sudo yum install git -y
-
-git version
+Navigate to localhost:3000 to view the application
