@@ -32,8 +32,7 @@ class Menu extends Component {
       this.setState({
         menu: dishes,
         currentMenu: dishes,
-      }
-    , function () { alert('after state set : '+ JSON.stringify(this.state.currentMenu)); });
+      });
       // this.paginateMenu(this.state.menu);
     } else {
       this.setState({
@@ -46,12 +45,11 @@ class Menu extends Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.dishes !== prevProps.dishes) {
-      alert('change in props');
+      // alert('change in props');
       this.setState({
         menu: this.props.dishes,
         currentMenu: this.props.dishes,
-      }
-      , function () { alert('after state set did update: '+ JSON.stringify(this.state.currentMenu)); });
+      });
     }
   }
 
@@ -60,9 +58,9 @@ class Menu extends Component {
     const { currentPage, totalPages, pageLimit } = data;
     const offset = (currentPage - 1) * pageLimit;
     const currentMenu = menu.slice(offset, offset + pageLimit);
-    alert(JSON.stringify(menu));
-    alert('data value: ' + JSON.stringify(data));
-    alert('current menu page change: '+JSON.stringify(currentMenu));
+    // alert(JSON.stringify(menu));
+    // alert('data value: ' + JSON.stringify(data));
+    // alert('current menu page change: '+JSON.stringify(currentMenu));
     this.setState({ currentPage, currentMenu, totalPages });
   }
 
@@ -185,7 +183,6 @@ class Menu extends Component {
             <div className="d-flex flex-row py-4 align-items-center">
               <Pagination totalRecords={this.state.menu.length} pageLimit={5} pageNeighbours={1} onPageChanged={this.onPageChanged} />
             </div>
-            {alert('' + this.state.currentMenu)}
             <MenuTable
               onMenuTableUpdate={this.handleMenuTable.bind(this)}
               onRowAdd={this.handleAddEvent.bind(this)}

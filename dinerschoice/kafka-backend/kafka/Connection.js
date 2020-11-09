@@ -15,6 +15,8 @@ var topics = [
   { topic: 'register_to_event_request', partition: 0 },
   { topic: 'view_messages_request', partition: 0 },
   { topic: 'add_messages_request', partition: 0 },
+  { topic: 'get_reviews_request', partition: 0 },
+  { topic: 'add_reviews_request', partition: 0 },
 ];
 
 function ConnectionProvider() {

@@ -30,7 +30,7 @@ class Users extends Component {
   }
 
   displayProfile() {
-      alert('Do something');
+      // alert('Do something');
   }
 
   render() {

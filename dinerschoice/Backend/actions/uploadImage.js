@@ -1,8 +1,8 @@
-const path = require("path");
-const multer = require("multer");
+const path = require('path');
+const multer = require('multer');
+
 const res = require('express');
-const verifyToken = require('../middleware/authenticateToken');
-const dbConnection = require('../dbConnection');
+
 const destinationPath = 'images/uploads/';
 let fileNameLocal = '';
 const storage = multer.diskStorage({
@@ -20,30 +20,13 @@ const upload = multer({
 
 const uploadImage = (req) => new Promise((resolve, reject) => {
   setTimeout(() => {
-    // console.log('in actions : ');
-    // console.log('Req : ', req.headers['x-access-token']);
     upload(req, res, (err) => {
-      // console.log("Request ---", req.body);
-      // console.log("Request file ---", req.file);//Here you get file.
-      /* Now do where ever you want to do */
       if (!err) {
         const result = { fileName: `${destinationPath}${fileNameLocal}` };
         console.log('Localfilename: ', fileNameLocal);
         resolve(result);
       }
     });
-
-    /* const custIDQuery = `SELECT customerID FROM customerprofile where email = '${token}';`;
-                dbConnection.dbConn(custIDQuery)
-                    .then((id) => {
-                        // console.log(id[0].customerID);
-      const registerQuery = `INSERT INTO eventregistration
-       (customerID, eventID) VALUES (${id[0].customerID}, ${req.body.eventID})`;
-                        // console.log(registerQuery);
-                        dbConnection.dbConn(registerQuery)
-       .then((output) => { // console.log('registered: ', output); resolve(output); })
-                            .catch((err) => reject(err));
-                    }); */
   }, 50);
 });
 

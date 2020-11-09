@@ -61,7 +61,7 @@ class RestMessages extends Component {
 
   handleReply(message, chat) {
     // TODO : post reply to backend with name, and timestamp
-    alert('Reply posted : ' + message + ' to chat : ' + chat._id);
+    // alert('Reply posted : ' + message + ' to chat : ' + chat._id);
     let name = '';
     if (localStorage.getItem('category') === 'Customer') {
       name = `${this.props.cust_profile.fname} ${this.props.cust_profile.lname}`;
@@ -82,7 +82,7 @@ class RestMessages extends Component {
   }
 
   handleClose(chat) {
-    alert('Chat closed : ' + chat._id);
+    // alert('Chat closed : ' + chat._id);
     // TODO : close the chat.
     const messageDetails = {
       action: 'close',

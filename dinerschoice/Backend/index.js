@@ -9,28 +9,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const cors = require('cors');
 
-// const dbConnection = require('./dbConnection');
-// const verifyToken = require('./middleware/authenticateToken');
-// const restaurantProfile = require('./actions/restaurantProfile');
-// const customerProfile = require('./actions/getCustProfile');
-// const customerProfileUpdate = require('./actions/customerProfileUpdate');
-// const getMenu = require('./actions/getMenu');
-// const menuUpdate = require('./actions/menuUpdate');
-// const getEvents = require('./actions/getEvents');
-// const eventUpdate = require('./actions/eventUpdate');
-// const getRegistrationList = require('./actions/getRegistrationList');
-// const getUpcomingEvents = require('./actions/getUpcomingEvents');
-// const getRegisteredEvents = require('./actions/getRegisteredEvents');
-// const registerfor = require('./actions/registerfor');
-const addReview = require('./actions/addReview');
-// const getReviews = require('./actions/getReviews');
-const getCustReviews = require('./actions/getCustReviews');
 const uploadImage = require('./actions/uploadImage');
-// const lookup = require('./actions/lookup');
-// const placeOrder = require('./actions/placeOrder');
-// const getCustomerOrders = require('./actions/getCustomerOrders');
-// const getRestaurantOrders = require('./actions/getRestaurantOrders');
-// const updateOrderStatus = require('./actions/updateOrderStatus');
 const { frontendURL } = require('./config/auth.config');
 
 app.set('view engine', 'ejs');
@@ -76,6 +55,8 @@ const RegisterForEvent = require('./Routes/RegisterFor');
 const getAllCustomers = require('./Routes/GetAllCust');
 const getMessagesList = require('./Routes/GetMessageList');
 const addMessages = require('./Routes/AddMessages');
+const getReviews = require('./Routes/GetReviews');
+const addReview = require('./Routes/AddReviews');
 
 app.use('/user', Login);
 app.use('/user', Signup);
@@ -93,46 +74,8 @@ app.use('/', RegisterForEvent);
 app.use('/', getAllCustomers);
 app.use('/', getMessagesList);
 app.use('/', addMessages);
-
-// app.post('/addReview', (req, res) => {
-//   // console.log('Inside add review');
-//   // console.log('req: ', req.body.review);
-//   addReview.addReview(req)
-//     .then((output) => {
-//       // console.log(output);
-//       res.writeHead(200, {
-//         'Content-Type': 'application/json',
-//       });
-//       res.end(JSON.stringify(output));
-//     })
-//     .catch((err) => {
-//       // console.log(err);
-//       res.writeHead(400, '*** Something went wrong. Please try again later ****', {
-//         'Content-Type': 'text/plain',
-//       });
-//       res.end();
-//     });
-// });
-
-// app.get('/getCustReviews', (req, res) => {
-//   // console.log('Inside get reviews list');
-//   // console.log('req header:', req.headers['x-access-token']);
-//   getCustReviews.getCustReviews(req)
-//     .then((output) => {
-//       // console.log('output: ', output);
-//       res.writeHead(200, {
-//         'Content-Type': 'application/json',
-//       });
-//       res.end(JSON.stringify(output));
-//     })
-//     .catch((err) => {
-//       // console.log(err);
-//       res.writeHead(400, '*** Something went wrong. Please try again later ****', {
-//         'Content-Type': 'text/plain',
-//       });
-//       res.end();
-//     });
-// });
+app.use('/', getReviews);
+app.use('/', addReview);
 
 app.post('/upload', (req, res) => {
   console.log('in upload');

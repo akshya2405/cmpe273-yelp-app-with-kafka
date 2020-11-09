@@ -121,17 +121,6 @@ export const addReview = (review) => (dispatch) => AddService.addReview(review)
       payload: response.data.message,
     });
     return Promise.resolve();
-  },
-  (error) => {
-    const message = error.response.statusText;
-    dispatch({
-      type: ADD_REVIEW_ERROR,
-    });
-    dispatch({
-      type: SET_MESSAGE,
-      payload: message,
-    });
-    return Promise.reject();
   });
 
 export const placeOrder = (updateDetails) => (dispatch) => AddService.placeOrder(updateDetails)

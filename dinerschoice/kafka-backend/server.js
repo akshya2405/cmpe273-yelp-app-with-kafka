@@ -15,6 +15,8 @@ const updateOrderStatus = require('./services/updateOrderStatus');
 const registerForEvent = require('./services/registerForEvent');
 const getMessageList = require('./services/getMessageList');
 const addMessage = require('./services/AddMessage');
+const getReviews = require('./services/getReviews');
+const addReviews = require('./services/AddReviews');
 
 connect.connect().then(dbConn => {
   var consumer = connection.getConsumer();
@@ -130,6 +132,24 @@ connect.connect().then(dbConn => {
         console.log("In server.js - add_messages_request case");
         // TODO change this
         addMessage.handle_add_message(data.data, dbConn, function (err, res) {
+          handle_reply(producer, data, res);
+          return;
+        });
+        break;
+
+      case "get_reviews_request":
+        console.log("In server.js - get_reviews_request case");
+        // TODO change this
+        getReviews.handle_get_reviews(data.data, dbConn, function (err, res) {
+          handle_reply(producer, data, res);
+          return;
+        });
+        break;
+
+      case "add_reviews_request":
+        console.log("In server.js - add_reviews_request case");
+        // TODO change this
+        addReviews.handle_add_review(data.data, dbConn, function (err, res) {
           handle_reply(producer, data, res);
           return;
         });

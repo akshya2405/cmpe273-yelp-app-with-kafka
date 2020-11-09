@@ -16,6 +16,8 @@ const topics = [
   { topic: 'register_to_event_response', partition: 0 },
   { topic: 'view_messages_response', partition: 0 },
   { topic: 'add_messages_response', partition: 0 },
+  { topic: 'get_reviews_response', partition: 0 },
+  { topic: 'add_reviews_response', partition: 0 },
 ];
 
 function ConnectionProvider() {
