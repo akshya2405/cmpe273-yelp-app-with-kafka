@@ -100,6 +100,7 @@ class Events extends Component {
     this.state.events.push(eventItem);
     // alert(JSON.stringify(this.state.events));
     this.setState(this.state.events);
+	  this.setState(this.state.currentEvents);
   }
 
   handleEventTable(evt) {
@@ -157,7 +158,7 @@ class Events extends Component {
     if (!currentUser) {
       return <Redirect to="/login" />;
     }
-    if (this.props.events && this.state.events) {
+    if (this.props.events && this.state.events && this.state.currentEvents) {
       console.log('In restaurant events');
       return (
         <div>
