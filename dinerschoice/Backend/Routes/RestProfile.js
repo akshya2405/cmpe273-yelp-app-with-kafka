@@ -15,7 +15,8 @@ router.get('/restaurantDashboard', checkAuth, (req, res) => {
     if (err) {
       res.send(err);
     } else {
-      res.send(results);
+      res.status(200).send(results);
+      // res.send(results);
     }
   });
 });

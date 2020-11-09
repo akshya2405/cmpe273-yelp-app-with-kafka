@@ -310,7 +310,7 @@ class EditRestaurantProfile extends Component {
     const { dispatch, history } = this.props;
 
     if (this.checkBtn.context._errors.length === 0) {
-      alert(JSON.stringify(image));
+      // alert(JSON.stringify(image));
       dispatch(
         editRestaurantProfile(data, image),
       )

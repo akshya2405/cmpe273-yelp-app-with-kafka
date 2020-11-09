@@ -39,7 +39,7 @@ function handle_profile(msg, db, callback) {
                       }
                   });
                 let reviews = [];
-                reviewsCollection.find( { id: findId }).toArray(function (error, reviews) {
+                reviewsCollection.find( { restId: findId }).toArray(function (error, reviews) {
                     console.log('finding reviews');
                     if (error) {
                         console.log(error);
@@ -48,7 +48,6 @@ function handle_profile(msg, db, callback) {
                         callback(null, res);
                     }
                     if (reviews) {
-
                         reviews = reviews;
                         Object.assign(profile, {reviews: reviews});
                         console.log(JSON.stringify(profile));

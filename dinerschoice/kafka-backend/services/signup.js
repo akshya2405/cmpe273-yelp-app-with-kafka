@@ -1,6 +1,4 @@
-const Users = require('./Models/UserModel');
-const Customer = require('./Models/CustomerProfileModel');
-const Restaurant = require('./Models/RestaurantProfileModel');
+const moment = require('moment');
 const mongo = require('mongodb');
 const { mongoDB } = require('../../Backend/config/auth.config');
 const conn = require('../dbConnection');
@@ -46,6 +44,8 @@ function handle_signup(msg, db, callback) {
               fname: msg.fname,
               lname: msg.lname,
               email: msg.email,
+              registeredEvents: [],
+              choosingSince: moment().format(),
             };
             collection = db.collection('customerProfiles');
           }

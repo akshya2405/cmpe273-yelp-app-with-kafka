@@ -15,6 +15,7 @@ import { Select, CaretIcon, ModalCloseButton } from 'react-responsive-select';
 import { getOrders } from '../../js/actions/getCalls';
 import 'react-responsive-select/dist/react-responsive-select.css';
 import { updateOrderStatus } from '../../js/actions/add';
+import Pagination from '../../js/helpers/Pagination';
 
 const setDeliveryStatus = (value) => {
   if (value === 'Delivery') {
@@ -36,6 +37,7 @@ const setDeliveryStatus = (value) => {
 class RestaurantOrders extends Component {
   constructor(props) {
     super(props);
+    this.pageLimit = 1;
     this.state = {
       orders: [],
       orderItems: [],
@@ -43,6 +45,8 @@ class RestaurantOrders extends Component {
       message: '',
       appliedFilters: [],
       filteredResults: [],
+      currentResults: [],
+      resultCount: 0
     };
     this.orderStatus = [{ value: 'New Order', text: 'New Order' }, { value: 'Delivered Order', text: 'Delivered' }, { value: 'Cancelled Order', text: 'Cancel' }];
     // this.mapOrderItems = this.mapOrderItems.bind(this);
@@ -58,6 +62,7 @@ class RestaurantOrders extends Component {
       this.setState({
         ordersAndItemsArray: this.props.orders,
         filteredResults: this.props.orders,
+        resultCount: this.props.orders.length
       });
     }
 
@@ -70,23 +75,10 @@ class RestaurantOrders extends Component {
       this.setState({
         ordersAndItemsArray: this.props.orders,
         filteredResults: this.props.orders,
+        resultCount: this.props.orders.length
       });
     }
   }
-
-  // mapOrderItems() {
-  //   // console.log('in map items');
-  //   const ordersAndItemsArray = [];
-  //   if (this.state.orderItems && this.state.orders) {
-  //     this.state.orders.map((order) => {
-  //       const thisOrderItems = this.state.orderItems.filter((orderItem) => orderItem.orderID === order.orderID);
-  //       const orderAndItems = { ...order, orderItems: thisOrderItems };
-  //       ordersAndItemsArray.push(orderAndItems);
-  //     });
-  //     // console.log(ordersAndItemsArray);
-  //   }
-  //   return ordersAndItemsArray;
-  // }
 
   orderStatusChangeHandler(order, e) {
     // console.log('in change handler', e);
@@ -132,7 +124,17 @@ class RestaurantOrders extends Component {
     let filteredResults = this.state.ordersAndItemsArray;
 
     filteredResults = this.filterByMode(this.state.appliedFilters, filteredResults);
-    this.setState({ filteredResults });
+    this.setState({ filteredResults: filteredResults, resultCount: filteredResults.length }, () => {
+      let totalPages = Math.ceil(filteredResults.length/ this.pageLimit);
+      this.onPageChanged({
+        currentPage: 1,
+        totalPages: totalPages,
+        pageLimit: this.pageLimit
+      })
+    });
+
+
+    //this.setState({ currentResults:filteredResults });
     // console.log('Filter Results: ', filteredResults);
   }
 
@@ -164,6 +166,13 @@ class RestaurantOrders extends Component {
     }
     // alert('data: '+ data);
     this.props.updateOrderStatus(data);
+  }
+  onPageChanged = data => {
+    const { filteredResults } = this.state;
+    const { currentPage, totalPages, pageLimit } = data;
+    const offset = (currentPage - 1) * pageLimit;
+    const currentResults = filteredResults.slice(offset, offset + pageLimit);
+    this.setState({ currentPage, currentResults, totalPages });
   }
 
   render() {
@@ -203,11 +212,18 @@ class RestaurantOrders extends Component {
           </table>
           <div>
             {
-      (this.state.filteredResults && this.state.filteredResults.length === 0) ? (
+              (this.state.resultCount > 0) ? (
+                  <div className="d-flex flex-row py-4 align-items-center">
+                    <Pagination totalRecords={this.state.resultCount} pageLimit={this.pageLimit} pageNeighbours={1} onPageChanged={this.onPageChanged} />
+                  </div>
+              ) : (<div></div>)
+            }
+            {
+              (this.state.currentResults && this.state.currentResults.length === 0) ? (
         <div><h2>There are no orders yet...</h2></div>
       ) : (
         // console.log(this.state.filteredResults.length),
-        this.state.filteredResults.map((order) => (
+        this.state.currentResults.map((order) => (
           <div style={{ height: '200px' }}>
             <hr />
             <div className="ordercolumn1">
@@ -215,7 +231,7 @@ class RestaurantOrders extends Component {
               {order._id}
               <br />
               <b>Ordered By: </b>
-              <Link to={{ pathname: '/profile', state: order.customerID }}>
+              <Link to={{ pathname: '/profile', state: order.custID }}>
                 {order.fname}
                 {' '}
                 {order.lname}

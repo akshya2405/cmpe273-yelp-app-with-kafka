@@ -59,13 +59,12 @@ function handle_get_events(msg, db, callback) {
             }
         });
     } else {
-        let results;
         let find_ids = [];
         (msg.ids).map((id) => {
             find_ids.push(id);
         })
         console.log('find_ids: ', find_ids);
-        events.find({ _id: {$in: Object.values(find_ids) } }).toArray(function (error, result) {
+        events.find({ _id: {$in: find_ids } }).toArray(function (error, result) {
             if (error) {
                 console.log(error);
                 res.status = 500

@@ -8,28 +8,49 @@ function handle_profile(msg, db, callback) {
     // conn.conn().then((db) => {
     // console.log('connected to db');
     const customerProfile = db.collection('customerProfiles');
-    const findId = new mongo.ObjectID(msg.id);
-    console.log('findId:', findId);
-    customerProfile.findOne({ id: findId }, function (error, profile) {
-        if (error) {
-            console.log(error);
-            res.status = 500
-            res.message = 'Error occurred';
-            callback(null, res);
-        }
-        if (profile) {
-            console.log('profile from db: ', profile);
-            res.status = 200;
-            res.profile = profile;
-            callback(null, res);
-        } else {
-            console.log('in else');
-            res.status = 401;
-            res.message = 'Record not found';
-            callback(null, res);
-        }
-    });
-    // });
+    if (msg.id) {
+        const findId = new mongo.ObjectID(msg.id);
+        console.log('findId:', findId);
+        customerProfile.findOne({ id: findId }, function (error, profile) {
+            if (error) {
+                console.log(error);
+                res.status = 500
+                res.message = 'Error occurred';
+                callback(null, res);
+            }
+            if (profile) {
+                console.log('profile from db: ', profile);
+                res.status = 200;
+                res.profile = profile;
+                callback(null, res);
+            } else {
+                console.log('in else');
+                res.status = 401;
+                res.message = 'Record not found';
+                callback(null, res);
+            }
+        });
+    } else {
+        customerProfile.find( {}, { id: 1, fname: 1, lname: 1 } ).toArray(function(error, users) {
+            if (error) {
+                console.log(error);
+                res.status = 500
+                res.message = 'Error occurred';
+                callback(null, res);
+            }
+            if (users) {
+                console.log('users from db: ', users);
+                res.status = 200;
+                res.userList = users;
+                callback(null, res);
+            } else {
+                console.log('in else');
+                res.status = 401;
+                res.message = 'Record not found';
+                callback(null, res);
+            }
+        });
+    }
 }
 
 exports.handle_profile = handle_profile;

@@ -7,6 +7,7 @@ import {
   REGISTER_FOR_EVENT, REGISTER_FOR_EVENT_ERROR,
   PLACE_ORDER, PLACE_ORDER_ERROR,
   ORDER_STATUS_UPDATE, ORDER_STATUS_UPDATE_ERROR,
+  ADD_MESSAGE,
 } from '../constants/action-types';
 
 import AddService from '../services/add.service';
@@ -84,16 +85,17 @@ export const eventsUpdate = (restID, updateList, deleteIds) => (dispatch) => Add
     return Promise.reject();
   });
 
-export const registerfor = (eventID) => (dispatch) => AddService.registerfor(eventID)
+export const registerfor = (event, regList) => (dispatch) => AddService.registerfor(event, regList)
   .then((response) => {
-    // console.log('Adding event');
+    // alert('register for action alert: ' + JSON.stringify(response.data.cust_profile));
     dispatch({
       type: REGISTER_FOR_EVENT,
+      payload: response.data.cust_profile,
     });
-    dispatch({
-      type: SET_MESSAGE,
-      payload: response.data.message,
-    });
+    // dispatch({
+    //   type: SET_MESSAGE,
+    //   payload: response.data.message,
+    // });
     return Promise.resolve();
   },
   (error) => {
@@ -119,17 +121,6 @@ export const addReview = (review) => (dispatch) => AddService.addReview(review)
       payload: response.data.message,
     });
     return Promise.resolve();
-  },
-  (error) => {
-    const message = error.response.statusText;
-    dispatch({
-      type: ADD_REVIEW_ERROR,
-    });
-    dispatch({
-      type: SET_MESSAGE,
-      payload: message,
-    });
-    return Promise.reject();
   });
 
 export const placeOrder = (updateDetails) => (dispatch) => AddService.placeOrder(updateDetails)
@@ -178,4 +169,17 @@ export const updateOrderStatus = (updateOrder) => (dispatch) => AddService.updat
       payload: message,
     });
     return Promise.reject();
+  });
+
+export const addMessage = (message) => (dispatch) => AddService.addMessage(message)
+  .then((response) => {
+    dispatch({
+      type: ADD_MESSAGE,
+      payload: response.data,
+    });
+    dispatch({
+      type: SET_MESSAGE,
+      payload: response.data.message,
+    });
+    return Promise.resolve();
   });

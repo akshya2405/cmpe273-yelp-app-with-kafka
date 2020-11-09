@@ -48,8 +48,8 @@ class Events extends Component {
     const { currentPage, totalPages, pageLimit } = data;
     const offset = (currentPage - 1) * pageLimit;
     const currentEvents = events.slice(offset, offset + pageLimit);
-    alert(JSON.stringify(events));
-    alert(JSON.stringify(data));
+    // alert(JSON.stringify(events));
+    // alert(JSON.stringify(data));
     this.setState({ currentPage, currentEvents, totalPages });
   }
 

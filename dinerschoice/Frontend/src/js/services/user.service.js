@@ -64,6 +64,17 @@ class UserService {
     return axios.get(`${API_URL}getOrders`,
       { params: { id: localStorage.getItem('id'), category: localStorage.getItem('category') } }, { withCredentials: true });
   }
+
+  getUsersList() {
+    axios.defaults.headers.common.authorization = localStorage.getItem('token');
+    return axios.get(`${API_URL}getAllCust`, { withCredentials: true });
+  }
+
+  getMessagesList() {
+    axios.defaults.headers.common.authorization = localStorage.getItem('token');
+    return axios.get(`${API_URL}getMessages`,
+      { params: { id: localStorage.getItem('id'), category: localStorage.getItem('category') } }, { withCredentials: true });
+  }
 }
 
 export default new UserService();

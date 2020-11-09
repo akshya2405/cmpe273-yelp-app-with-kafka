@@ -27,6 +27,7 @@ import CustViewMenu from './Menu/CustViewMenu';
 import CustomerOrders from './Orders/CustomerOrders';
 import RestaurantOrders from './Orders/RestaurantOrders';
 import Messages from './Messages/RestMessages';
+import Users from './Users/Users';
 
 // Create a Main Component
 class Main extends Component {
@@ -51,6 +52,7 @@ class Main extends Component {
         <Route path="/customerorders" component={CustomerOrders} />
         <Route path="/orders" component={RestaurantOrders} />
         <Route path="/messages" component={Messages} />
+        <Route path="/allCustomers" component={Users} />
       </div>
     );
   }

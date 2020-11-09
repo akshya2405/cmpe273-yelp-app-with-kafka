@@ -13,7 +13,8 @@ import 'react-multi-carousel/lib/styles.css';
 import StarBasedRating from 'star-based-rating';
 import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
-import ReactPaginate from 'react-paginate';
+import moment from 'moment';
+import Pagination from '../../js/helpers/Pagination';
 
 import { getRestaurantProfile } from '../../js/actions/getCalls';
 import { addReview } from '../../js/actions/add';
@@ -73,15 +74,14 @@ class RestaurantProfile extends Component {
       allReviews: [],
       success: false,
       isCustView: false,
-      offset: 0,
-      perPage: 5,
-      currentPage: 0,
+      currentReviews: [],
+      resultCount: 0,
     };
     this.handleRating = this.handleRating.bind(this);
     this.reviewChangeHandler = this.reviewChangeHandler.bind(this);
     this.submitReview = this.submitReview.bind(this);
-    this.handlePageClick = this.handlePageClick.bind(this);
-    this.paginateReviews = this.paginateReviews.bind(this);
+    // this.handlePageClick = this.handlePageClick.bind(this);
+    // this.paginateReviews = this.paginateReviews.bind(this);
   }
 
   componentDidMount() {
@@ -96,59 +96,35 @@ class RestaurantProfile extends Component {
     }
     console.log("getting details");
     this.props.getRestaurantProfile(restID);
-    if (this.props.edit.profile) { this.paginateReviews(this.props.edit.reviews); }
+    if (this.props.edit) {
+      this.setState({
+        allReviews: this.props.edit.reviews,
+        currentReviews: this.props.edit.reviews,
+        resultCount: this.props.edit.reviews.length,
+      });
+    }
   }
 
-  paginateReviews(reviews) {
-    const data = reviews;
-    const slice = data.slice(this.state.offset, this.state.offset + this.state.perPage);
-    const postData = slice.map((review) => <React.Fragment>
-      <div className="review">
-        <div className="review1">
-          <p>
-            <b>Reviewed By:</b>
-            {' '}
-            {review.fname}
-            {' '}
-            {review.lname}
-          </p>
-          <p>
-            <b>Reviewed On: </b>
-            {review.date}
-          </p>
-          <p>
-            <b>Choosing Since: </b>
-            {review.choosingSince}
-          </p>
-        </div>
-        <div className="review2">
-          <p>
-            <StarBasedRating
-              totalStars={5}
-              previousStarsToDisplay={review.rating}
-            />
-          </p>
-          <p>{review.comment === 'undefined' ? 'No comment' : review.comment}</p>
-        </div>
-      </div>
-    </React.Fragment>);
-
-    this.setState({
-      pageCount: Math.ceil(data.length / this.state.perPage),
-      postData,
-    });
+  componentDidUpdate(prevProps) {
+    if (this.props.user && this.props.edit !== prevProps.edit) {
+      // alert('change in props');
+      this.setState({
+        allReviews: this.props.edit.reviews,
+        currentReviews: this.props.edit.reviews,
+        resultCount: this.props.edit.reviews.length,
+      });
+    }
   }
 
-  handlePageClick(e) {
-    const selectedPage = e.selected;
-    const offset = selectedPage * this.state.perPage;
-
-    this.setState({
-      currentPage: selectedPage,
-      offset: offset,
-    }, () => {
-      this.paginateReviews(this.props.edit.reviews);
-    });
+  onPageChanged = data => {
+    const { allReviews } = this.state;
+    const { currentPage, totalPages, pageLimit } = data;
+    const offset = (currentPage - 1) * pageLimit;
+    const currentReviews = allReviews.slice(offset, offset + pageLimit);
+    // alert(allReviews);
+    // alert(offset + '  ' + pageLimit);
+    // alert(currentReviews);
+    this.setState({ currentPage, currentReviews, totalPages });
   }
 
   handleRating(totalStarsSelected) {
@@ -166,10 +142,20 @@ class RestaurantProfile extends Component {
 
   submitReview(e) {
     e.preventDefault();
+    const reviewCount = this.props.edit.profile.reviewCount + 1;
+    const totalRating = (this.props.edit.profile.rating + this.state.rating) / (reviewCount);
     const data = {
+      totalRating,
+      reviewCount,
       rating: this.state.rating,
-      review: this.state.review,
-      restaurantID: this.state.profile.restaurantID,
+      comment: this.state.review,
+      restId: this.props.edit.profile.id,
+      custId: this.props.edit.cust_profile.id,
+      restName: this.props.edit.profile.name,
+      fname: this.props.edit.cust_profile.fname,
+      lname: this.props.edit.cust_profile.lname,
+      choosingSince: this.props.edit.cust_profile.choosingSince,
+      date: moment().format(),
     };
 
     this.setState({
@@ -320,21 +306,50 @@ class RestaurantProfile extends Component {
               <Accordion.Collapse eventKey="1">
                 <Card.Body>
                   <div>
-                    {this.state.postData ? (this.state.postData,
-                      <ReactPaginate
-                        previousLabel="prev"
-                        nextLabel="next"
-                        breakLabel="..."
-                        breakClassName="break-me"
-                        pageCount={this.state.pageCount}
-                        marginPagesDisplayed={2}
-                        pageRangeDisplayed={5}
-                        onPageChange={this.handlePageClick}
-                        containerClassName="pagination"
-                        subContainerClassName="pages pagination"
-                        activeClassName="active"
-                      />
-                    ) : ('No reviews yet')}
+                    <h2>Reviews:</h2>
+                    { (this.state.resultCount > 0) ? (
+                      <div className="d-flex flex-row py-4 align-items-center">
+                        <Pagination totalRecords={this.state.resultCount} pageLimit={1} pageNeighbours={1} onPageChanged={this.onPageChanged} />
+                      </div>): (<div />)
+                    }
+                    {
+                      (this.state.currentReviews.length !== 0) ? (
+                        this.state.currentReviews.map((review) => {
+                          // console.log('in display: ', review);
+                          return (
+                            <div>
+                              <div className="review1">
+                                <p>
+                                  <b>Reviewed By:</b>
+                                  {' '}
+                                  {review.fname}
+                                  {' '}
+                                  {review.lname}
+                                </p>
+                                <p>
+                                  <b>Reviewed On: </b>
+                                  {review.date}
+                                </p>
+                                <p>
+                                  <b>Choosing Since: </b>
+                                  {review.choosingSince}
+                                </p>
+                              </div>
+                              <div className="review2">
+                                <p>
+                                  {' '}
+                                  <StarBasedRating
+                                    totalStars={5}
+                                    previousStarsToDisplay={review.rating}
+                                  />
+                                </p>
+                                <p>{review.comment === 'undefined' ? 'No comment' : review.comment}</p>
+                              </div>
+                            </div>
+                          );
+                        })
+                      ) : ((<div>No reviews yet</div>))
+                    }
                   </div>
                 </Card.Body>
               </Accordion.Collapse>

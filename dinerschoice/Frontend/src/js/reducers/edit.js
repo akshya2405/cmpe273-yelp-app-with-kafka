@@ -8,8 +8,8 @@ import {
   CUSTOMER_PROFILE_EDIT_ERROR,
   LOOKUP_RESTAURANTS,
   GET_RESTAURANT_PROFILE_ERROR,
-  GET_REST_ORDER, GET_CUST_EVENTS,
-  GET_REST_ORDER_ERROR, GET_REST_EVENTS, GET_REST_EVENTS_ERROR, EVENTS_UPDATE, EVENTS_UPDATE_ERROR,
+  GET_REST_ORDER, GET_CUST_EVENTS, REGISTER_FOR_EVENT,
+  GET_REST_ORDER_ERROR, GET_REST_EVENTS, GET_REST_EVENTS_ERROR, EVENTS_UPDATE, EVENTS_UPDATE_ERROR, GET_ALL_CUST, ADD_MESSAGE, GET_USER_MESSAGES,
 } from '../constants/action-types';
 
 const user = {
@@ -115,6 +115,32 @@ export default function (state = initialState, action) {
       };
 
     case CUSTOMER_PROFILE_EDIT_ERROR:
+      return {
+        ...state,
+      };
+
+    case REGISTER_FOR_EVENT:
+      // alert('reducers: ' + payload);
+      return {
+        ...state,
+        cust_profile: payload,
+        isAdded: true,
+        loading: true,
+      };
+
+    case GET_ALL_CUST:
+      return {
+        ...state,
+        userList: payload.userList,
+      };
+
+    case GET_USER_MESSAGES:
+      return {
+        ...state,
+        messages: payload.messages,
+      };
+
+    case ADD_MESSAGE:
       return {
         ...state,
       };

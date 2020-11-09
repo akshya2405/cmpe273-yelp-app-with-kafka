@@ -11,6 +11,8 @@ import { connect } from 'react-redux';
 import { Button } from 'react-bootstrap';
 
 import { getCustomerProfile } from '../../js/actions/getCalls';
+import ChatWidget from '../../js/helpers/ChatWidget';
+import { addMessage } from '../../js/actions/add';
 
 class CustomerProfile extends Component {
   constructor(props) {
@@ -18,8 +20,24 @@ class CustomerProfile extends Component {
     this.state = {
       // profile: '',
       isRestView: false,
+      chats: [
+        {
+          _id: 'abc',
+          messages: [
+            {
+              name: 'Sud',
+              content: 'Hello there',
+              timestamp: '21:33 pm',
+            },
+          ],
+          closed: true,
+        },
+      ],
     };
     this.handleFollow = this.handleFollow.bind(this);
+    // this.handleReply = this.handleReply.bind(this);
+    // this.handleClose = this.handleClose.bind(this);
+    this.handleNewChat = this.handleNewChat.bind(this);
   }
 
   componentDidMount() {
@@ -51,6 +69,38 @@ class CustomerProfile extends Component {
     console.log(this.props.location.state);
   }
 
+  handleNewChat() {
+    const id = (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
+    const newChat = {
+      _id: id,
+      restId: this.props.edit.profile.id,
+      custId: this.props.edit.cust_profile.id,
+      messages: [],
+      closed: false,
+    };
+    this.props.history.push('/messages', newChat);
+  }
+
+  // handleClose(chat) {
+  //   alert('Chat closed : ' + chat._id);
+  //   // TODO : close the chat.
+  // }
+
+  // handleReply(message, chat) {
+  //   // TODO : post reply to backend with name, and timestamp
+  //   alert('Reply posted : ' + message + ' to chat : ' + chat._id);
+  //   const messageDetails = {
+  //     _id: chat._id,
+  //     restId: this.props.edit.profile.id,
+  //     custId: this.props.edit.cust_profile.id,
+  //     name: this.props.edit.profile.name,
+  //     content: message,
+  //   };
+  //   alert(JSON.stringify(messageDetails));
+  //   this.props.addMessage(messageDetails);
+  //   // this.props.history.push('/messages');
+  // }
+
   render() {
     const { auth, edit } = this.props;
     console.log('auth', auth);
@@ -76,6 +126,16 @@ class CustomerProfile extends Component {
       </td>
     );
 
+    const startChat = (this.state.isRestView) ? (
+      <Button variant="outline-danger" onClick={this.handleNewChat}>Start Chat</Button>
+    ) : (<div />);
+
+    // const chatSection = (this.state.isRestView && this.state.chats && this.state.chats.length > 0) ? (
+    //   this.state.chats.map((chat) => (
+    //     <ChatWidget chat={chat} isRestaurant={this.state.isRestView} handleClose={this.handleClose} handleReply={this.handleReply}/>
+    //   ))
+    // ) : (<div />);
+
     return (
       <div>
         <table className="table table-striped">
@@ -85,6 +145,7 @@ class CustomerProfile extends Component {
               <tr>
                 <td><h2>Customer Profile</h2></td>
                 {editLink}
+                {startChat}
               </tr>
               <tbody>
                 {/* Display the Table row based on data received */}
@@ -144,6 +205,7 @@ class CustomerProfile extends Component {
           </tr>
         </table>
         <hr size="30px" />
+        {/* {chatSection} */}
       </div>
     );
   }
@@ -155,4 +217,4 @@ const mapStateToProps = (state) => ({
   edit: state.edit,
 });
 
-export default connect(mapStateToProps, { getCustomerProfile })(CustomerProfile);
+export default connect(mapStateToProps, { getCustomerProfile, addMessage })(CustomerProfile);
