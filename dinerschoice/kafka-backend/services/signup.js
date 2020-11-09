@@ -35,7 +35,7 @@ function handle_signup(msg, db, callback) {
               state: msg.state,
               country: msg.country,
               zipcode: msg.zipcode,
-	      profileImage: [],    
+              profileImage:[],
             };
             console.log(profile);
             collection = db.collection('restaurantProfile');
