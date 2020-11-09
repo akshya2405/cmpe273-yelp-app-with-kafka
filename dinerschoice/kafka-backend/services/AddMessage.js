@@ -10,14 +10,14 @@ function handle_add_message(msg, db, callback) {
   const options = { returnOriginal: false }
   let messages = db.collection('messages');
   console.log(msg);
-  if (msg.action === 'add') {
+  // if (msg.action === 'add') {
     const restId = new mongo.ObjectID(msg.restId);
     const custId = new mongo.ObjectID(msg.custId);
     const messageObj = {name: msg.name, timestamp: moment().format(), content: msg.content};
     let msgArray = [messageObj];
     const messageDetails = { _id: msg._id, custId, restId, messages: msgArray, closed: msg.closed };
     console.log(messageDetails);
-  }
+  // }
   messages.findOne({ _id: msg._id }, function (error, event) {
     if (error) {
       console.log(error);
